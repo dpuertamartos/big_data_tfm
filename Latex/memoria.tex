@@ -272,7 +272,6 @@
 }
 
 
-
 \graphicspath{ {./img/} }
 
 % Capítulos
@@ -281,7 +280,7 @@
 	\setcounter{chapter}{#1}
 	\setcounter{section}{0}
 	\chapter*{#2}
-	\addcontentsline{toc}{chapter}{#2}
+	\addcontentsline{toc}{chapter}{#1. #2}
 	\markboth{#2}{#2}
 }
 
@@ -306,28 +305,41 @@
   \null
   \thispagestyle{empty}
   % Cabecera ----------------
-\noindent\includegraphics[width=\textwidth]{cabecera}\vspace{1cm}%
+\begin{center}%
+	{\noindent\Huge Universidades de Burgos, León y Valladolid}\vspace{.5cm}%
+	
+	{\noindent\Large Máster universitario}\vspace{.5cm}%
+	
+	{\noindent\Huge \textbf{Inteligencia de Negocio y Big~Data en Entornos Seguros}}\vspace{.5cm}%
+\end{center}%
+
+\begin{center}%
+	\includegraphics[height=3cm]{img/escudoUBU} \hspace{1cm}
+	\includegraphics[height=3cm]{img/escudoUVA} \hspace{1cm}
+	\includegraphics[height=3cm]{img/escudoULE} \vspace{1cm}%
+\end{center}%
+
   \vfill
-  % Título proyecto ----------------
+  % Título proyecto y escudo informática ----------------
   \colorbox{cpardoBox}{%
-    \begin{minipage}{.8\textwidth}
+    \begin{minipage}{.9\textwidth}
       \vspace{.5cm}\Large
       \begin{center}
-      \textbf{Trabajo Fin de Máster}\vspace{.6cm}\\
-      \textbf{Memoria}\vspace{.6cm}\\
+      \textbf{TFM del Máster Inteligencia de Negocio y Big Data en Entornos Seguros}\vspace{.6cm}\\
       \textbf{\LARGE\@title{}}
       \end{center}
       \vspace{.2cm}
     \end{minipage}
 
   }%
- 
+  \hfill
+  \vfill
   % Datos de alumno, curso y tutores ------------------
   \begin{center}%
   {%
     \noindent\LARGE
     Presentado por \@author{}\\ 
-    en Universidad de <UNIVERSIDAD> --- \@date{}\\
+    en Universidad de Burgos --- \@date{}\\
     Tutor: \@tutor{}\\
   }%
   \end{center}%
@@ -339,7 +351,7 @@
 \newcommand{\nombre}{Nombre del alumno} %%% cambio de comando
 
 % Datos de portada
-\title{<Título del TFM>}
+\title{título del TFM}
 \author{\nombre}
 \tutor{nombre tutor}
 \date{\today}
@@ -356,13 +368,27 @@
 \thispagestyle{empty}
 
 
-\noindent\includegraphics[width=\textwidth]{cabecera}\vspace{1cm}
+\noindent
+\begin{center}%
+	{\noindent\Huge Universidades de Burgos, León y Valladolid}\vspace{.5cm}%
+	
+\begin{center}%
+	\includegraphics[height=3cm]{img/escudoUBU} \hspace{1cm}
+	\includegraphics[height=3cm]{img/escudoUVA} \hspace{1cm}
+	\includegraphics[height=3cm]{img/escudoULE} \vspace{1cm}%
+\end{center}%
+
+	{\noindent\Large \textbf{Máster universitario en Inteligencia de Negocio y Big~Data en Entornos Seguros}}\vspace{.5cm}%
+\end{center}%
+
+
 
 \noindent D. nombre tutor, profesor del departamento de nombre departamento, área de nombre área.
 
 \noindent Expone:
 
-\noindent Que el alumno D. \nombre, con DNI <<dni>>, ha realizado el Trabajo Final de Máster para el Máster Universitario en Inteligencia de Negocio y Big Data en Entornos Seguros titulado <<título de TFM>>. 
+\noindent Que el alumno D. \nombre, con DNI dni, ha realizado el Trabajo final de Máster en Inteligencia de Negocio y Big Data en Entornos Seguros 
+          titulado título de TFM. 
 
 \noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
 
@@ -442,6 +468,10 @@ keywords separated by commas.
 \clearpage
 
 \mainmatter
+
+\addcontentsline{toc}{part}{Memoria}
+\part*{Memoria}
+
 \include{./tex/1_Introduccion}
 \include{./tex/2_Objetivos_del_proyecto}
 \include{./tex/3_Conceptos_teoricos}
@@ -451,31 +481,20 @@ keywords separated by commas.
 \include{./tex/7_Conclusiones_Lineas_de_trabajo_futuras}
 
 
-\clearpage
+%\renewcommand\chaptername{Anexo}
+%\renewcommand\thechapter{\Roman{chapter}}
+%\setcounter{chapter}{0}
 
-% Indices
-\tableofcontents
-
-\clearpage
-
-\listoffigures
-
-\clearpage
-
-\listoftables
-
-\clearpage
-
-\mainmatter
-
+% Añadir entrada en el índice: Anexos
 \appendix
+\addcontentsline{toc}{part}{Apéndices}
+\part*{Apéndices}
 
 \include{./tex/A_Plan_proyecto}
 \include{./tex/B_Requisitos}
 \include{./tex/C_Diseno}
 \include{./tex/D_Manual_programador}
 \include{./tex/E_Manual_usuario}
-
 
 
 \bibliographystyle{plain}
