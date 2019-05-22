@@ -5,7 +5,7 @@
 \selectlanguage{spanish}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern} % scalable font
+\usepackage{lmodern} % Scalable font
 \usepackage{microtype}
 \usepackage{placeins}
 
@@ -109,10 +109,6 @@
   \end{center}
  \end{table}
 }
-
-%
-%Para el float H de tablaSmallSinColores
-\usepackage{float}
 
 %
 % Nuevo comando para tablas pequeñas (menos de una página).
@@ -277,7 +273,6 @@
 
 
 
-
 \graphicspath{ {./img/} }
 
 % Capítulos
@@ -313,28 +308,26 @@
   % Cabecera ----------------
 \noindent\includegraphics[width=\textwidth]{cabecera}\vspace{1cm}%
   \vfill
-  % Título proyecto y escudo informática ----------------
+  % Título proyecto ----------------
   \colorbox{cpardoBox}{%
     \begin{minipage}{.8\textwidth}
       \vspace{.5cm}\Large
       \begin{center}
-      \textbf{TFG del Grado en Ingeniería Informática}\vspace{.6cm}\\
+      \textbf{Trabajo Fin de Máster}\vspace{.6cm}\\
+      \textbf{Memoria}\vspace{.6cm}\\
       \textbf{\LARGE\@title{}}
       \end{center}
       \vspace{.2cm}
     \end{minipage}
 
   }%
-  \hfill\begin{minipage}{.20\textwidth}
-    \includegraphics[width=\textwidth]{escudoInfor}
-  \end{minipage}
-  \vfill
+ 
   % Datos de alumno, curso y tutores ------------------
   \begin{center}%
   {%
     \noindent\LARGE
     Presentado por \@author{}\\ 
-    en Universidad de Burgos --- \@date{}\\
+    en Universidad de <UNIVERSIDAD> --- \@date{}\\
     Tutor: \@tutor{}\\
   }%
   \end{center}%
@@ -343,10 +336,11 @@
   }
 \makeatother
 
+\newcommand{\nombre}{Nombre del alumno} %%% cambio de comando
 
 % Datos de portada
-\title{título del TFG \\Documentación Técnica}
-\author{nombre alumno}
+\title{<Título del TFM>}
+\author{\nombre}
 \tutor{nombre tutor}
 \date{\today}
 
@@ -355,16 +349,106 @@
 \maketitle
 
 
-
-\cleardoublepage
-
+\newpage\null\thispagestyle{empty}\newpage
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{empty}
+
+
+\noindent\includegraphics[width=\textwidth]{cabecera}\vspace{1cm}
+
+\noindent D. nombre tutor, profesor del departamento de nombre departamento, área de nombre área.
+
+\noindent Expone:
+
+\noindent Que el alumno D. \nombre, con DNI <<dni>>, ha realizado el Trabajo Final de Máster para el Máster Universitario en Inteligencia de Negocio y Big Data en Entornos Seguros titulado <<título de TFM>>. 
+
+\noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
+
+\begin{center} %\large
+En Burgos, {\large \today}
+\end{center}
+
+\vfill\vfill\vfill
+
+% Author and supervisor
+\begin{minipage}{0.45\textwidth}
+\begin{flushleft} %\large
+Vº. Bº. del Tutor:\\[2cm]
+D. nombre tutor
+\end{flushleft}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\begin{flushleft} %\large
+Vº. Bº. del co-tutor:\\[2cm]
+D. nombre co-tutor
+\end{flushleft}
+\end{minipage}
+\hfill
+
+\vfill
+
+% para casos con solo un tutor comentar lo anterior
+% y descomentar lo siguiente
+%Vº. Bº. del Tutor:\\[2cm]
+%D. nombre tutor
+
+
+\newpage\null\thispagestyle{empty}\newpage
+
 
 
 
 \frontmatter
+
+% Abstract en castellano
+\renewcommand*\abstractname{Resumen}
+\begin{abstract}
+En este primer apartado se hace una \textbf{breve} presentación del tema que se aborda en el proyecto.
+\end{abstract}
+
+\renewcommand*\abstractname{Descriptores}
+\begin{abstract}
+Palabras separadas por comas que identifiquen el contenido del proyecto Ej: servidor web, buscador de vuelos, android \ldots
+\end{abstract}
+
+\clearpage
+
+% Abstract en inglés
+\renewcommand*\abstractname{Abstract}
+\begin{abstract}
+A \textbf{brief} presentation of the topic addressed in the project.
+\end{abstract}
+
+\renewcommand*\abstractname{Keywords}
+\begin{abstract}
+keywords separated by commas.
+\end{abstract}
+
+\clearpage
+
+% Indices
+\tableofcontents
+
+\clearpage
+
+\listoffigures
+
+\clearpage
+
+\listoftables
+\clearpage
+
+\mainmatter
+\include{./tex/1_Introduccion}
+\include{./tex/2_Objetivos_del_proyecto}
+\include{./tex/3_Conceptos_teoricos}
+\include{./tex/4_Tecnicas_y_herramientas}
+\include{./tex/5_Aspectos_relevantes_del_desarrollo_del_proyecto}
+\include{./tex/6_Trabajos_relacionados}
+\include{./tex/7_Conclusiones_Lineas_de_trabajo_futuras}
 
 
 \clearpage
@@ -393,7 +477,8 @@
 \include{./tex/E_Manual_usuario}
 
 
+
 \bibliographystyle{plain}
-\bibliography{bibliografiaAnexos}
+\bibliography{bibliografia}
 
 \end{document}
