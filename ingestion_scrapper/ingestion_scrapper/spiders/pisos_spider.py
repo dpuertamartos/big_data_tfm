@@ -31,7 +31,7 @@ class PisosSpider(scrapy.Spider):
 
     def __init__(self, update_mode=False, *args, **kwargs):
         self.update_mode = update_mode
-        self.max_page_to_search = 10
+        self.max_page_to_search = 3
         self.client = pymongo.MongoClient("mongodb://localhost:27017/")  # Adjust the connection string if needed
         self.db = self.client["pisos"]  # Change to your database name
         self.last_updated_dates_collection = self.client['pisos']['last_updated_dates']
@@ -40,6 +40,7 @@ class PisosSpider(scrapy.Spider):
             self.latest_dates_per_city_db[city] = self.get_last_known_date(city)
             self.latest_dates_per_city_current_execution[city] = OLD_DATE
 
+        self.flats_stored_counter = 0
         super(PisosSpider, self).__init__(*args, **kwargs)
 
     def get_last_known_date(self, city):
@@ -166,6 +167,7 @@ class PisosSpider(scrapy.Spider):
 
         # Now you can insert the data into the MongoDB collection
         collection.insert_one(data)
+        self.flats_stored_counter += 1
 
         print("saved data...", data)
 
@@ -183,6 +185,18 @@ class PisosSpider(scrapy.Spider):
         date2 = datetime.datetime.strptime(date_str2.split()[-1], date_format)
         return date1 > date2, date1 == date2
 
-    def close_spider(self, spider):
+    def closed(self, reason):
+        # This method is called once when the spider closes
+        print(f"Spider closed with reason: {reason}. Total flats stored: {self.flats_stored_counter}")
+
+        # Update the amount_parsed collection with the count and date
+        self.db['amount_parsed'].insert_one({
+            'date': datetime.datetime.now(),
+            'count': self.flats_stored_counter
+        })
+
+        # Close the MongoDB connection
         self.client.close()
+
+
 
