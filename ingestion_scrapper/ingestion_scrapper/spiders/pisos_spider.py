@@ -31,7 +31,7 @@ class PisosSpider(scrapy.Spider):
 
     def __init__(self, update_mode=False, *args, **kwargs):
         self.update_mode = update_mode
-        self.max_page_to_search = 3
+        self.max_page_to_search = 100
         self.client = pymongo.MongoClient("mongodb://localhost:27017/")  # Adjust the connection string if needed
         self.db = self.client["pisos"]  # Change to your database name
         self.last_updated_dates_collection = self.client['pisos']['last_updated_dates']
@@ -58,18 +58,17 @@ class PisosSpider(scrapy.Spider):
 
         for ad in response.css('div.ad-preview'):
             id = ad.xpath('@id').get()
-            if not collection.find_one({"id": id}):  # Use the city's specific collection # to remove because we want to add updated ads even if they're duplicated
-                data = {
-                    'id': id,
-                    'title': ad.css('a.ad-preview__title::text').get(),
-                    'location': ad.css('p.p-sm::text').get(),
-                    'city': city,
-                    'price': ad.css('span.ad-preview__price::text').get().strip(),
-                    'description': ad.css('p.ad-preview__description::text').get(),
-                    'link': response.urljoin(ad.css('a.ad-preview__title::attr(href)').get()),
-                }
-                # Make a request to the detailed page using the link and pass the current data as meta
-                yield scrapy.Request(data['link'], callback=self.parse_detail, meta={'data': data, 'city': city})
+            data = {
+                'id': id,
+                'title': ad.css('a.ad-preview__title::text').get(),
+                'location': ad.css('p.p-sm::text').get(),
+                'city': city,
+                'price': ad.css('span.ad-preview__price::text').get().strip(),
+                'description': ad.css('p.ad-preview__description::text').get(),
+                'link': response.urljoin(ad.css('a.ad-preview__title::attr(href)').get()),
+            }
+            # Make a request to the detailed page using the link and pass the current data as meta
+            yield scrapy.Request(data['link'], callback=self.parse_detail, meta={'data': data, 'city': city})
 
         next_page_number = int(response.url.split('/')[-2]) + 1
         next_page_url = '/'.join(response.url.split('/')[:-2]) + '/' + str(next_page_number) + '/'
