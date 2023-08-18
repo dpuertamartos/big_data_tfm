@@ -164,6 +164,7 @@ class PisosSpider(scrapy.Spider):
             if photo_links:
                 data['photos'] = photo_links.split('#,!')
 
+        data['createdAt'] = datetime.datetime.now()
         # Now you can insert the data into the MongoDB collection
         collection.insert_one(data)
         self.flats_stored_counter += 1
