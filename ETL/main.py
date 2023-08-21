@@ -4,6 +4,7 @@ import sqlite3
 import json
 from datetime import datetime
 import logging
+import re
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,6 +26,17 @@ def transform_data(documents, city):
         if df[col].apply(isinstance, args=(list,)).any():
             df[col] = df[col].apply(json.dumps)
     df['city'] = city
+
+    # Transform the "price" and "old price" columns
+    for col in ['price', 'old_price', 'superficie_construida', 'superficie_útil']:
+        if col in df.columns:
+            df[col] = df[col].apply(
+                lambda x: int(re.sub('[^0-9]', '', x)) if isinstance(x, str) and re.sub('[^0-9]', '',
+                                                                                        x) != '' else None)
+            # Rename the columns
+            new_col_name = f"{col.replace(' ', '_')}_euro" if 'price' in col else f"{col.replace(' ', '_')}_m2"
+            df.rename(columns={col: new_col_name}, inplace=True)
+
     return df
 
 
