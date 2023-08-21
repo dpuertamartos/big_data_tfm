@@ -17,21 +17,19 @@ def extract_data_from_mongodb(collection_name, latest_date=None):
     return documents
 
 
-def transform_data(documents):
+def transform_data(documents, city):
     df = pd.DataFrame(documents)
     if '_id' in df.columns:
         df = df.drop('_id', axis=1)
     for col in df.columns:
         if df[col].apply(isinstance, args=(list,)).any():
             df[col] = df[col].apply(json.dumps)
+    df['city'] = city
     return df
 
 
-def load_data_to_sql(df, collection_name, conn, latest_date):
-    if latest_date is None:
-        df.to_sql(collection_name, conn, if_exists='replace', index=False)
-    else:
-        df.to_sql(collection_name, conn, if_exists='append', index=False)
+def load_data_to_sql(df, conn):
+    df.to_sql("pisos", conn, if_exists='append', index=False)
 
 
 def main():
@@ -40,10 +38,23 @@ def main():
     cursor = conn.cursor()
 
     collections = pymongo.MongoClient("mongodb://localhost:27017/")["pisos"].list_collection_names()
+    collections = [c for c in collections if c not in ["last_updated_dates", "amount_parsed"]]
+
+    # Create the table for storing the last update dates
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS last_updated_dates (
+        collection_name TEXT PRIMARY KEY,
+        last_updated_date TEXT
+    )
+    ''')
+
+    all_data = pd.DataFrame()
     for collection_name in collections:
         try:
-            cursor.execute(f"SELECT MAX(createdAt) FROM {collection_name}")
-            latest_date = cursor.fetchone()[0]
+            cursor.execute(
+                f"SELECT last_updated_date FROM last_updated_dates WHERE collection_name = '{collection_name}'")
+            result = cursor.fetchone()
+            latest_date = result[0] if result is not None else None
         except sqlite3.OperationalError:
             # Table does not exist, set latest_date to None
             latest_date = None
@@ -58,12 +69,21 @@ def main():
             continue
 
         logging.info("Transforming data...")
-        df = transform_data(documents)
+        df = transform_data(documents, collection_name)
+        all_data = pd.concat([all_data, df], ignore_index=True)
 
-        logging.info(f"Loading data to SQLite table: {collection_name}")
-        load_data_to_sql(df, collection_name, conn, latest_date)
+        # Update the last_updated_dates table
+        max_date = max(doc['createdAt'] for doc in documents)
+        cursor.execute('''
+        INSERT OR REPLACE INTO last_updated_dates (collection_name, last_updated_date)
+        VALUES (?, ?)
+        ''', (collection_name, max_date))
 
+    logging.info(f"Loading data to SQLite table: pisos")
+    load_data_to_sql(all_data, conn)
+    conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     main()
