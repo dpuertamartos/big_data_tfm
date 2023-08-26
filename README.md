@@ -32,9 +32,32 @@ Debido a la flexibilidad del scrapper se puede ejecutar con la frecuencia que se
 
 Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos una vez a la semana. Para evitar perdida de datos de ciudades que tengan +200 anuncios nuevos por día.
 
+### Automatización en servidor 
 
+0. install mongodb...
+1. `sudo apt update`
+2. `sudo apt install python3.11 python3.11-venv`
+3. `git clone https://github.com/dpuertamartos/big_data_tfm.git`
+4. `cd big_data_tfm`
+5. `python3 -m venv venv`
+6. `pip install -r requirements.txt`
+7. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
+8. add to cron `crontab -e` the following lines
 
+`0 0 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh >> /home/ubuntu/Desktop/ingestion_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
 
+`0 12 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh >> /home/ubuntu/Desktop/ingestion_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
+
+### mongo-db backup
+
+1. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/mongodb/mongo_backup_script.sh`
+2. add to cron `crontab -e` the following line
+
+`0 2 */3 * * /home/ubuntu/big_data_tfm/ingestion_scrapper/mongodb/mongo_backup_script.sh >> /home/ubuntu/Desktop/backup_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
+
+3. to restore
+
+`mongorestore --host <your_mongodb_host> --port <your_mongodb_port> /path/to/your/mongodb-dump/`
 
 ## arquitecture 
 
