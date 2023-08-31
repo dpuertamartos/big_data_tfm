@@ -35,14 +35,15 @@ Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos 
 ### Automatización en servidor 
 
 0. install mongodb...
-1. `sudo apt update`
-2. `sudo apt install python3.11 python3.11-venv`
-3. `git clone https://github.com/dpuertamartos/big_data_tfm.git`
-4. `cd big_data_tfm`
-5. `python3 -m venv venv`
-6. `pip install -r requirements.txt`
-7. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
-8. add to cron `crontab -e` the following lines
+1. `sudo add-apt-repository ppa:deadsnakes/ppa`
+2. `sudo apt update`
+3. `sudo apt install python3.11 python3.11-venv`
+4. `git clone https://github.com/dpuertamartos/big_data_tfm.git`
+5. `cd big_data_tfm`
+6. `python3.11 -m venv venv`
+7. `pip install -r requirements.txt`
+8. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
+9. add to cron `crontab -e` the following lines
 
 `0 0 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh >> /home/ubuntu/Desktop/ingestion_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
 
