@@ -5,8 +5,23 @@ import json
 from datetime import datetime
 import logging
 import re
+from unidecode import unidecode
+
 
 logging.basicConfig(level=logging.INFO)
+
+
+def convert_to_snake_case(name):
+    name = unidecode(name)  # Remove accented characters
+    name = re.sub('[^0-9a-zA-Z]+', '_', name)  # Replace any non-alphanumeric characters with underscore
+    return name.lower()  # Convert to lower case to get snake_case
+
+
+def update_last_updated_dates(cursor, collection_name, max_date):
+    cursor.execute('''
+    INSERT OR REPLACE INTO last_updated_dates (collection_name, last_updated_date)
+    VALUES (?, ?)
+    ''', (collection_name, max_date))
 
 
 def extract_data_from_mongodb(collection_name, latest_date=None):
@@ -37,6 +52,8 @@ def transform_data(documents, city):
             new_col_name = f"{col.replace(' ', '_')}_euro" if 'price' in col else f"{col.replace(' ', '_')}_m2"
             df.rename(columns={col: new_col_name}, inplace=True)
 
+    df.columns = [convert_to_snake_case(col) for col in df.columns]
+
     return df
 
 
@@ -61,36 +78,38 @@ def main():
     ''')
 
     all_data = pd.DataFrame()
+    list_of_dfs = []
     for collection_name in collections:
         try:
-            cursor.execute(
-                f"SELECT last_updated_date FROM last_updated_dates WHERE collection_name = '{collection_name}'")
-            result = cursor.fetchone()
-            latest_date = result[0] if result is not None else None
-        except sqlite3.OperationalError:
-            # Table does not exist, set latest_date to None
-            latest_date = None
+            try:
+                cursor.execute(
+                    f"SELECT last_updated_date FROM last_updated_dates WHERE collection_name = '{collection_name}'")
+                result = cursor.fetchone()
+                latest_date = result[0] if result is not None else None
+            except sqlite3.OperationalError:
+                # Table does not exist, set latest_date to None
+                latest_date = None
 
-        if latest_date is not None:
-            latest_date = datetime.strptime(latest_date, "%Y-%m-%d %H:%M:%S.%f")
+            if latest_date is not None:
+                latest_date = datetime.strptime(latest_date, "%Y-%m-%d %H:%M:%S.%f")
 
-        logging.info(f"Extracting data from MongoDB collection: {collection_name}")
-        documents = extract_data_from_mongodb(collection_name, latest_date)
+            logging.info(f"Extracting data from MongoDB collection: {collection_name}")
+            documents = extract_data_from_mongodb(collection_name, latest_date)
 
-        if not documents:
-            continue
+            if not documents:
+                continue
 
-        logging.info("Transforming data...")
-        df = transform_data(documents, collection_name)
-        all_data = pd.concat([all_data, df], ignore_index=True)
+            logging.info("Transforming data...")
+            df = transform_data(documents, collection_name)
+            list_of_dfs.append(df)
 
-        # Update the last_updated_dates table
-        max_date = max(doc['createdAt'] for doc in documents)
-        cursor.execute('''
-        INSERT OR REPLACE INTO last_updated_dates (collection_name, last_updated_date)
-        VALUES (?, ?)
-        ''', (collection_name, max_date))
+            # Update the last_updated_dates table
+            max_date = max(doc['createdAt'] for doc in documents)
+            update_last_updated_dates(cursor, collection_name, max_date)
+        except Exception as e:
+            logging.error(f"Failed to process {collection_name}: {e}")
 
+    all_data = pd.concat(list_of_dfs, ignore_index=True)
     logging.info(f"Loading data to SQLite table: pisos")
     load_data_to_sql(all_data, conn)
     conn.commit()
