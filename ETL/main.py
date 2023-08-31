@@ -32,6 +32,28 @@ def extract_data_from_mongodb(collection_name, latest_date=None):
     documents = list(collection.find(query, no_cursor_timeout=True))
     return documents
 
+def summarize_movilidad(value):
+    if value is not None and isinstance(value, str):
+        value = value.strip().upper()  # Strip whitespace and convert to lower case
+
+    if value == 'NO':
+        return 'NO'
+    elif pd.isnull(value) or value == '' or value is None:
+        return None
+    else:
+        return 'YES'
+
+# Define the function to calculate the "mascotas" value
+def get_mascotas(row):
+    aceptan = row.get('se_aceptan_mascotas', None)
+    no_aceptan = row.get('no_se_aceptan_mascotas', None)
+
+    if aceptan is not None and isinstance(aceptan, str):
+        return 'YES'
+    elif no_aceptan is not None and isinstance(no_aceptan, str):
+        return 'NO'
+    else:
+        return None
 
 def transform_data(documents, city):
     df = pd.DataFrame(documents)
@@ -43,7 +65,7 @@ def transform_data(documents, city):
     df['city'] = city
 
     # Transform the "price" and "old price" columns
-    for col in ['price', 'old_price', 'superficie_construida', 'superficie_útil']:
+    for col in ['price', 'old_price', 'superficie_construida', 'superficie_útil', 'superficie_solar']:
         if col in df.columns:
             df[col] = df[col].apply(
                 lambda x: int(re.sub('[^0-9]', '', x)) if isinstance(x, str) and re.sub('[^0-9]', '',
@@ -51,6 +73,17 @@ def transform_data(documents, city):
             # Rename the columns
             new_col_name = f"{col.replace(' ', '_')}_euro" if 'price' in col else f"{col.replace(' ', '_')}_m2"
             df.rename(columns={col: new_col_name}, inplace=True)
+
+    # Convert "habitaciones" and "banos" to numeric types
+    for col in ["habitaciones", "banos"]:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    if 'adaptado_a_personas_con_movilidad_reducida' in df.columns:
+        df['movilidad_reducida_summary'] = df['adaptado_a_personas_con_movilidad_reducida'].apply(summarize_movilidad)
+
+    # Create the new "mascotas" column
+    df['mascotas'] = df.apply(get_mascotas, axis=1)
 
     df.columns = [convert_to_snake_case(col) for col in df.columns]
 
@@ -77,7 +110,6 @@ def main():
     )
     ''')
 
-    all_data = pd.DataFrame()
     list_of_dfs = []
     for collection_name in collections:
         try:
