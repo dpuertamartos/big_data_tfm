@@ -74,6 +74,25 @@ def clean_gastos(value):
     else:
         return None
 
+
+def clean_to_commons(value, to_group=[], most_commons=[]):
+    if value is None or not isinstance(value, str):
+        return None
+
+    string_value = unidecode(value.upper().strip())
+
+    for element_to_group in to_group:
+        if element_to_group in string_value:
+            return element_to_group
+
+    if string_value in most_commons:
+        return string_value
+    else:
+        return 'OTROS'
+
+
+
+
 # Define the function to calculate the "mascotas" value
 def get_mascotas(row):
     aceptan = row.get('se_aceptan_mascotas', None)
@@ -111,11 +130,13 @@ def transform_data(documents, city):
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
     # summarize to "yes", "no", "null"
-    for col in ['exterior', 'vidrios_dobles', 'adaptado_a_personas_con_movilidad_reducida']:
+    for col in ['exterior', 'vidrios_dobles', 'adaptado_a_personas_con_movilidad_reducida', 'puerta_blindada', 'ascensor']:
         if col in df.columns:
             df[col+"_summary"] = df[col].apply(summarize_to_yes)
 
-    df["amueblado_summary"] = df["amueblado"].apply(summarize_to_yes, consider_as_no = ["SIN AMUEBLAR", "VACÍO"])
+    df["amueblado_summary"] = df["amueblado"].apply(lambda e: summarize_to_yes(e, consider_as_no = ["SIN AMUEBLAR", "VACÍO"]))
+    df["cocina_equipada_summary"] = df["cocina_equipada"].apply(lambda e: summarize_to_yes(e, consider_as_no = ["SIN AMUEBLAR", "VACÍO"]))
+
     # Create the new "mascotas" column
     df['mascotas_summary'] = df.apply(get_mascotas, axis=1)
 
@@ -124,7 +145,11 @@ def transform_data(documents, city):
     if 'gastos_de_comunidad' in df.columns:
         df['gastos_de_comunidad_cleaned'] = df['gastos_de_comunidad'].apply(clean_gastos)
 
+
     df.columns = [convert_to_snake_case(col) for col in df.columns]
+
+    if 'carpinteria_exterior' in df.columns:
+        df['carpinteria_exterior_cleaned'] = df['carpinteria_exterior'].apply(lambda e: clean_to_commons(e, to_group=["CLIMALIT"], most_commons = ["ALUMINIO", "PVC", "MADERA"]))
 
     return df
 
