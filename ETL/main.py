@@ -75,7 +75,7 @@ def clean_gastos(value):
         return None
 
 
-def clean_to_commons(value, to_group=[], most_commons=[]):
+def clean_to_commons(value, to_group=[], most_commons=[], extra_element='OTROS'):
     if value is None or not isinstance(value, str):
         return None
 
@@ -88,9 +88,14 @@ def clean_to_commons(value, to_group=[], most_commons=[]):
     if string_value in most_commons:
         return string_value
     else:
-        return 'OTROS'
+        return extra_element
 
 
+def extract_tipo_from_title(value):
+    if value is None or not isinstance(value, str):
+        return None
+    else:
+        return unidecode(value.lower().strip().split(" ")[0])
 
 
 # Define the function to calculate the "mascotas" value
@@ -114,8 +119,9 @@ def transform_data(documents, city):
             df[col] = df[col].apply(json.dumps)
     df['city'] = city
 
+    df.columns = [convert_to_snake_case(col) for col in df.columns]
     # Transform the "price" and "old price" columns
-    for col in ['price', 'old_price', 'superficie_construida', 'superficie_útil', 'superficie_solar']:
+    for col in ['price', 'old_price', 'superficie_construida', 'superficie_util', 'superficie_solar']:
         if col in df.columns:
             df[col] = df[col].apply(
                 lambda x: int(re.sub('[^0-9]', '', x)) if isinstance(x, str) and re.sub('[^0-9]', '',
@@ -130,7 +136,10 @@ def transform_data(documents, city):
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
     # summarize to "yes", "no", "null"
-    for col in ['exterior', 'vidrios_dobles', 'adaptado_a_personas_con_movilidad_reducida', 'puerta_blindada', 'ascensor']:
+    for col in ['exterior', 'vidrios_dobles', 'adaptado_a_personas_con_movilidad_reducida', 'puerta_blindada', 'ascensor',
+                'balcon', 'portero_automatico', 'garaje', 'comedor', 'terraza', 'jardin', 'armarios_empotrados', 'aire_acondicionado',
+                'trastero', 'piscina', 'chimenea', 'lavadero', 'urbanizado', 'calle_alumbrada', 'calle_asfaltada', 'soleado',
+                'gas', 'sistema_de_seguridad', 'interior', 'esquina', 'alcantarillado']:
         if col in df.columns:
             df[col+"_summary"] = df[col].apply(summarize_to_yes)
 
@@ -146,11 +155,28 @@ def transform_data(documents, city):
         df['gastos_de_comunidad_cleaned'] = df['gastos_de_comunidad'].apply(clean_gastos)
 
 
-    df.columns = [convert_to_snake_case(col) for col in df.columns]
-
+    #Clean to commons
     if 'carpinteria_exterior' in df.columns:
         df['carpinteria_exterior_cleaned'] = df['carpinteria_exterior'].apply(lambda e: clean_to_commons(e, to_group=["CLIMALIT"], most_commons = ["ALUMINIO", "PVC", "MADERA"]))
 
+    if 'tipo_suelo' in df.columns:
+        df['tipo_suelo_summary'] = df['tipo_suelo'].apply(lambda e: clean_to_commons(e, to_group=["CERAMICA"], most_commons = ["GRES", "PARQUET", "TERRAZO", "TARIMA FLOTANTE", "MARMOL"]))
+
+    if 'calefaccion' in df.columns:
+        df['calefaccion_summary'] = df['calefaccion'].apply(lambda e: clean_to_commons(e, to_group=[], most_commons=["GAS NATURAL", "CENTRAL", "ELECTRICA", "GASOIL", "GAS", "NO"]))
+
+    if 'cocina' in df.columns:
+        df['cocina_summary'] = df['cocina'].apply(lambda e: clean_to_commons(e, to_group=['AMERICANA', 'INDIVIDUAL', 'INDEPENDIENTE', 'AMUEBLADA'], most_commons=[]))
+
+    if 'orientacion' in df.columns:
+        df['orientacion_summary'] = df['orientacion'].apply(lambda e: clean_to_commons(e, to_group=[], most_commons=['SUR', 'SURESTE', 'SUROESTE' 'ESTE', 'OESTE', 'NORTE', 'NORESTE', 'NOROESTE']))
+
+    if 'agua' in df.columns:
+        df['agua_summary'] = df['agua'].apply(lambda e: clean_to_commons(e, to_group=['ELECTRIC', 'GAS NATURAL', 'GASOL', 'GAS', 'CENTRAL'], most_commons=[], extra_element='INDEFINIDO/OTROS'))
+
+    df["type"] = df['title'].apply(extract_tipo_from_title)
+
+    #carpinteria_interior, luz y telefono not interesting
     return df
 
 
@@ -205,9 +231,13 @@ def main():
         except Exception as e:
             logging.error(f"Failed to process {collection_name}: {e}")
 
-    all_data = pd.concat(list_of_dfs, ignore_index=True)
-    logging.info(f"Loading data to SQLite table: pisos")
-    load_data_to_sql(all_data, conn)
+    if len(list_of_dfs) > 0:
+        all_data = pd.concat(list_of_dfs, ignore_index=True)
+        logging.info(f"Loading data to SQLite table: pisos")
+        load_data_to_sql(all_data, conn)
+    else:
+        logging.info(f"No data was extracted from mongodb collections")
+
     conn.commit()
     conn.close()
 
