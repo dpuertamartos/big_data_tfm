@@ -32,16 +32,47 @@ def extract_data_from_mongodb(collection_name, latest_date=None):
     documents = list(collection.find(query, no_cursor_timeout=True))
     return documents
 
-def summarize_movilidad(value):
+def summarize_to_yes(value, consider_as_no = []):
     if value is not None and isinstance(value, str):
         value = value.strip().upper()  # Strip whitespace and convert to lower case
 
-    if value == 'NO':
+    consider_as_no = [v.strip().upper() for v in consider_as_no] # Strip whitespace and convert to lower case
+
+    if value in ['NO'] + consider_as_no:
         return 'NO'
     elif pd.isnull(value) or value == '' or value is None:
         return None
     else:
         return 'YES'
+
+
+def clean_gastos(value):
+    if value is None:
+        return None
+    # Extract all numeric values from the string
+    string_value = str(value).lower()
+
+    nums = re.findall(r"\d+\.?\d*", string_value)
+    nums = [float(n) for n in nums]
+
+    divisor = 1
+    if 'año' in string_value or "anual" in string_value:
+        divisor = 12
+    elif 'semestr' in string_value:
+        divisor = 6
+    elif 'trimestr' in string_value:
+        divisor = 3
+
+    multiplier = 1
+    if "más" in string_value:
+        multiplier = 1.35
+
+    if len(nums) == 1:
+        return nums[0] * multiplier / divisor
+    elif len(nums) == 2:
+        return ((nums[0] + nums[1]) * multiplier) / (2 * divisor)
+    else:
+        return None
 
 # Define the function to calculate the "mascotas" value
 def get_mascotas(row):
@@ -79,11 +110,19 @@ def transform_data(documents, city):
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    if 'adaptado_a_personas_con_movilidad_reducida' in df.columns:
-        df['movilidad_reducida_summary'] = df['adaptado_a_personas_con_movilidad_reducida'].apply(summarize_movilidad)
+    # summarize to "yes", "no", "null"
+    for col in ['exterior', 'vidrios_dobles', 'adaptado_a_personas_con_movilidad_reducida']:
+        if col in df.columns:
+            df[col+"_summary"] = df[col].apply(summarize_to_yes)
 
+    df["amueblado_summary"] = df["amueblado"].apply(summarize_to_yes, consider_as_no = ["SIN AMUEBLAR", "VACÍO"])
     # Create the new "mascotas" column
-    df['mascotas'] = df.apply(get_mascotas, axis=1)
+    df['mascotas_summary'] = df.apply(get_mascotas, axis=1)
+
+
+    # Clean the gastos_de_comunidad column
+    if 'gastos_de_comunidad' in df.columns:
+        df['gastos_de_comunidad_cleaned'] = df['gastos_de_comunidad'].apply(clean_gastos)
 
     df.columns = [convert_to_snake_case(col) for col in df.columns]
 
