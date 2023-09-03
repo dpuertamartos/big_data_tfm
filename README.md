@@ -1,6 +1,6 @@
 # big_data_tfm
 
-## ingestion
+## 1. Ingestion
 
 in root of project 
 
@@ -41,13 +41,14 @@ Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos 
 4. `git clone https://github.com/dpuertamartos/big_data_tfm.git`
 5. `cd big_data_tfm`
 6. `python3.11 -m venv venv`
-7. `pip install -r requirements.txt`
-8. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
-9. add to cron `crontab -e` the following lines
+7. `source ./venv/bin/activate`
+8. `pip install -r ./ingestion_scrapper/requirements.txt`
+9. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
+10. add to cron `crontab -e` the following lines
 
-`0 0 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh >> /home/ubuntu/Desktop/ingestion_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
+`0 0 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh `
 
-`0 12 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh >> /home/ubuntu/Desktop/ingestion_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
+`0 12 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh `
 
 ### mongo-db backup
 
@@ -59,6 +60,24 @@ Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos 
 3. to restore
 
 `mongorestore --host <your_mongodb_host> --port <your_mongodb_port> /path/to/your/mongodb-dump/`
+
+## 2. ETL
+
+### install
+
+0. have python3.11 and repository with venv (follow guide from ingestion)
+1. `chmod +x /path/to/repo/main.py`
+2. `source /path/to/repo/venv/bin/activate`
+3. `pip install -r /path/to/repo/ETL/requirements.txt`
+4. add or uncomment this line to `/path/to/repo/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
+
+`python3.11 /home/ubuntu/big_data_tfm/ETL/main.py --sql_uri=/home/ubuntu/Desktop/pisos.db >> /home/ubuntu/Desktop/ETL_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
+
+Change sql_uri and logs to whatever path you want
+
+### purpose
+
+...
 
 ## arquitecture 
 
