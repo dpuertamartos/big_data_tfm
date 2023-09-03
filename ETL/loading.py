@@ -14,10 +14,11 @@ def initialize_sql(sqluri):
 
 
 def update_last_updated_dates(cursor, collection_name, max_date):
+    formatted_date = max_date.strftime("%Y-%m-%d %H:%M:%S.%f")
     cursor.execute('''
     INSERT OR REPLACE INTO last_updated_dates (collection_name, last_updated_date)
     VALUES (?, ?)
-    ''', (collection_name, max_date))
+    ''', (collection_name, formatted_date))
 
 
 def load_data_to_sql(df, list_of_collections_correctly_transformed, future_run_update_dates, conn, cursor):
