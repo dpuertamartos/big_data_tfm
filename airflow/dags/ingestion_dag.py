@@ -22,6 +22,6 @@ dag = DAG(
 
 run_script = BashOperator(
     task_id='run_ingestion_script',
-    bash_command="bash -c '/home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh'",
+    bash_command="home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh ",
     dag=dag,
 )
