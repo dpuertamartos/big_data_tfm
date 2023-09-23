@@ -305,6 +305,7 @@
 \makeatletter
 \usepackage{xcolor}
 \newcommand{\tutor}[1]{\def\@tutor{#1}}
+\newcommand{\tutorb}[1]{\def\@tutorb{#1}}
 \newcommand{\course}[1]{\def\@course{#1}}
 \definecolor{cpardoBox}{HTML}{E6E6FF}
 \def\maketitle{
@@ -313,9 +314,9 @@
   % Cabecera ----------------
 \begin{center}%
 	{\noindent\Huge Universidades de Burgos, León y Valladolid}\vspace{.5cm}%
-	
+
 	{\noindent\Large Máster universitario}\vspace{.5cm}%
-	
+
 	{\noindent\Huge \textbf{Inteligencia de Negocio y Big~Data en Entornos Seguros}}\vspace{.5cm}%
 \end{center}%
 
@@ -343,10 +344,11 @@
   % Datos de alumno, curso y tutores ------------------
   \begin{center}%
   {%
-    \noindent\LARGE
-    Presentado por \@author{}\\ 
-    en Universidad de Burgos --- \@date{}\\
+    \noindent\MEDIUM
+    Presentado por \@author{}\\
+    en Universidad de Burgos a \\ \@date{}\\
     Tutor: \@tutor{}\\
+    Tutor 2: \@tutorb{}\\
   }%
   \end{center}%
   \null
@@ -357,9 +359,10 @@
 \newcommand{\nombre}{Nombre del alumno} %%% cambio de comando
 
 % Datos de portada
-\title{título del TFM}
-\author{\nombre}
-\tutor{nombre tutor}
+\title{ETL y aprendizaje automático sobre inversiones inmobiliarias}
+\author{David Puerta Martos}
+\tutor{Álvar Arnaiz-González}
+\tutorb{José Antonio Barbero Aparicio}
 \date{\today}
 
 \begin{document}
@@ -377,7 +380,7 @@
 \noindent
 \begin{center}%
 	{\noindent\Huge Universidades de Burgos, León y Valladolid}\vspace{.5cm}%
-	
+
 \begin{center}%
 	\includegraphics[height=3cm]{img/escudoUBU} \hspace{1cm}
 	\includegraphics[height=3cm]{img/escudoUVA} \hspace{1cm}
@@ -393,8 +396,8 @@
 
 \noindent Expone:
 
-\noindent Que el alumno D. \nombre, con DNI dni, ha realizado el Trabajo final de Máster en Inteligencia de Negocio y Big Data en Entornos Seguros 
-          titulado título de TFM. 
+\noindent Que el alumno D. \nombre, con DNI dni, ha realizado el Trabajo final de Máster en Inteligencia de Negocio y Big Data en Entornos Seguros
+          titulado título de TFM.
 
 \noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
 
@@ -438,12 +441,14 @@ D. nombre co-tutor
 % Abstract en castellano
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-En este primer apartado se hace una \textbf{breve} presentación del tema que se aborda en el proyecto.
+En este proyecto se abordará de principio a fin un proceso de extracción, transformación y carga de datos de carácter inmobiliario. Además, se pretende llevar a cabo el análisis de estos datos mediante el uso de técnicas de aprendizaje automático. Finalmente, se pretende generar una interfaz web amigable que permita filtrar y buscar los inmuebles disponibles en tiempo real. La extracción, transformación, carga, re-entrenado de modelos y análisis de los datos con los modelos se orquesta para lograr su continuidad en el tiempo, con la idea de ofrecer datos actualizados continuamente.
+
+El origen de estos datos es uno de los portales inmobiliarios más grandes de España, \url{www.pisos.com}. La motivación de este proyecto sería ofrecer a un potencial comprador un análisis automatizado de todos los inmuebles disponibles para la compra. El análisis de oportunidades inmobiliarias es un problema complejo y vigente, por lo tanto hay un nicho de negocio real para automatizar y simplificar el procedimiento.
 \end{abstract}
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-Palabras separadas por comas que identifiquen el contenido del proyecto Ej: servidor web, buscador de vuelos, android \ldots
+scrapping, python, mongodb, ETL, SQL, airflow, aprendizaje automático, regresión, scikit learn, react, node.js
 \end{abstract}
 
 \clearpage
@@ -456,7 +461,7 @@ A \textbf{brief} presentation of the topic addressed in the project.
 
 \renewcommand*\abstractname{Keywords}
 \begin{abstract}
-keywords separated by commas.
+scrapping, python, mongodb, ETL, SQL, airflow, machine learning, regression, scikit learn, react, node.js
 \end{abstract}
 
 \clearpage
