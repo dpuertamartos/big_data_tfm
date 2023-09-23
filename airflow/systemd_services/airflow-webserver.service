@@ -1,0 +1,13 @@
+[Unit]
+Description=Airflow web server
+After=network.target
+
+[Service]
+User=ubuntu
+Environment="PATH=/home/ubuntu/big_data_tfm/venv/bin"
+ExecStart=/home/ubuntu/big_data_tfm/venv/bin/airflow webserver --port 8080
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
