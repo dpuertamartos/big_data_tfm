@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=ubuntu
-Environment="PATH=/home/ubuntu/big_data_tfm/venv/bin"
+EnvironmentFile=/home/ubuntu/big_data_tfm/airflow/.env
 ExecStart=/home/ubuntu/big_data_tfm/venv/bin/airflow webserver --port 8080
 Restart=always
 RestartSec=5s
