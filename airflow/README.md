@@ -8,7 +8,7 @@ They were performed as pip install apache-airflow was crashing
 `sudo apt-get install python3.11-dev`
 `sudo apt-get install build-essential`
 
-`source /home/ubuntu/big_data_tfm/venv/bin/activate`
+Install airflow in the virtual enviroment `source /home/ubuntu/big_data_tfm/venv/bin/activate`
 
 `pip install apache-airflow`
 
