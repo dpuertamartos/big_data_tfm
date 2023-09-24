@@ -3,13 +3,35 @@
 Esta parte de la memoria tiene como objetivo presentar las técnicas metodológicas y las herramientas de desarrollo que se han utilizado para llevar a cabo el proyecto. Si se han estudiado diferentes alternativas de metodologías, herramientas, bibliotecas se puede hacer un resumen de los aspectos más destacados de cada alternativa, incluyendo comparativas entre las distintas opciones y una justificación de las elecciones realizadas. 
 No se pretende que este apartado se convierta en un capítulo de un libro dedicado a cada una de las alternativas, sino comentar los aspectos más destacados de cada opción, con un repaso somero a los fundamentos esenciales y referencias bibliográficas para que el lector pueda ampliar su conocimiento sobre el tema.
 
-\section{Scrappers}
+\section{Tecnología de scrapping: Scrappy}
 
-Tabla comparativa de scrappers
 
-\section{Base de datos primaria: mongodb}
+En el ámbito del web scraping existen múltiples herramientas y bibliotecas que facilitan la extracción de datos de sitios web para su posterior análisis o almacenamiento. La Tabla \ref{tabla:tecnologiasComparadas} compara algunas de las tecnologías de web scraping más conocidas, evaluándolas en base a varios criterios como el rendimiento, facilidad de uso, y flexibilidad.
 
-Las secciones se incluyen con el comando section.
+Para el proyecto actual, que tiene como objetivo extraer información relevante sobre la compraventa de inmuebles en pisos.com, se ha seleccionado Scrapy como la tecnología de scraping a utilizar. A continuación, se describen las razones de esta elección:
+
+\begin{description}
+	\item[Rendimiento] Scrapy es conocido por su alta velocidad y eficiencia, permitiendo la extracción de grandes cantidades de datos en un tiempo reducido. Esto es especialmente útil para nuestro proyecto, donde la actualización frecuente de los anuncios y las ofertas es una constante.
+	\item[Facilidad de Uso] Aunque Scrapy tiene una curva de aprendizaje inicial más pronunciada en comparación con, por ejemplo, Beautiful Soup, ofrece una gran cantidad de funcionalidades "out-of-the-box" que aceleran el proceso de desarrollo una vez se comprende su funcionamiento básico.
+    \item[Flexibilidad:] Scrapy es altamente configurable y extensible, lo cual permite adaptar el scraper a necesidades específicas. Esto resulta particularmente útil cuando se trata de sitios web con estructuras más complejas o cuando se requieren funcionalidades avanzadas como el manejo de sesiones, cookies o cabeceras HTTP.
+    \item[Madurez y Comunidad:] Scrapy es una tecnología madura con una comunidad activa, lo que asegura un buen soporte y una amplia disponibilidad de documentación y recursos de aprendizaje.
+    \item[Preferencia del autor para aprender la herramienta:] Algunas de las herramientas como Beautiful Soup y Selenium ya habían sido usadas por el autor, por lo tanto uno de los motivos para decidir por Scrapy fue el hecho de aprender una nueva herramienta ampliamente usada en la comunidad.
+\end{description}
+
+Por todas estas razones, Scrapy se presenta como la opción más robusta y versátil para el web scraping de \url{www.pisos.com}, proporcionando las herramientas necesarias para llevar a cabo un proyecto exitoso.
+
+
+
+\tablaSmall{Comparación de Tecnologías de Web Scraping}{l c c c c}{tecnologiasComparadas}
+{ \multicolumn{1}{l}{Tecnologías} & Rendimiento & Facilidad de Uso & Flexibilidad & Proyecto \\}{
+Scrapy & \textbf{XX} & X & \textbf{XX} & \textbf{XX}\\
+Beautiful Soup & X & \textbf{XX} & X & \\
+Selenium & X & X & X & \\
+Requests & X & \textbf{XX} & X & \\
+Mechanize & X & X & X & \\
+}
+
+\section{Base de datos primaria: MongoDB}
 
 \section{Base de datos secundaria: SQLlite}
 
