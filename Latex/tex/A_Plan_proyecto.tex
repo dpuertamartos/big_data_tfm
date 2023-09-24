@@ -2,7 +2,67 @@
 
 \section{Introducción}
 
+En este apartado se pretende exponer la planificación del proyecto. Se mostrará el avance temporal del proyecto, y los avances que tuvieron lugar entre cada reunión.
+
 \section{Planificación temporal}
+
+Se ha intentado seguir la metodología Agile, utilizando sprints o bloques de trabajo de unas dos semanas. En ocasiones por circunstancias de trabajo, vacaciones o imposibilidad los sprints se han prolongado durante 1 mes.
+
+Tras cada sprint se mantenía una reunión entre los tutores y alumno, en la cual se debatian los avances y se planificaba en qué se iba a trabajar en el siguiente sprint.
+
+\subsection{Sprint 1 - 27/06/23 a 5/07/23}
+
+En este sprint se hizo un primer estudio de la viabilidad del proyecto y se decidieron las tecnologías a utilizar según la idea propuesta originalmente. Además se hizo un prototipo del scrapper.
+
+\begin{itemize}
+    \item Se comprobó que la página web \url{www.idealista.com} estaba totalmente protegida contra el scrapping. Tras pedir una clave para API que permitiera el desarrollo del proyecto no se obtuvo respuesta por parte de idealista.
+
+    Por tanto, se decidió que la fuente de los datos iba a ser \url{www.pisos.com}, otro portal inmobiliario de los más grandes de españa y que no bloquea el uso de scrapping.
+    \item Se hizo un diagrama de las tecnológías que se pretendian usar para la fase de extracción, transformación, carga de los datos y su análisis mediante machine learning, además de la orquestación de los distintos procesos.
+    \item Se probaron diversas tecnologías de scrapping, para finalmente decidir usar scrappy
+    \item Se desarrolló un prototipo de scrapper para inmuebles en venta en \url{www.pisos.com}
+\end{itemize}
+
+\subsection{Sprint 2 - 05/07/23 a 29/08/23}
+
+En este sprint, algo más largo por las fechas vacacionales, se logró un gran avance en la parte de desarrollo.
+
+\begin{itemize}
+    \item Se amplió el software de scrapping, pasando a recopilar más de 50 datos por inmueble.
+    \item Se diseñó y desplegó la base de datos primaria que almacenaria la ingestión de datos proveniente de scrapping: mongodb.
+    \item Se desplegó una máquina virtual ubuntu alojada en Oracle cloud, en la cual se empezaron a ingestar datos diariamente.
+    \item Se estableció un mecanismo de backup de la base de datos primaria en caso de catástrofe en la máquina virtual del proyecto.
+    \item Se comenzó a esbozar el procedimiento de ETL de datos raw almacenados en la mongodb.
+\end{itemize}
+
+\subsection{Sprint 3 - 29/08/23 - 13/09/23}
+
+En este sprint, se desplegó el proceso de ETL.
+
+\begin{itemize}
+    \item Finalización del diseño y decisión de las tecnologías aplicadas en el proceso de ETL.
+    \item Se desplegó el proceso de ETL, en python, que recoge los datos raw de la mongodb, los transforma y los carga, en una base de datos relacional: SQLlite.
+    \item Se hicieron algunas exploraciones previas de los datos limpios.
+\end{itemize}
+
+\subsection{Sprint 4 -  13/09/23 - 26/09/23}
+
+Este sprint se dedicó a la puesta al día de la documentación del proyecto. Además se desplegó apache airflow como orquestador, debido al previsible aumento de complejidad de los procesos.
+
+\begin{itemize}
+    \item Despliegue de Apache Airflow como orquestador.
+    \item Puesta al día de la documentación y memoria de los sprints 1, 2, 3 y 4
+\end{itemize}
+
+\subsection{Sprint 5 -  26/09/23 - 10/10/23}
+
+\begin{itemize}
+    \item .
+    \item .
+    \item .
+    \item .
+\end{itemize}
+
 
 \section{Estudio de viabilidad}
 
