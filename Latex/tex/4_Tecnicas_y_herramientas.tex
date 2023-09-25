@@ -33,6 +33,26 @@ Mechanize & X & X & X & \\
 
 \section{Base de datos primaria: MongoDB}
 
+Los datos recopilados a través de scrapping deben almacenarse de forma permanente para su posterior uso. Esto requiere inevitablemente usar una base de datos.
+
+Una de las primeras decisiones fue usar una base de datos no relacional, por la flexibilidad que podía aportar al tratarse de datos de scrapping. Es frecuente que estos datos no tengan una estructura muy definida o que varíen considerablemente en formato, campos disponibles o tipos de datos. En tales casos, las bases de datos relacionales pueden resultar restrictivas, ya que exigen un esquema fijo y predefinido que todos los registros deben seguir. Por el contrario, MongoDB permite una estructura más flexible, lo que hace que sea más adecuada para manejar datos heterogéneos.
+
+Dentro de las bases de datos NoSQL, otra decisión rápida fue la de elegir una que fuera Open Source y con licencia gratuita. Esto no solo ayuda a mantener bajos los costos del proyecto, sino que también abre la puerta a una amplia comunidad de desarrolladores y una gran cantidad de recursos y documentación en línea. De las bases de datos que cumplían con estos requisitos, MongoDB destacó por varias razones:
+
+\begin{itemize}
+\item \textbf{Prevalencia en la Industria}: MongoDB es una de las bases de datos NoSQL más populares y ampliamente utilizadas. Esto no solo la hace una tecnología atractiva para aprender desde una perspectiva de desarrollo profesional, sino que también asegura una amplia gama de soporte comunitario y empresarial.
+
+\item \textbf{Experiencia Previa}: Contar con experiencia previa en MongoDB reduce significativamente la curva de aprendizaje, permitiendo un desarrollo más rápido y eficiente del proyecto.
+
+\item \textbf{Escalabilidad}: MongoDB ofrece una excelente escalabilidad horizontal, lo que permite manejar grandes volúmenes de datos y tráfico sin degradar el rendimiento. Esto es especialmente útil para proyectos de scrapping que pueden empezar pequeños pero crecer rápidamente.
+
+\item \textbf{Consultas Flexibles}: MongoDB ofrece un sistema de consultas flexible y potente que permite realizar búsquedas complejas, algo que es especialmente útil cuando se trata de analizar y utilizar los datos recopilados.
+
+\item \textbf{Integración con otras Tecnologías}: MongoDB se integra fácilmente con numerosas plataformas y lenguajes de programación, lo que la convierte en una opción versátil para cualquier stack tecnológico. La integración son scrapy, la libreria de python para web scrapping utilizada fue trivial gracias a la libreria pymongo, la libreria de mongodb para python.
+\end{itemize}
+
+Por todas estas razones, MongoDB se convirtió en la opción más atractiva para este proyecto, ofreciendo la combinación ideal de flexibilidad, escalabilidad y soporte comunitario.
+
 \section{Base de datos secundaria: SQLlite}
 
 Explicar por qué el uso de una tan simple
