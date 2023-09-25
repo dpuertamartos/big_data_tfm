@@ -71,9 +71,23 @@ Los datos originados de la base de datos primaria y transformados mediante el pr
 
 Por lo tanto, SQLite se convierte en una excelente opción para este escenario específico. Ofrece la ventaja de ser ligero y eficiente en el uso de recursos, mientras proporciona todas las funcionalidades necesarias para realizar análisis de datos y machine learning de forma eficaz. Además, su fácil integración con Python y la flexibilidad para una futura migración hacen de SQLite una elección pragmática y efectiva para este proyecto.
 
-\section{Herramientas de ETL}
+\section{Herramientas de ETL: Pandas}
 
-Explicar por qué se decidió a usar python a secas en lugar de spark
+Para el proceso de Extracción, Transformación y Carga (ETL) de los datos, se decidió utilizar Python con la ayuda de la librería Pandas. A continuación, se describen las razones que llevaron a esta elección:
+
+\begin{itemize}
+\item \textbf{Volumen de Datos}: Uno de los principales factores fue el tamaño moderado del conjunto de datos con el que se está trabajando. Con aproximadamente 500 MB de datos recopilados cada 2-3 meses, el volumen no justifica el uso de una herramienta diseñada para el procesamiento de datos masivos, como Spark.
+
+\item \textbf{Eficiencia y Velocidad}: Con Pandas y Python, la transformación de toda la base de datos se puede realizar en cuestión de segundos. Esto significa que no hay una necesidad inmediata de una infraestructura más compleja y potente. Usar Spark en este contexto sería una forma de sobreingeniería que añadiría complejidad innecesaria al proyecto.
+
+\item \textbf{Recursos de Máquina}: Spark exige una asignación de recursos considerablemente mayor que Pandas, especialmente si se configura en un modo distribuido. Estos recursos podrían ser más eficientemente dedicados a otras tecnologías o aspectos del proyecto.
+
+\item \textbf{Facilidad y flexibilidad}: Pandas ofrece una API intuitiva y fácil de usar, lo que acelera el desarrollo y facilita el mantenimiento. Además, la comunidad de Pandas es amplia, con una gran cantidad de documentación y tutoriales disponibles. Pandas es extremadamente flexible y permite una amplia gama de operaciones de manipulación de datos, desde simples filtrados y ordenaciones hasta operaciones de agrupación y pivoteo más complejas.
+
+\item \textbf{Costo y Licencia}: Al ser una biblioteca de código abierto, Pandas no incurre en costos adicionales, lo cual es beneficioso desde el punto de vista económico del proyecto.
+\end{itemize}
+
+Por todas estas razones, se optó por utilizar Python con Pandas para las operaciones de ETL en este proyecto. Esta elección se alinea con los requisitos y limitaciones del proyecto, ofreciendo una solución que es tanto eficiente como efectiva, sin incurrir en la complejidad y los costos adicionales que implicaría la implementación de una herramienta como Spark.
 
 \section{Orquestador: Apache airflow}
 
