@@ -53,9 +53,23 @@ Dentro de las bases de datos NoSQL, otra decisión rápida fue la de elegir una 
 
 Por todas estas razones, MongoDB se convirtió en la opción más atractiva para este proyecto, ofreciendo la combinación ideal de flexibilidad, escalabilidad y soporte comunitario.
 
-\section{Base de datos secundaria: SQLlite}
+\section{Base de datos secundaria: SQLite}
 
-Explicar por qué el uso de una tan simple
+Los datos originados de la base de datos primaria y transformados mediante el proceso ETL (Extracción, Transformación y Carga) son nuevamente almacenados en una base de datos. Para este paso del flujo de datos, se optó por una base de datos relacional como SQLite por diversas razones:
+
+\begin{itemize}
+\item \textbf{Búsquedas y Ordenaciones Rápidas}: Las bases de datos relacionales son particularmente eficientes en la realización de consultas que involucran ordenamientos y joins, lo que resulta útil para las interfaces web donde se necesita acceder a los datos de forma rápida y eficiente.
+
+\item \textbf{Estructura Clara}: Este tipo de base de datos proporciona un esquema bien definido, lo cual facilita el análisis de datos y las operaciones de machine learning, al no requerir transformaciones adicionales para su uso.
+
+\item \textbf{Economía de Recursos}: Dado que el volumen de datos a manejar es relativamente pequeño (inferior a 500 MB cada 2-3 meses de recolección), una base de datos ligera y eficiente como SQLite es más que suficiente para satisfacer las necesidades del proyecto.
+
+\item \textbf{Integración con Python}: SQLite permite una integración directa con Python, lo que simplifica significativamente el flujo de trabajo y evita la necesidad de implementar y mantener un servidor de base de datos separado.
+
+\item \textbf{Facilidad de Migración}: En caso de que el proyecto escale y requiera una solución más robusta, la migración a una base de datos relacional más potente, como PostgreSQL o MySQL, sería un proceso relativamente sencillo. Esto es debido a que el esquema y las consultas SQL podrían reutilizarse con pocos ajustes.
+\end{itemize}
+
+Por lo tanto, SQLite se convierte en una excelente opción para este escenario específico. Ofrece la ventaja de ser ligero y eficiente en el uso de recursos, mientras proporciona todas las funcionalidades necesarias para realizar análisis de datos y machine learning de forma eficaz. Además, su fácil integración con Python y la flexibilidad para una futura migración hacen de SQLite una elección pragmática y efectiva para este proyecto.
 
 \section{Herramientas de ETL}
 
