@@ -89,9 +89,28 @@ Para el proceso de Extracción, Transformación y Carga (ETL) de los datos, se d
 
 Por todas estas razones, se optó por utilizar Python con Pandas para las operaciones de ETL en este proyecto. Esta elección se alinea con los requisitos y limitaciones del proyecto, ofreciendo una solución que es tanto eficiente como efectiva, sin incurrir en la complejidad y los costos adicionales que implicaría la implementación de una herramienta como Spark.
 
-\section{Orquestador: Apache airflow}
+\section{Orquestador: Apache Airflow}
 
-Explicar por qué se decidió el uso de airflow como orquestador
+Originalmente, la ingestión y transformación de datos se manejaban con una simple programación cron. Sin embargo, con la evolución del proyecto y la incorporación de nuevos flujos de trabajo, como el entrenamiento periódico de modelos de machine learning y la aplicación de dichos modelos a nuevos datos, se hizo evidente la necesidad de un sistema de orquestación más robusto y flexible. Por ello, se optó por utilizar Apache Airflow por las siguientes razones:
+
+\begin{itemize}
+\item \textbf{Gestión de Dependencias}: Apache Airflow permite definir de manera clara y estructurada las dependencias entre las diferentes tareas del flujo de trabajo. Esto resulta especialmente útil cuando los flujos de trabajo se vuelven más complejos y dependen de múltiples etapas y condiciones para su ejecución exitosa.
+
+\item \textbf{Interfaz de Usuario}: Apache Airflow viene con una interfaz de usuario intuitiva que facilita el monitoreo del estado de los flujos de trabajo, la revisión de logs y la identificación de cuellos de botella o fallos en el sistema.
+
+\item \textbf{Programación Flexible}: A diferencia de cron, que tiene limitaciones en cuanto a la programación de tareas, Airflow permite una gran flexibilidad en la definición de horarios y desencadenantes para la ejecución de tareas.
+
+\item \textbf{Integración con Otras Herramientas}: Airflow se integra fácilmente con una amplia variedad de tecnologías y plataformas, desde bases de datos hasta servicios de almacenamiento en la nube, lo que facilita la implementación de flujos de trabajo complejos.
+
+\item \textbf{Gestión de Errores y Reintentos}: Con Airflow, es posible configurar políticas de reintentos y alertas, lo que mejora la robustez del sistema al manejar fallos y excepciones de manera más efectiva.
+
+\item \textbf{Código Como Configuración}: Airflow permite definir flujos de trabajo como código, lo que facilita la versión, el mantenimiento y la colaboración en el desarrollo de flujos de trabajo.
+
+\item \textbf{Comunidad y Soporte}: Apache Airflow cuenta con una comunidad de desarrolladores activa y una gran cantidad de documentación en línea, lo que facilita el proceso de adaptación y resolución de problemas.
+\end{itemize}
+
+Por lo aquí expuesto, Apache Airflow fue elegido como la solución de orquestación más adecuada para este proyecto. Su flexibilidad, escalabilidad y robustez hacen que sea una herramienta altamente eficaz para coordinar múltiples tareas, algo que cron simplemente no podría manejar de manera tan efectiva.
+
 
 \section{Machine learning: scikit learn}
 
