@@ -1,15 +1,33 @@
 \capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
 
-Este apartado pretende recoger los aspectos más interesantes del desarrollo del proyecto, comentados por los autores del mismo.
-Debe incluir desde la exposición del ciclo de vida utilizado, hasta los detalles de mayor relevancia de las fases de análisis, diseño e implementación.
-Se busca que no sea una mera operación de copiar y pegar diagramas y extractos del código fuente, sino que realmente se justifiquen los caminos de solución que se han tomado, especialmente aquellos que no sean triviales.
-Puede ser el lugar más adecuado para documentar los aspectos más interesantes del diseño y de la implementación, con un mayor hincapié en aspectos tales como el tipo de arquitectura elegido, los índices de las tablas de la base de datos, normalización y desnormalización, distribución en ficheros3, reglas de negocio dentro de las bases de datos (EDVHV GH GDWRV DFWLYDV), aspectos de desarrollo relacionados con el WWW...
-Este apartado, debe convertirse en el resumen de la experiencia práctica del proyecto, y por sí mismo justifica que la memoria se convierta en un documento útil, fuente de referencia para los autores, los tutores y futuros alumnos.
-
 \section{Diseño inicial}
+
+Desde el comienzo del proyecto, se esbozó una visión general de su desarrollo. Esta visión implicaba la ingestión de datos inmobiliarios para posteriormente transformarlos, limpiarlos y aplicar modelos de aprendizaje automático, con el objetivo de brindar valor al usuario final, quien sería el consumidor de estos datos.
+
+Inicialmente, la ingestión de datos se contemplaba a través de dos vías posibles: mediante una API o mediante técnicas de scrapping. Se consideró utilizar Apache Spark como herramienta principal para las tareas de Extracción, Transformación y Carga (ETL) de datos. Sin embargo, tras un análisis cuidadoso, esta opción fue desestimada por considerarse innecesaria. Dentro del diseño, se identificó la necesidad de contar con una base de datos primaria y otra secundaria. Asimismo, se exploraron diversas librerías de aprendizaje automático, como ML/MLlib de Spark y Scikit-Learn, evaluando su potencial y adecuación al proyecto.
+
+En cuanto a la visualización de datos y resultados derivados del análisis, se contempló inicialmente la creación de una aplicación móvil, la cual permitiría a los usuarios acceder fácilmente a los hallazgos y insights generados tras la implementación de los modelos de aprendizaje automático seleccionados.
+
 
 \section{Elección de la fuente de datos}
 
-\section{Elección de tecnología ETL}
+En una fase inicial, se consideró \url{https://www.idealista.com} como la fuente principal de datos, dado que este portal es el más grande en el sector inmobiliario de España.
 
-\section{Mejora del sistema de orquestación}
+Idealista ofrece una sección donde los usuarios pueden solicitar acceso a su API. Aunque nuestro se recibió la autorización, el acceso estaba notablemente limitado a 100 llamadas API mensuales. Dicha restricción resultaba claramente insuficiente para un proyecto como este. Pese a que se intentó negociar un incremento en el límite de llamadas, no se recibió respuesta alguna por parte de Idealista. Adicionalmente, la plataforma de Idealista posee robustas medidas anti-scrapping, y está claramente limitado como se indica en su archivo "robots.txt". Aún así y tras diversas pruebas, observamos que las técnicas de scrapping fueron efectivamente identificadas y bloqueadas por su sistema.
+
+En consecuencia, se hizo necesario explorar alternativas. Tras una búsqueda, se descubrió que \url{https://www.pisos.com}, otro importante portal inmobiliario en España, permitía técnicas de scrapping sin restricciones significativas. Dada esta flexibilidad, pisos.com se identificó como la fuente ideal de datos para nuestro proyecto, y fue desde este portal de donde, finalmente, se extrajeron los datos necesarios.
+
+
+\section{Selección de Tecnología ETL}
+
+En la sección de diseño inicial, se discutió la posibilidad de emplear Apache Spark como tecnología principal para el proceso de Extracción, Transformación y Carga (ETL) de datos. No obstante, tras un análisis más detenido, se determinó que no había necesidad de recurrir a una herramienta de la envergadura de Spark. A pesar de que los datos incorporaban una considerable cantidad de propiedades en venta en España, estos no alcanzaban un volumen masivo, sumando aproximadamente 500 MB generados cada varios meses. En este contexto, la computación en paralelo no solo resultaba innecesaria, sino que podía llegar a ser contraproducente. Vale la pena mencionar que, utilizando la librería Pandas de Python, el proceso ETL completo de la base de datos apenas tardaba segundos.
+
+Adicionalmente, otro factor crucial en la decisión de descartar Spark fue el consumo de recursos. El proyecto opera en una Máquina Virtual gratuita proporcionada por Oracle, la cual sirve como servidor para múltiples servicios, entre ellos: scrapping, ETL, bases de datos primaria y secundaria, entrenamiento de modelos y la aplicación web. Dada esta infraestructura, se concluyó que no resultaba coste-eficiente mantener procesos de Spark activos.
+
+Por estos motivos, se optó por realizar todo el proceso ETL utilizando Python, con el soporte de librerías eficientes y confiables como Pandas.
+
+\section{Optimización del Sistema de Orquestación}
+
+Inicialmente, los procesos de ingestión/scrapping y ETL estaban orquestados de manera rudimentaria utilizando 'cron' en la máquina virtual. Sin embargo, con el inicio del análisis de datos y la exploración preliminar de modelos de Machine Learning, se hizo evidente la necesidad de una coordinación más sofisticada entre diversos procesos. Estos incluían el entrenamiento de modelos, la aplicación de dichos modelos a los datos para su utilización por parte del usuario final, y la ejecución de backups de las bases de datos, entre otros.
+
+Este reconocimiento de necesidades más complejas y específicas llevó a la implementación de un sistema de orquestación más avanzado y apto, en este caso, Apache Airflow. Airflow no solo ofrece una interfaz gráfica intuitiva y fácil de usar, sino que también proporciona una plataforma robusta que facilita la definición, configuración y programación de flujos de trabajo complejos y dependientes. Con la adopción de Apache Airflow, se logró una mejora significativa en la gestión y coordinación de los distintos procesos involucrados, lo que a su vez ha contribuido a un funcionamiento más eficiente y fiable del sistema en su conjunto. Además, Apache Airflow brinda flexibilidad para escalar y expandir el sistema en el futuro, facilitando así la incorporación y orquestación de nuevos procesos y servicios conforme evolucionan las necesidades y objetivos del proyecto.
