@@ -1,5 +1,7 @@
 # big_data_tfm
 
+overleaf link to memory https://www.overleaf.com/read/vjjqftkqphwy
+
 ## 1. Ingestion
 
 in root of project 
