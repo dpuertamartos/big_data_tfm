@@ -33,59 +33,111 @@ Las referencias se incluyen en el texto usando cite \cite{wiki:latex}. Para cita
 \section{Imágenes}
 
 Se pueden incluir imágenes con los comandos standard de \LaTeX, pero esta plantilla dispone de comandos propios como por ejemplo el siguiente:
+\capitulo{3}{Conceptos teóricos}
 
-\imagen{escudoInfor}{Autómata para una expresión vacía}
+\section{Scrapping}
 
+El scrapping es una técnica utilizada para extraer información de páginas web de manera automática. El proceso implica hacer solicitudes HTTP a los sitios de interés, recibir las páginas web como respuesta y luego analizar estas páginas para extraer los datos deseados.
 
+Para realizar el scrapping, es posible utilizar diversas herramientas y lenguajes de programación. Las bibliotecas y frameworks diseñados para este propósito facilitan la navegación por el DOM (Modelo de Objeto del Documento) de una página web, permitiendo seleccionar y extraer los datos de interés de manera más eficiente. Es crucial tener en cuenta las políticas y restricciones de cada sitio web respecto al scrapping, ya que no todos los sitios permiten esta práctica.
 
-\section{Listas de items}
+Además, el scrapping debe realizarse de manera ética y responsable, evitando sobrecargar los servidores del sitio web con solicitudes y respetando los términos de servicio y las leyes de propiedad intelectual y privacidad. Las técnicas de scrapping son poderosas pero deben utilizarse con precaución y respeto por las fuentes de datos y los derechos de los demás.
 
-Existen tres posibilidades:
+\section{Bases de Datos No Relacionales y Relacionales}
 
+Las bases de datos juegan un papel crucial en la gestión y manipulación de datos. Existen dos categorías principales de sistemas de gestión de bases de datos: No Relacionales y Relacionales.
+
+\subsection{Bases de Datos Relacionales}
+
+Las bases de datos relacionales, están estructuradas de manera que es posible identificar y acceder a los datos en relación con otro dato dentro de la base de datos. Estos sistemas siguen el modelo relacional propuesto por E.F. Codd.
+
+\subsubsection{Características}
 \begin{itemize}
-	\item primer item.
-	\item segundo item.
+\item \textbf{Estructura Tabular:} Los datos se organizan en tablas compuestas por filas y columnas.
+\item \textbf{Integridad Referencial:} Se mantienen las relaciones entre las tablas a través de claves primarias y foráneas.
+\item \textbf{Normalización:} Los datos se organizan para reducir la redundancia y mejorar la integridad.
+\item \textbf{SQL:} Utilizan el lenguaje de consulta estructurado (SQL) para definir, manipular y acceder a los datos.
 \end{itemize}
 
-\begin{enumerate}
-	\item primer item.
-	\item segundo item.
-\end{enumerate}
+\subsubsection{Ejemplos}
+Algunos ejemplos son MySQL, PostgreSQL, Microsoft SQL Server, SQLite, Oracle Database.
 
-\begin{description}
-	\item[Primer item] más información sobre el primer item.
-	\item[Segundo item] más información sobre el segundo item.
-\end{description}
-	
+\subsection{Bases de Datos No Relacionales (NoSQL)}
+
+Las bases de datos No Relacionales, o NoSQL, están diseñadas para permitir operaciones de lectura y escritura de datos más flexibles y escalables que las bases de datos relacionales.
+
+\subsubsection{Características}
 \begin{itemize}
-\item 
+\item \textbf{Esquema Dinámico:} No requieren un esquema predefinido, lo que permite insertar datos de manera más flexible.
+\item \textbf{Escalabilidad Horizontal:} Pueden manejar grandes volúmenes de datos y tráfico a través de sistemas distribuidos.
+\item \textbf{Modelos de Datos Variados:} Soportan diversos modelos de datos, incluyendo documentos, clave-valor, columnares y grafos.
 \end{itemize}
 
-\section{Tablas}
+\subsubsection{Tipos}
+\begin{itemize}
+\item \textbf{Documentales:} Almacenan los datos en documentos, comúnmente en formato JSON. Ejemplo: MongoDB.
+\item \textbf{Clave-Valor:} Los datos se almacenan como pares de clave-valor. Ejemplo: Redis.
+\item \textbf{Columnares:} Organizan los datos por columnas en lugar de filas. Ejemplo: Cassandra.
+\item \textbf{Grafos:} Diseñadas para representar relaciones complejas entre los datos. Ejemplo: Neo4j.
+\end{itemize}
 
-Igualmente se pueden usar los comandos específicos de \LaTeX o bien usar alguno de los comandos de la plantilla.
+\subsection{Comparación y Elección}
 
-\tablaSmall{Herramientas y tecnologías utilizadas en cada parte del proyecto}{l c c c c}{herramientasportipodeuso}
-{ \multicolumn{1}{l}{Herramientas} & App AngularJS & API REST & BD & Memoria \\}{ 
-HTML5 & X & & &\\
-CSS3 & X & & &\\
-BOOTSTRAP & X & & &\\
-JavaScript & X & & &\\
-AngularJS & X & & &\\
-Bower & X & & &\\
-PHP & & X & &\\
-Karma + Jasmine & X & & &\\
-Slim framework & & X & &\\
-Idiorm & & X & &\\
-Composer & & X & &\\
-JSON & X & X & &\\
-PhpStorm & X & X & &\\
-MySQL & & & X &\\
-PhpMyAdmin & & & X &\\
-Git + BitBucket & X & X & X & X\\
-Mik\TeX{} & & & & X\\
-\TeX{}Maker & & & & X\\
-Astah & & & & X\\
-Balsamiq Mockups & X & & &\\
-VersionOne & X & X & X & X\\
-} 
+La elección entre bases de datos relacionales y no relacionales depende de los requisitos y objetivos específicos del proyecto. Mientras que las relacionales son ideales para datos estructurados y relaciones complejas, las bases de datos NoSQL ofrecen mayor flexibilidad y escalabilidad, siendo más adecuadas para manejar grandes volúmenes de datos no estructurados o semi-estructurados. Es vital entender las necesidades del proyecto y las características de cada tipo de base de datos para tomar una decisión informada.
+
+\section{ETL}
+
+ETL es un acrónimo que representa el proceso de Extracción, Transformación y Carga (Extract, Transform, Load en inglés). Este procedimiento es fundamental en el ámbito de la gestión de datos y las bases de datos, especialmente cuando se trata de la manipulación y análisis de grandes volúmenes de información.
+
+\subsection{Extracción}
+
+La fase de Extracción consiste en recolectar o extraer datos de diversas fuentes. Estos datos pueden originarse en distintos formatos y estructuras, provenir de distintas bases de datos, archivos de texto, archivos Excel, entre otros. El objetivo de esta etapa es reunir la información necesaria para posterior análisis y procesamiento, considerando los requisitos y necesidades del proyecto en cuestión.
+
+\subsection{Transformación}
+
+Una vez extraídos, los datos pasan por la fase de Transformación. Durante este paso, la información reunida se procesa para convertirla en un formato más adecuado y coherente para el análisis posterior. Esto puede implicar la limpieza de datos, la resolución de inconsistencias, la conversión de tipos de datos, la creación de nuevas variables o características, y otros procesos destinados a mejorar la calidad y utilidad de los datos.
+
+\subsection{Carga}
+
+La última fase, Carga, implica transferir y depositar los datos transformados en un sistema de destino, que puede ser una base de datos, un data warehouse o cualquier otro tipo de repositorio de datos. Este paso es crucial para que los datos estén disponibles y accesibles para análisis y consultas posteriores por parte de los usuarios o sistemas que los necesiten.
+
+En conjunto, el proceso ETL facilita la gestión y manipulación de datos, permitiendo que los usuarios y organizaciones accedan a información limpia, consistente y valiosa para la toma de decisiones y la generación de insights. Este proceso es fundamental en proyectos de inteligencia de negocios, análisis de datos y ciencia de datos, entre otros campos relacionados con la gestión y análisis de información.
+
+\section{Aprendizaje Automático}
+
+El Aprendizaje Automático (AA), o Machine Learning (ML) en inglés, es un subcampo de la Inteligencia Artificial (IA) que se centra en construir sistemas que aprenden de los datos. A través del análisis y reconocimiento de patrones complejos en los datos, estos sistemas pueden mejorar su rendimiento y toma de decisiones con el tiempo sin ser explícitamente programados para hacerlo.
+
+\subsection{Tipos de Aprendizaje Automático}
+
+Hay varios tipos de aprendizaje automático, cada uno con sus propias aplicaciones y uso de datos.
+
+\subsubsection{Aprendizaje Supervisado}
+El aprendizaje supervisado se realiza utilizando un conjunto de datos etiquetado. En este enfoque, el algoritmo hace predicciones o clasificaciones basadas en la entrada y se ajusta con el feedback proporcionado por las etiquetas correctas.
+
+\subsubsection{Aprendizaje No Supervisado}
+El aprendizaje no supervisado trabaja con conjuntos de datos que no están etiquetados. Estos algoritmos identifican patrones y relaciones inherentes en los datos, como la segmentación de clientes en grupos con preferencias similares.
+
+\subsubsection{Aprendizaje Por Reforzamiento}
+En el aprendizaje por refuerzo, los algoritmos aprenden interactuando con su entorno y recibiendo feedback en forma de recompensas o penalizaciones.
+
+\subsection{Proceso de Aprendizaje}
+
+\subsubsection{Preparación de Datos}
+Antes del entrenamiento, los datos deben ser preprocesados y divididos en conjuntos de entrenamiento y prueba. Esto facilita la evaluación del rendimiento del modelo.
+
+\subsubsection{Entrenamiento del Modelo}
+El modelo se entrena utilizando el conjunto de datos de entrenamiento, ajustando sus parámetros para minimizar el error en sus predicciones.
+
+\subsubsection{Evaluación y Validación}
+Una vez entrenado, el modelo se evalúa utilizando el conjunto de datos de prueba para estimar su rendimiento y precisión en datos no vistos.
+
+\subsubsection{Implementación y Monitoreo}
+Los modelos de aprendizaje automático deben ser implementados y monitoreados continuamente para asegurar que sigan siendo efectivos y relevantes con el paso del tiempo y los cambios en los datos.
+
+\subsection{Algoritmos y Herramientas}
+
+Existen numerosos algoritmos de aprendizaje automático, desde regresión lineal y logística hasta redes neuronales y algoritmos de ensamble. Herramientas como TensorFlow, PyTorch y Scikit-Learn permiten implementar y trabajar con diversos algoritmos de AA.
+
+\subsection{Aplicaciones del Aprendizaje Automático}
+
+El aprendizaje automático se utiliza en una amplia gama de aplicaciones, incluido el reconocimiento de voz e imagen, recomendación de productos, predicción de ventas, diagnóstico médico, y análisis financiero, entre otros. Su versatilidad lo convierte en una herramienta valiosa en muchos campos y industrias.
