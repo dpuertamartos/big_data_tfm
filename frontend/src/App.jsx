@@ -4,7 +4,7 @@ import Flat from './components/Flat'
 
 
 const App = () => {
-  const [Flats, setFlats] = useState([])
+  const [flats, setFlats] = useState([])
   const [newFlat, setNewFlat] = useState('')
   const [showAll, setShowAll] = useState(true)
 
@@ -18,27 +18,42 @@ const App = () => {
         setFlats(response.data)
       })
   }, [])
-  console.log('render', Flats.length, 'Flats')
+  console.log('render', flats.length, 'Flats')
 
   const addFlat = (event) => {
     event.preventDefault()
-    const FlatObject = {
+    const flatObject = {
+      id: flats.length + 1,
+      price: Math.floor((Math.random() * 100)),
       name: newFlat,
-      important: Math.random() > 0.5,
-      id: Flats.length + 1,
+      important: Math.random() > 0.5
     }
-  
-    setFlats(Flats.concat(FlatObject))
-    setNewFlat('')
+    
+    axios
+      .post("http://localhost:3001/flats", flatObject)
+      .then(response =>{
+        setFlats(flats.concat(flatObject))
+        setNewFlat('')
+      })
   }
 
   const handleFlatChange = (event) => {
     setNewFlat(event.target.value)
   }
 
-  const FlatsToShow = showAll
-    ? Flats
-    : Flats.filter(Flat => Flat.important)
+  const toggleImportanceOf = (id) => {
+    const url = `http://localhost:3001/flats/${id}`
+    const flat = flats.find(n => n.id === id)
+    const changedFlat = { ...flat, important: !flat.important }
+  
+    axios.put(url, changedFlat).then(response => {
+      setFlats(flats.map(n => n.id !== id ? n : response.data))
+    })
+  }
+
+  const flatsToShow = showAll
+    ? flats
+    : flats.filter(flat => flat.important)
 
   return (
     <div>
@@ -49,8 +64,8 @@ const App = () => {
         </button>
       </div>      
       <ul>
-        {FlatsToShow.map(flat => 
-          <Flat key={flat.id} flat={flat} />
+        {flatsToShow.map(flat => 
+          <Flat key={flat.id} flat={flat} toggleImportance={() => toggleImportanceOf(flat.id)} />
         )}
       </ul>
       <form onSubmit={addFlat}>
