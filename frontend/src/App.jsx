@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Flat from './components/Flat'
+import flatService from './services/flats'
 
 
 const App = () => {
@@ -11,11 +11,10 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/flats')
-      .then(response => {
-        console.log('promise fulfilled')
-        setFlats(response.data)
+    flatService
+      .getAll()
+      .then(initialFlats => {
+        setFlats(initialFlats)
       })
   }, [])
   console.log('render', flats.length, 'Flats')
@@ -29,10 +28,10 @@ const App = () => {
       important: Math.random() > 0.5
     }
     
-    axios
-      .post("http://localhost:3001/flats", flatObject)
-      .then(response =>{
-        setFlats(flats.concat(flatObject))
+    flatService
+      .create(flatObject)
+      .then(returnedFlat =>{
+        setFlats(flats.concat(returnedFlat))
         setNewFlat('')
       })
   }
@@ -42,12 +41,13 @@ const App = () => {
   }
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/flats/${id}`
     const flat = flats.find(n => n.id === id)
     const changedFlat = { ...flat, important: !flat.important }
   
-    axios.put(url, changedFlat).then(response => {
-      setFlats(flats.map(n => n.id !== id ? n : response.data))
+    flatService
+      .update(id, changedFlat)
+      .then(returnedFlat => {
+      setFlats(flats.map(n => n.id !== id ? n : returnedFlat))
     })
   }
 
