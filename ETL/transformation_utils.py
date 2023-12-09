@@ -2,6 +2,10 @@ import re
 from unidecode import unidecode
 import pandas as pd
 
+def convert_to_unixtime(item):
+    if isinstance(item, pd.Timestamp):
+        return int(item.timestamp())
+    return item
 
 def convert_to_snake_case(name):
     name = unidecode(name)  # Remove accented characters
