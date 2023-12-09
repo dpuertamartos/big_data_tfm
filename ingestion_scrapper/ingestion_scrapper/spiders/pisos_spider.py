@@ -164,12 +164,27 @@ class PisosSpider(scrapy.Spider):
             if photo_links:
                 data['photos'] = photo_links.split('#,!')
 
+        data['active'] = True
         data['createdAt'] = datetime.datetime.now()
-        # Now you can insert the data into the MongoDB collection
-        collection.insert_one(data)
-        self.flats_stored_counter += 1
 
+        # Check for an existing entry with the same ID
+        existing_entry = collection.find_one({"id": data['id']})
+
+        if existing_entry:
+            data['updatedAt'] = datetime.datetime.now()  # Establecer la fecha de actualización
+            version = existing_entry.get('version', 0)  # Obtener la versión actual o 0 si no está definida
+            data['version'] = version + 1
+            collection.update_one({"_id": existing_entry['_id']}, {"$set": data})
+            print("Actualizada la entrada existente con ID:", data['id'])
+        else:
+            data['createdAt'] = data['updatedAt'] = datetime.datetime.now()  # Establecer las fechas de creación y actualización
+            data['version'] = 0
+            collection.insert_one(data)
+            print("Insertada nueva entrada con ID:", data['id'])
+
+        self.flats_stored_counter += 1
         print("saved data...", data)
+
 
     def update_date_in_db(self, collection, city, updated_date):
         collection.update_one(
