@@ -42,7 +42,7 @@ class mongodbHandler():
     def extract_data_from_mongodb(self, collection_name, latest_date=None):
         client = pymongo.MongoClient(self.mongouri)
         db = client[self.database]
-        query = {} if latest_date is None else {"createdAt": {"$gt": latest_date}}
+        query = {} if latest_date is None else {"updatedAt": {"$gt": latest_date}}
         collection = db[collection_name]
         documents = list(collection.find(query, no_cursor_timeout=True))
         return documents
@@ -63,7 +63,7 @@ class mongodbHandler():
                 all_documents[collection_name] = documents
 
                 # Update the last_updated_dates table
-                max_date = max(doc['createdAt'] for doc in documents)
+                max_date = max(doc['updatedAt'] for doc in documents)
                 next_run_update_dates[collection_name] = max_date
 
             except Exception as e:
