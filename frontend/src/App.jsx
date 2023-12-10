@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Flat from './components/Flat'
+import Notification from './components/Notification'
 import flatService from './services/flats'
 
 
@@ -7,6 +8,7 @@ const App = () => {
   const [flats, setFlats] = useState([])
   const [newFlat, setNewFlat] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState(null)    
 
 
   useEffect(() => {
@@ -48,7 +50,14 @@ const App = () => {
       .update(id, changedFlat)
       .then(returnedFlat => {
       setFlats(flats.map(n => n.id !== id ? n : returnedFlat))
-    })
+      })
+      .catch(error => {
+        setErrorMessage(`error changing flat '${flat.title}'`)
+        setTimeout(()=> {
+          setErrorMessage(null)
+        }, 5000)
+        setFlats(flats.filter(n => n.id !== id))
+      })
   }
 
   const flatsToShow = showAll
@@ -58,6 +67,7 @@ const App = () => {
   return (
     <div>
       <h1>Flats</h1>
+      <Notification message={errorMessage} /> 
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all' }

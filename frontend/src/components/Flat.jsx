@@ -4,8 +4,8 @@ const Flat = ({ flat, toggleImportance }) => {
     
     return (
       <li>
-        {flat.name}, 
-        Price: {flat.price} 
+        {flat.title}, 
+        Price: {flat.price_euro} 
         <button onClick={toggleImportance}>{label}  </button>
       </li>
     )
