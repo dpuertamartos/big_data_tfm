@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Flat from './components/Flat'
 import Notification from './components/Notification'
+import Footer from './components/Footer'
 import flatService from './services/flats'
 
 
@@ -85,6 +86,7 @@ const App = () => {
         />
         <button type="submit">save</button>
       </form> 
+      <Footer />
     </div>
   )
 }
