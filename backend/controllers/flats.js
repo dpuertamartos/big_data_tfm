@@ -2,14 +2,9 @@ const router = require('express').Router()
 const { sequelize, select } = require('../util/db')
 
 
-router.get('/', async (req, res, next) => {
-    try {
-        const flats = await sequelize.query('SELECT * FROM pisos LIMIT 100', { type: select })
-        res.json(flats)
-    }
-    catch(exception) {
-        next(exception)
-    }
+router.get('/', async (req, res) => {
+    const flats = await sequelize.query('SELECT * FROM pisos LIMIT 100', { type: select })
+    res.json(flats)
 })
 
 // app.get('/api/flats/:id', (request, response) => {
