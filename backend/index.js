@@ -2,8 +2,8 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 
-const { PORT } = require('./util/config') 
-const { connectToDatabase } = require('./util/db') 
+const { PORT } = require('./util/config')
+const { connectToDatabase } = require('./util/db')
 const { requestLogger, unknownEndpoint, errorHandler } = require('./util/middleware')
 
 const flatsRouter = require('./controllers/flats')
@@ -21,7 +21,7 @@ app.use(errorHandler)
 const start = async () => {
     await connectToDatabase()
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`)
+        console.log(`Server running on port ${PORT}`)
     })
 }
 

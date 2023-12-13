@@ -3,7 +3,7 @@ const { sequelize, select } = require('../util/db')
 
 
 router.get('/', async (req, res) => {
-    const flats = await sequelize.query("SELECT * FROM pisos LIMIT 100", { type: select })
+    const flats = await sequelize.query('SELECT * FROM pisos LIMIT 100', { type: select })
     res.json(flats)
 })
 
