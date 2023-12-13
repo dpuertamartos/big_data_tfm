@@ -1,12 +1,12 @@
-const Flat = ({ flat, toggleImportance }) => {
-    const label = flat.important
-      ? 'make not important' : 'make important'
-    
+import { Link } from "react-router-dom"
+
+
+const Flat = ({ flat }) => {
+
     return (
       <li>
-        {flat.title}, 
+        <Link to={`/flats/${flat.id}`}>{flat.title}</Link>,
         Price: {flat.price_euro} 
-        <button onClick={toggleImportance}>{label}  </button>
       </li>
     )
   }

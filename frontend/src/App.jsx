@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react'
+import {
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useParams,
+  useNavigate,
+  useMatch
+} from "react-router-dom"
+
+import Home from './components/Home'
 import Flat from './components/Flat'
-import Notification from './components/Notification'
+import Flats from './components/Flats'
 import Footer from './components/Footer'
 import flatService from './services/flats'
 
 
 const App = () => {
   const [flats, setFlats] = useState([])
-  const [newFlat, setNewFlat] = useState('')
-  const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)    
 
 
@@ -20,72 +29,28 @@ const App = () => {
         setFlats(initialFlats)
       })
   }, [])
-  console.log('render', flats.length, 'Flats')
-
-  const addFlat = (event) => {
-    event.preventDefault()
-    const flatObject = {
-      id: flats.length + 1,
-      price: Math.floor((Math.random() * 100)),
-      name: newFlat,
-      important: Math.random() > 0.5
-    }
-    
-    flatService
-      .create(flatObject)
-      .then(returnedFlat =>{
-        setFlats(flats.concat(returnedFlat))
-        setNewFlat('')
-      })
-  }
-
-  const handleFlatChange = (event) => {
-    setNewFlat(event.target.value)
-  }
-
-  const toggleImportanceOf = (id) => {
-    const flat = flats.find(n => n.id === id)
-    const changedFlat = { ...flat, important: !flat.important }
   
-    flatService
-      .update(id, changedFlat)
-      .then(returnedFlat => {
-      setFlats(flats.map(n => n.id !== id ? n : returnedFlat))
-      })
-      .catch(error => {
-        setErrorMessage(`error changing flat '${flat.title}'`)
-        setTimeout(()=> {
-          setErrorMessage(null)
-        }, 5000)
-        setFlats(flats.filter(n => n.id !== id))
-      })
-  }
 
-  const flatsToShow = showAll
-    ? flats
-    : flats.filter(flat => flat.important)
+  const match = useMatch('/flats/:id')
+
+  const flat = match
+    ? flats.find(note => note.id === match.params.id)
+    : null
+
+  const padding = { padding: 5 } 
 
   return (
     <div>
-      <h1>Flats</h1>
-      <Notification message={errorMessage} /> 
       <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
-        </button>
-      </div>      
-      <ul>
-        {flatsToShow.map(flat => 
-          <Flat key={flat.id} flat={flat} toggleImportance={() => toggleImportanceOf(flat.id)} />
-        )}
-      </ul>
-      <form onSubmit={addFlat}>
-      <input
-          value={newFlat}
-          onChange={handleFlatChange}
-        />
-        <button type="submit">save</button>
-      </form> 
+        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/flats">flats</Link>
+      </div>
+      <Routes>
+        <Route path="/flats/:id" element={<Flat flat={flat} />} />
+        <Route path="/flats" element={<Flats flats={flats} errorMessage={errorMessage} />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
+      
       <Footer />
     </div>
   )
