@@ -4,7 +4,7 @@ const app = express()
 
 const { PORT } = require('./util/config') 
 const { connectToDatabase } = require('./util/db') 
-const { requestLogger, unknownEndpoint } = require('./util/middleware')
+const { requestLogger, unknownEndpoint, errorHandler } = require('./util/middleware')
 
 const flatsRouter = require('./controllers/flats')
 
@@ -16,6 +16,7 @@ app.use(requestLogger)
 app.use('/api/flats', flatsRouter)
 
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const start = async () => {
     await connectToDatabase()
