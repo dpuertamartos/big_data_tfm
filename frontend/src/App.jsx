@@ -12,6 +12,8 @@ import Flats from './components/Flats'
 import Footer from './components/Footer'
 import flatService from './services/flats'
 
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
+
 
 const App = () => {
   const [flats, setFlats] = useState([])
@@ -34,14 +36,27 @@ const App = () => {
     ? flats.find(note => note.id === match.params.id)
     : null
 
-  const padding = { padding: 5 } 
-
   return (
-    <div>
-      <div>
-        <Link style={padding} to="/">home</Link>
-        <Link style={padding} to="/flats">flats</Link>
-      </div>
+    <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/">
+            home
+          </Button>
+          <Button color="inherit" component={Link} to="/flats">
+            flats
+          </Button>
+          <Button color="inherit" component={Link} to="/explore">
+            explore
+          </Button>
+          <Button color="inherit" component={Link} to="/trends">
+            trends
+          </Button>
+          <Button color="inherit" component={Link} to="/">
+            contact
+          </Button>                         
+        </Toolbar>
+      </AppBar>
       <Routes>
         <Route path="/flats/:id" element={<Flat flat={flat} />} />
         <Route path="/flats" element={<Flats flats={flats} errorMessage={errorMessage} />} />
@@ -49,7 +64,7 @@ const App = () => {
       </Routes>
       
       <Footer />
-    </div>
+    </Container>
   )
 }
 
