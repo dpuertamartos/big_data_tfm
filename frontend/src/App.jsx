@@ -2,8 +2,7 @@ import { useState } from 'react'
 import {
   Routes,
   Route,
-  Link,
-  useMatch
+  Link
 } from "react-router-dom"
 
 import Home from './components/Home'
@@ -17,12 +16,6 @@ import { Container, AppBar, Toolbar, Button } from '@mui/material'
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)    
-
-  const match = useMatch('/flats/:id')
-
-  const flat = match
-    ? flats.find(note => note.id === match.params.id)
-    : null
 
   return (
     <Container>
@@ -46,7 +39,7 @@ const App = () => {
         </Toolbar>
       </AppBar>
       <Routes>
-        <Route path="/flats/:id" element={<Flat flat={flat} />} />
+        <Route path="/flats/:id" element={<Flat />} />
         <Route path="/flats" element={<Flats errorMessage={errorMessage} />} />
         <Route path="/" element={<Home />} />
       </Routes>
