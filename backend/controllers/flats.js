@@ -38,10 +38,34 @@ const getFlats = async (options) => {
     })
 }
 
+const getFlatById = async (id) => {
+    const query = 'SELECT * FROM pisos WHERE id = :id AND active = 1'
+    return await sequelize.query(query, {
+        type: select,
+        replacements: { id }
+    })
+}
+
 
 router.get('/', async (req, res) => {
     const flats = await getFlats({ limitNumber: 10 })
     res.json(flats)
+})
+
+router.get('/unique/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const flat = await getFlatById(id)
+
+        if (flat.length === 0) {
+            return res.status(404).json({ message: 'Flat not found' })
+        }
+
+        res.json(flat[0])
+    } catch (error) {
+        console.error('Error fetching flat:', error)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
 })
 
 router.get('/rating', async (req, res) => {

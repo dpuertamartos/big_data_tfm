@@ -11,4 +11,8 @@ const getBest = (params = {}) => {
   return request.then(response => response.data)
 }
 
-export default { getAll, getBest }
+const get = () => {
+  const request = axios.get()
+} 
+
+export default { getAll, getBest, get }
