@@ -39,40 +39,53 @@ const data = [
     madrid: 4800,
     jaen: 2181,
   }
-];
+]
 
 
 const Home = () => {
-  const [bestFlats, setBestFlats] = useState({});
+  const [bestFlats, setBestFlats] = useState({})
   const [selectedCities, setSelectedCities] = useState(["all"])
 
   useEffect(() => {
     const fetchBestFlats = async () => {
       try {
-        const initialFlats = await flatService.getBest();
-        setBestFlats({ all: initialFlats });
+        const initialFlats = await flatService.getBest()
+        setBestFlats({ all: initialFlats })
       } catch (error) {
-        console.error("Error fetching initial flats:", error);
+        console.error("Error fetching initial flats:", error)
       }
     }
-    fetchBestFlats();
+    fetchBestFlats()
   }, [])
 
   const handleChange = async (event) => {
-    const newSelectedCities = event.target.value;
-    setSelectedCities(newSelectedCities);
-
+    const newSelectedCities = event.target.value
+    setSelectedCities(newSelectedCities)
+  
+    let updatedFlats = { ...bestFlats }
+  
+    // Fetch new flats for newly selected cities
     for (const city of newSelectedCities) {
       if (!bestFlats[city]) {
         try {
-          const flats = await flatService.getBest({ city: city !== 'all' ? city : undefined });
-          setBestFlats(prevFlats => ({ ...prevFlats, [city]: flats }));
+          const flats = await flatService.getBest({ city: city !== 'all' ? city : undefined })
+          updatedFlats[city] = flats
         } catch (error) {
-          console.error(`Error fetching flats for ${city}:`, error);
+          console.error(`Error fetching flats for ${city}:`, error)
         }
       }
     }
+  
+    // Remove flats for unselected cities
+    for (const city in bestFlats) {
+      if (!newSelectedCities.includes(city)) {
+        delete updatedFlats[city]
+      }
+    }
+  
+    setBestFlats(updatedFlats)
   }
+  
 
   return (
     <span>
@@ -80,8 +93,8 @@ const Home = () => {
       <LineGraph selectedCities={selectedCities} data={data} activeDotSelector={'all'} />
       <HomeListing data={bestFlats} />
     </span>
-  );
-};
+  )
+}
 
 export default Home;
 
