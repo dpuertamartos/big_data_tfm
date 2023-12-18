@@ -1,7 +1,0 @@
-POST http://localhost:3001/api/flats
-Content-Type: application/json
-//currently deprecated
-{
-    "content": "test",
-    "important": true
-}
