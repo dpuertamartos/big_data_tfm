@@ -49,7 +49,7 @@ const Home = () => {
   useEffect(() => {
     console.log('effect Home');
     const fetchBestFlats = async () => {
-        const initialFlats = await flatService.getBestAll()
+        const initialFlats = await flatService.getBest()
         setBestFlats(initialFlats)
     }
     fetchBestFlats()
