@@ -1,4 +1,9 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useState } from 'react';
+import LineGraph from './LineGraph'
+import HomeListing from './HomeListing'
+import cities from '../../../cities.json';
+
+
 
 const data = [
   {
@@ -33,36 +38,23 @@ const data = [
   }
 ];
 
+
 const Home = () => {
-    return (
-    <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-            }}
-            >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="madrid" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="all" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="jaen" stroke="#82ca9d" />
-            </LineChart>
-        </ResponsiveContainer>
-    </div>  
-    )
-  }
+  const [selectedCities, setSelectedCities] = useState(["all"]);
   
-  export default Home;
+  const handleChange = (event) => {
+    setSelectedCities(event.target.value);
+  };
+
+  return (
+    <span>
+        <LineGraph selectedCities={selectedCities} handleChange={handleChange} data={data} cities={cities} />
+        <HomeListing />
+    </span>
+  );
+};
+
+export default Home;
 
 
 

@@ -1,0 +1,17 @@
+{
+    "locations": [
+      "a_coruna", "alava_araba", "albacete", "alicante", "almeria", "andorra", "asturias", "avila",
+      "badajoz", "barcelona", "bilbao", "burgos", "caceres",
+      "cadiz", "cantabria", "castellon_castello", "cerdanya_francesa", "ceuta", "ciudad_real", "cordoba",
+      "cuenca", "el_hierro", "formentera", "fuerteventura", "gijon_concejo_xixon_conceyu_gijon",
+      "guipuzcoa_gipuzkoa", "girona", "granada", "guadalajara", "huelva", "huesca", "isla_de_ibiza_eivissa",
+      "jaen", "la_palma", "la_rioja", "lanzarote", "las_palmas", "leon",
+      "lleida", "logrono", "lugo", "madrid", "malaga", "isla_de_mallorca", "melilla", "isla_de_menorca", "murcia",
+      "navarra_nafarroa", "oviedo", "pais_vasco_frances_iparralde", "palencia",
+      "pamplona_iruna", "pontevedra", "salamanca", "san_sebastian_donostia",
+      "santander", "segovia", "sevilla", "soria", "tarragona", "tenerife",
+      "teruel", "toledo", "valencia", "valladolid", "vigo", "vitoria_gasteiz_zona_urbana", 
+      "vizcaya_bizkaia", "zamora", "zaragoza"
+    ]
+}
+  
