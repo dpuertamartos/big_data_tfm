@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import SelectFilter from './SelectFilter';
+import { useState, useEffect } from 'react'
+import flatService from '../services/flats'
+
+import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import HomeListing from './HomeListing'
-import cities from '../../../cities.json';
+import cities from '../../../cities.json'
 
 
 
@@ -41,17 +43,27 @@ const data = [
 
 
 const Home = () => {
-  const [selectedCities, setSelectedCities] = useState(["all"]);
+  const [bestFlats, setBestFlats] = useState([])
+  const [selectedCities, setSelectedCities] = useState(["all"])
+
+  useEffect(() => {
+    console.log('effect Home');
+    const fetchBestFlats = async () => {
+        const initialFlats = await flatService.getBestAll()
+        setBestFlats(initialFlats)
+    }
+    fetchBestFlats()
+  }, [])
   
   const handleChange = (event) => {
-    setSelectedCities(event.target.value);
-  };
+    setSelectedCities(event.target.value)
+  }
 
   return (
     <span>
         <SelectFilter  selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
         <LineGraph selectedCities={selectedCities}  data={data} activeDotSelector={'all'} />
-        <HomeListing selectedCities={selectedCities} data={data} />
+        <HomeListing selectedCities={selectedCities} data={bestFlats} />
     </span>
   );
 };

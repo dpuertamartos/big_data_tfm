@@ -6,6 +6,11 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
+const getBestAll = () => {
+  const request = axios.get(`${baseUrl}/best_rating`)
+  return request.then(response => response.data)
+}
+
 const create = newObject => {
   const request = axios.post(baseUrl, newObject)
   return request.then(response => response.data)
@@ -16,4 +21,4 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
-export default { getAll, create, update } 
+export default { getAll, getBestAll, create, update } 
