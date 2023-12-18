@@ -1,10 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Notification from './Notification'
 import Flat from './Flat'
+import flatService from '../services/flats'
 
-const Flats= ({ flats, errorMessage }) => {
+const Flats= ({ errorMessage }) => {
     const [showAll, setShowAll] = useState(true)
-  
+    const [flats, setFlats] = useState([])
+
+    useEffect(() => {
+      const fetchFlats = async () => {
+        try {
+          const initialFlats = await flatService.getAll()
+          setFlats({ all: initialFlats })
+        } catch (error) {
+          console.error("Error fetching initial flats:", error)
+        }
+      }
+      fetchFlats()
+    }, [])
+
     const flatsToShow = showAll
     ? flats
     : flats.filter(flat => flat.important)

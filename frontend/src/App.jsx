@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   Routes,
   Route,
@@ -10,25 +10,13 @@ import Home from './components/Home'
 import Flat from './components/Flat'
 import Flats from './components/Flats'
 import Footer from './components/Footer'
-import flatService from './services/flats'
+
 
 import { Container, AppBar, Toolbar, Button } from '@mui/material'
 
 
 const App = () => {
-  const [flats, setFlats] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)    
-
-
-  useEffect(() => {
-    console.log('effect')
-    flatService
-      .getAll()
-      .then(initialFlats => {
-        setFlats(initialFlats)
-      })
-  }, [])
-  
 
   const match = useMatch('/flats/:id')
 
@@ -59,7 +47,7 @@ const App = () => {
       </AppBar>
       <Routes>
         <Route path="/flats/:id" element={<Flat flat={flat} />} />
-        <Route path="/flats" element={<Flats flats={flats} errorMessage={errorMessage} />} />
+        <Route path="/flats" element={<Flats errorMessage={errorMessage} />} />
         <Route path="/" element={<Home />} />
       </Routes>
       
