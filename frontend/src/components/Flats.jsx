@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import Notification from './Notification'
-import Flat from './Flat'
+import Listing from './Listing'
 import flatService from '../services/flats'
 
 const Flats= ({ errorMessage }) => {
-    const [showAll, setShowAll] = useState(true)
     const [flats, setFlats] = useState([])
 
     useEffect(() => {
@@ -19,22 +18,11 @@ const Flats= ({ errorMessage }) => {
       fetchFlats()
     }, [])
 
-    const flatsToShow = showAll
-    ? flats
-    : flats.filter(flat => flat.important)
-    
+
     return (
     <div>
-      <h2>flats</h2>
       <Notification message={errorMessage} /> 
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
-        </button>
-      </div> 
-      <ul>
-        {flatsToShow.map(flat => <Flat key={flat.id} flat={flat} />)}
-      </ul>
+      <Listing data={flats}/> 
     </div>
     )
 }

@@ -1,6 +1,6 @@
-import Flat from './Flat';
+import Flat from './Flat'
 
-const HomeListing = ({ data }) => {
+const Listing = ({ data }) => {
     return (
         <div>
             {Object.entries(data).map(([city, flats]) => (
@@ -12,7 +12,7 @@ const HomeListing = ({ data }) => {
                 </div>
             ))}
         </div>
-    );
-};
+    )
+}
 
-export default HomeListing;
+export default Listing

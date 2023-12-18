@@ -3,7 +3,7 @@ import flatService from '../services/flats'
 
 import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
-import HomeListing from './HomeListing'
+import Listing from './Listing'
 import cities from '../../../cities.json'
 
 
@@ -91,7 +91,7 @@ const Home = () => {
     <span>
       <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
       <LineGraph selectedCities={selectedCities} data={data} activeDotSelector={'all'} />
-      <HomeListing data={bestFlats} />
+      <Listing data={bestFlats} />
     </span>
   )
 }

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom"
 
 import Home from './components/Home'
-import Flat from './components/Flat'
+import FlatDetailed from './components/FlatDetailed'
 import Flats from './components/Flats'
 import Footer from './components/Footer'
 
@@ -39,7 +39,7 @@ const App = () => {
         </Toolbar>
       </AppBar>
       <Routes>
-        <Route path="/flats/:id" element={<Flat />} />
+        <Route path="/flats/:id" element={<FlatDetailed />} />
         <Route path="/flats" element={<Flats errorMessage={errorMessage} />} />
         <Route path="/" element={<Home />} />
       </Routes>
