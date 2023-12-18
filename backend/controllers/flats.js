@@ -9,7 +9,7 @@ const getFlats = async (options) => {
         orderBy = 'id ASC', // Default ordering
         active = 1,
         city = null,
-        rating = null
+        rating = true
     } = options
 
     // Start building the query

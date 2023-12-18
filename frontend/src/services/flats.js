@@ -7,7 +7,7 @@ const getAll = () => {
 }
 
 const getBestAll = () => {
-  const request = axios.get(`${baseUrl}/best_rating`)
+  const request = axios.get(`${baseUrl}/rating/`)
   return request.then(response => response.data)
 }
 
