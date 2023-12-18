@@ -39,7 +39,7 @@ const getFlats = async (options) => {
 }
 
 const getFlatById = async (id) => {
-    const query = 'SELECT * FROM pisos WHERE id = :id AND active = 1'
+    const query = 'SELECT * FROM pisos WHERE id = :id'
     return await sequelize.query(query, {
         type: select,
         replacements: { id }
