@@ -1,8 +1,11 @@
-const HomeListing = () => {
-    return(
-        <span>
+import Flat from './Flat'
 
-        </span>
+
+const HomeListing = ({data}) => {
+    return(
+        <ul>
+        {data.map(flat => <Flat key={flat.id} flat={flat} />)}
+        </ul>
     )
 }   
 

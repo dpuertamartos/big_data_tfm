@@ -63,7 +63,7 @@ const Home = () => {
     <span>
         <SelectFilter  selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
         <LineGraph selectedCities={selectedCities}  data={data} activeDotSelector={'all'} />
-        <HomeListing selectedCities={selectedCities} data={bestFlats} />
+        <HomeListing data={bestFlats} />
     </span>
   );
 };
