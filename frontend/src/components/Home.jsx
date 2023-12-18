@@ -43,32 +43,48 @@ const data = [
 
 
 const Home = () => {
-  const [bestFlats, setBestFlats] = useState([])
+  const [bestFlats, setBestFlats] = useState({});
   const [selectedCities, setSelectedCities] = useState(["all"])
 
   useEffect(() => {
-    console.log('effect Home');
     const fetchBestFlats = async () => {
-        const initialFlats = await flatService.getBest()
-        setBestFlats(initialFlats)
+      try {
+        const initialFlats = await flatService.getBest();
+        setBestFlats({ all: initialFlats });
+      } catch (error) {
+        console.error("Error fetching initial flats:", error);
+      }
     }
-    fetchBestFlats()
+    fetchBestFlats();
   }, [])
-  
-  const handleChange = (event) => {
-    setSelectedCities(event.target.value)
+
+  const handleChange = async (event) => {
+    const newSelectedCities = event.target.value;
+    setSelectedCities(newSelectedCities);
+
+    for (const city of newSelectedCities) {
+      if (!bestFlats[city]) {
+        try {
+          const flats = await flatService.getBest({ city: city !== 'all' ? city : undefined });
+          setBestFlats(prevFlats => ({ ...prevFlats, [city]: flats }));
+        } catch (error) {
+          console.error(`Error fetching flats for ${city}:`, error);
+        }
+      }
+    }
   }
 
   return (
     <span>
-        <SelectFilter  selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
-        <LineGraph selectedCities={selectedCities}  data={data} activeDotSelector={'all'} />
-        <HomeListing data={bestFlats} />
+      <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
+      <LineGraph selectedCities={selectedCities} data={data} activeDotSelector={'all'} />
+      <HomeListing data={bestFlats} />
     </span>
   );
 };
 
 export default Home;
+
 
 
 
