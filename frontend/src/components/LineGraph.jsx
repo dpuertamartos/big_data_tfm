@@ -1,8 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
 
 
-const LineGraph = ({selectedCities, handleChange, data, cities}) => {
+const LineGraph = ({selectedCities, data, activeDotSelector}) => {
 
   // Function to generate a unique stroke color for each line
   const getStrokeColor = (city) => {
@@ -27,30 +26,6 @@ const LineGraph = ({selectedCities, handleChange, data, cities}) => {
 
   return (
     <div style={{ width: '100%', height: 500 }}>
-      <FormControl style={{ minWidth: 120, marginTop: 40 }}>
-        <InputLabel id="demo-mutiple-chip-label">Cities</InputLabel>
-        <Select
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
-          multiple
-          value={selectedCities}
-          onChange={handleChange}
-          renderValue={(selected) => (
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} style={{ margin: 2 }} />
-              ))}
-            </div>
-          )}
-        >
-          {cities.locations.map((name) => (
-            <MenuItem key={name} value={name}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           width={500}
@@ -74,7 +49,7 @@ const LineGraph = ({selectedCities, handleChange, data, cities}) => {
               type="monotone" 
               dataKey={city} 
               stroke={getStrokeColor(city)} 
-              activeDot={city === 'madrid' ? { r: 8 } : null}
+              activeDot={city === activeDotSelector ? { r: 8 } : null}
             />
           ))} 
         </LineChart>

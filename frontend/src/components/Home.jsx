@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import SelectFilter from './SelectFilter';
 import LineGraph from './LineGraph'
 import HomeListing from './HomeListing'
 import cities from '../../../cities.json';
@@ -48,8 +49,9 @@ const Home = () => {
 
   return (
     <span>
-        <LineGraph selectedCities={selectedCities} handleChange={handleChange} data={data} cities={cities} />
-        <HomeListing />
+        <SelectFilter  selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
+        <LineGraph selectedCities={selectedCities}  data={data} activeDotSelector={'all'} />
+        <HomeListing selectedCities={selectedCities} data={data} />
     </span>
   );
 };
