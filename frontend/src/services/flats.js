@@ -11,8 +11,9 @@ const getBest = (params = {}) => {
   return request.then(response => response.data)
 }
 
-const get = () => {
-  const request = axios.get()
-} 
+const get = (id) => {
+  const request = axios.get(`${baseUrl}/unique/${id}`);
+  return request.then(response => response.data);
+}
 
 export default { getAll, getBest, get }
