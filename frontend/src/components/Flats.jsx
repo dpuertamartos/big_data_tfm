@@ -1,5 +1,5 @@
 // Flats.jsx
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Notification from './Notification'
 import Listing from './Listing'
 import Filter from './Filter' // Import the Filter component
@@ -14,7 +14,7 @@ const Flats = ({ errorMessage }) => {
         precio: [0, 1000000],
         habitaciones: [0, 10],
         m2Utiles: [0, 500],
-        rating: [0, 5]
+        rating: [-0.75, 0.75]
     })
 
     useEffect(() => {
@@ -43,15 +43,16 @@ const Flats = ({ errorMessage }) => {
             return (
                 (filters.ciudad ? flat.ciudad === filters.ciudad : true) &&
                 (filters.tipo ? flat.tipo === filters.tipo : true) &&
-                (flat.precio >= filters.precio[0] && flat.precio <= filters.precio[1]) &&
+                (flat.price_euro >= filters.precio[0] && flat.price_euro <= filters.precio[1]) &&
                 (flat.habitaciones >= filters.habitaciones[0] && flat.habitaciones <= filters.habitaciones[1]) &&
-                (flat.m2Utiles >= filters.m2Utiles[0] && flat.m2Utiles <= filters.m2Utiles[1]) &&
+                (flat.superficie_util_m2 >= filters.m2Utiles[0] && flat.superficie_util_m2 <= filters.m2Utiles[1]) &&
                 (flat.rating >= filters.rating[0] && flat.rating <= filters.rating[1])
             )
         })
     }
 
     const filteredFlats = applyFilters()
+    console.log(flats, filteredFlats)
 
     return (
         <Container>
@@ -61,7 +62,7 @@ const Flats = ({ errorMessage }) => {
                     <Filter filters={filters} onFilterChange={handleFilterChange} />
                 </Grid>
                 <Grid item xs={12} md={8}>
-                    <Listing data={filteredFlats} />
+                    <Listing data={{'all': filteredFlats}} />
                 </Grid>
             </Grid>
         </Container>

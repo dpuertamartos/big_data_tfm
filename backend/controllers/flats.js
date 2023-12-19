@@ -48,7 +48,7 @@ const getFlatById = async (id) => {
 
 
 router.get('/', async (req, res) => {
-    const flats = await getFlats({ limitNumber: 10 })
+    const flats = await getFlats({ limitNumber: 100 })
     res.json(flats)
 })
 
