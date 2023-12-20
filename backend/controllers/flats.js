@@ -76,7 +76,7 @@ const getFlats = async (options) => {
     query += ` ORDER BY ${orderBy}`
 
     // Only add LIMIT clause and replacement if noLimit is not true
-    if (!options.noLimit) {
+    if (!options.noLimit&&options.limitNumber) {
         query += ` LIMIT :limitNumber`
         replacements.limitNumber = limitNumber
     }
@@ -131,7 +131,7 @@ router.get('/rating', async (req, res) => {
     if (maxPrice) options.maxPrice = maxPrice
     if (limitNumber) options.limitNumber = limitNumber
 
-    const best_flats = await getFlats({ ...options, orderBy: 'rating ' + sort, limitNumber: 10 })
+    const best_flats = await getFlats({ ...options, orderBy: 'rating ' + sort, minPrice: 0, limitNumber: 10 })
     res.json(best_flats)
 })
 
