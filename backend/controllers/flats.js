@@ -76,7 +76,7 @@ const getFlats = async (options) => {
     query += ` ORDER BY ${orderBy}`
 
     // Only add LIMIT clause and replacement if noLimit is not true
-    if (!options.noLimit&&options.limitNumber) {
+    if (!options.noLimit) {
         query += ` LIMIT :limitNumber`
         replacements.limitNumber = limitNumber
     }
@@ -117,24 +117,6 @@ router.get('/unique/:id', async (req, res) => {
     }
 })
 
-router.get('/rating', async (req, res) => {
-    const { city, minPrice, maxPrice, limitNumber, sorting } = req.query
-
-    let options = {}
-
-    let sort = 'ASC'
-    if (sorting) {
-        sort = sorting
-    }
-    if (city) options.city = city
-    if (minPrice) options.minPrice = minPrice
-    if (maxPrice) options.maxPrice = maxPrice
-    if (limitNumber) options.limitNumber = limitNumber
-
-    const best_flats = await getFlats({ ...options, orderBy: 'rating ' + sort, minPrice: 0, limitNumber: 10 })
-    res.json(best_flats)
-})
-
 router.get('/city/:cityName', async (req, res) => {
     try {
         const cityName = req.params.cityName
@@ -150,13 +132,17 @@ router.get('/city/:cityName', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' })
     }
 })
+
 router.get('/filtered', async (req, res) => {
     try {
-        const { city, type, price_euro, habitaciones, m2, rating, sorting } = req.query
-        let [minPrice, maxPrice] = price_euro ? price_euro.map(Number) : [null, null]
+        const { city, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber } = req.query
+        let [minPrice, maxPrice] = price_euro ? price_euro.map(Number) : [0, null]
         let [minHabitaciones, maxHabitaciones] = habitaciones ? habitaciones.map(Number) : [null, null]
         let [minM2, maxM2] = m2 ? m2.map(Number) : [null, null]
-        let [minRating, maxRating] = rating ? rating.map(Number) : [null, null]
+        let [minRatingValue, maxRatingValue] = rating ? rating.map(Number) : [null, null]
+
+        // Determine the sort order
+        let sort = orderBy || 'id ASC'
 
         let options = {
             city,
@@ -167,10 +153,11 @@ router.get('/filtered', async (req, res) => {
             maxHabitaciones,
             minM2,
             maxM2,
-            minRating,
-            maxRating,
-            orderBy: sorting ? `price ${sorting}` : undefined,
-            columns: 'id, price_euro, title, rating, habitaciones, superficie_util_m2, type, city'
+            minRating: minRatingValue || minRating,
+            maxRating: maxRatingValue,
+            orderBy: sort,
+            columns: 'id, price_euro, title, rating, habitaciones, superficie_util_m2, type, city',
+            limitNumber
         }
 
         const flats = await getFlats(options)

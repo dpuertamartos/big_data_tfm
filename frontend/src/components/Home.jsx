@@ -49,7 +49,10 @@ const Home = () => {
   useEffect(() => {
     const fetchBestFlats = async () => {
       try {
-        const initialFlats = await flatService.getBest()
+        const initialFlats = await flatService.getFiltered({
+          orderBy: 'rating ASC',
+          limitNumber: 10
+        })
         setBestFlats({ all: initialFlats })
       } catch (error) {
         console.error("Error fetching initial flats:", error)
@@ -68,7 +71,12 @@ const Home = () => {
     for (const city of newSelectedCities) {
       if (!bestFlats[city]) {
         try {
-          const flats = await flatService.getBest({ city: city !== 'all' ? city : undefined })
+          const params = {
+              city: city !== 'all' ? city : undefined,
+              orderBy: 'rating ASC', 
+              limitNumber: 10
+          }
+          const flats = await flatService.getFiltered(params)
           updatedFlats[city] = flats
         } catch (error) {
           console.error(`Error fetching flats for ${city}:`, error)
