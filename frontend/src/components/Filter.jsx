@@ -1,15 +1,22 @@
-import { TextField, Slider, Box, Typography, FormControl } from '@mui/material'
+// Filter.js
+import { TextField, Slider, Box, Typography, FormControl, Autocomplete } from '@mui/material'
+import cities from '../../../cities.json' // Ensure this path is correct
 
-const Filter = ({ filters, onFilterChange }) => {
+const Filter = ({ filters, onFilterChange, onCityChange }) => {
+    const cityOptions = cities.locations
+
     return (
         <Box>
-            <TextField
-                label="Ciudad"
-                name="ciudad"
+            <Autocomplete
                 value={filters.ciudad}
-                onChange={onFilterChange}
+                onChange={onCityChange}
+                options={cityOptions}
+                getOptionLabel={(option) => option ? option : ''}
+                renderInput={(params) => (
+                    <TextField {...params} label="Ciudad" margin="normal" />
+                )}
                 fullWidth
-                margin="normal"
+                freeSolo
             />
             <TextField
                 label="Tipo"
@@ -19,7 +26,6 @@ const Filter = ({ filters, onFilterChange }) => {
                 fullWidth
                 margin="normal"
             />
-
             <FormControl fullWidth margin="normal">
                 <Typography gutterBottom>
                     Precio
@@ -33,7 +39,6 @@ const Filter = ({ filters, onFilterChange }) => {
                     max={1000000}
                 />
             </FormControl>
-
             <FormControl fullWidth margin="normal">
                 <Typography gutterBottom>
                     Habitaciones
@@ -47,7 +52,6 @@ const Filter = ({ filters, onFilterChange }) => {
                     max={10}
                 />
             </FormControl>
-
             <FormControl fullWidth margin="normal">
                 <Typography gutterBottom>
                     M2 Útiles
@@ -61,7 +65,6 @@ const Filter = ({ filters, onFilterChange }) => {
                     max={500}
                 />
             </FormControl>
-
             <FormControl fullWidth margin="normal">
                 <Typography gutterBottom>
                     Rating
@@ -80,5 +83,5 @@ const Filter = ({ filters, onFilterChange }) => {
     )
 }
 
-export default Filter;
+export default Filter
 

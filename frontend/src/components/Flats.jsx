@@ -38,6 +38,13 @@ const Flats = ({ errorMessage }) => {
         }))
     }
 
+    const handleCityChange = (event, newValue) => {
+      setFilters(prevFilters => ({
+          ...prevFilters,
+          ciudad: newValue
+      }))
+  }
+
     const applyFilters = () => {
         return flats.filter(flat => {
             return (
@@ -59,7 +66,7 @@ const Flats = ({ errorMessage }) => {
             <Notification message={errorMessage} />
             <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
-                    <Filter filters={filters} onFilterChange={handleFilterChange} />
+                  <Filter filters={filters} onFilterChange={handleFilterChange} onCityChange={handleCityChange} />
                 </Grid>
                 <Grid item xs={12} md={8}>
                     <Listing data={{'all': filteredFlats}} />
