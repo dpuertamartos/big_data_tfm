@@ -2,24 +2,19 @@ const router = require('express').Router()
 const { sequelize, select } = require('../util/db')
 
 const getFlats = async (options) => {
-    // Destructuring with default values
     const {
         columns = '*',
         limitNumber = 10,
-        orderBy = 'id ASC', // Default ordering
+        orderBy = 'id ASC',
         active = 1,
         city = null,
-        rating = true
+        rating = true,
+        noLimit = false
     } = options
 
-    // Start building the query
     let query = `SELECT ${columns} FROM pisos WHERE active = :active`
 
-    // Building replacements object
-    let replacements = {
-        active: active,
-        limitNumber: limitNumber,
-    }
+    let replacements = { active }
 
     if (city) {
         query += ` AND city = :city`
@@ -30,11 +25,16 @@ const getFlats = async (options) => {
         query += ` AND rating IS NOT NULL`
     }
 
-    query += ` ORDER BY ${orderBy} LIMIT :limitNumber`
+    query += ` ORDER BY ${orderBy}`
+
+    if (!noLimit) {
+        query += ` LIMIT :limitNumber`
+        replacements.limitNumber = limitNumber
+    }
 
     return await sequelize.query(query, {
         type: select,
-        replacements: replacements
+        replacements
     })
 }
 
@@ -84,6 +84,22 @@ router.get('/rating', async (req, res) => {
 
     const best_flats = await getFlats({ ...options, orderBy: 'rating ' + sort, limitNumber: 10 })
     res.json(best_flats)
+})
+
+router.get('/city/:cityName', async (req, res) => {
+    try {
+        const cityName = req.params.cityName
+        const flats = await getFlats({ city: cityName, noLimit: true }) // Adjust limitNumber as needed
+
+        if (flats.length === 0) {
+            return res.status(404).json({ message: 'No flats found in this city' })
+        }
+
+        res.json(flats)
+    } catch (error) {
+        console.error('Error fetching flats:', error)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
 })
 
 module.exports = router
