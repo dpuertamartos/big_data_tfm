@@ -41,8 +41,8 @@ const Flats = ({ errorMessage }) => {
     const applyFilters = () => {
         return flats.filter(flat => {
             return (
-                (filters.ciudad ? flat.ciudad === filters.ciudad : true) &&
-                (filters.tipo ? flat.tipo === filters.tipo : true) &&
+                (filters.ciudad ? flat.city === filters.ciudad : true) &&
+                (filters.tipo ? flat.type === filters.tipo : true) &&
                 (flat.price_euro >= filters.precio[0] && flat.price_euro <= filters.precio[1]) &&
                 (flat.habitaciones >= filters.habitaciones[0] && flat.habitaciones <= filters.habitaciones[1]) &&
                 (flat.superficie_util_m2 >= filters.m2Utiles[0] && flat.superficie_util_m2 <= filters.m2Utiles[1]) &&
@@ -52,7 +52,7 @@ const Flats = ({ errorMessage }) => {
     }
 
     const filteredFlats = applyFilters()
-    console.log(flats, filteredFlats)
+    console.log(flats, filteredFlats, filters)
 
     return (
         <Container>
