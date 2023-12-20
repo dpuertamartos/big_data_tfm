@@ -16,4 +16,8 @@ const get = (id) => {
   return request.then(response => response.data);
 }
 
-export default { getAll, getBest, get }
+const getFiltered = (params = {}) => {
+  return axios.get(`${baseUrl}/filtered`, { params }).then(response => response.data)
+};
+
+export default { getAll, getBest, get, getFiltered }
