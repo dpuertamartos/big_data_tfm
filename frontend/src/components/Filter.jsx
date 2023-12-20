@@ -1,8 +1,8 @@
 // Filter.js
-import { TextField, Slider, Box, Typography, FormControl, Autocomplete } from '@mui/material'
+import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material'
 import cities from '../../../cities.json' // Ensure this path is correct
 
-const Filter = ({ filters, onFilterChange, onCityChange }) => {
+const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange }) => {
     const cityOptions = cities.locations
 
     return (
@@ -18,14 +18,25 @@ const Filter = ({ filters, onFilterChange, onCityChange }) => {
                 fullWidth
                 freeSolo
             />
-            <TextField
-                label="Tipo"
-                name="tipo"
-                value={filters.tipo}
-                onChange={onFilterChange}
-                fullWidth
-                margin="normal"
-            />
+            <FormControl fullWidth margin="normal">
+                <InputLabel id="tipo-label">Tipo</InputLabel>
+                <Select
+                    labelId="tipo-label"
+                    name="tipo"
+                    value={filters.tipo || ''} // Ensure the value is not undefined
+                    label="Tipo"
+                    onChange={onTipoChange}
+                >
+                    <MenuItem value="piso">Piso</MenuItem>
+                    <MenuItem value="casa">Casa</MenuItem>
+                    <MenuItem value="chalet">Chalet</MenuItem>
+                    <MenuItem value="apartamento">Apartamento</MenuItem>
+                    <MenuItem value="atico">Ático</MenuItem>
+                    <MenuItem value="duplex">Dúplex</MenuItem>
+                    <MenuItem value="estudio">Estudio</MenuItem>
+                    <MenuItem value="loft">Loft</MenuItem>
+                </Select>
+            </FormControl>
             <FormControl fullWidth margin="normal">
                 <Typography gutterBottom>
                     Precio

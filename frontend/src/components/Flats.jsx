@@ -38,6 +38,13 @@ const Flats = ({ errorMessage }) => {
         }))
     }
 
+    const handleTipoChange = (event) => {
+      setFilters(prevFilters => ({
+          ...prevFilters,
+          tipo: event.target.value
+      }));
+  };
+
     const handleCityChange = (event, newValue) => {
       setFilters(prevFilters => ({
           ...prevFilters,
@@ -66,7 +73,7 @@ const Flats = ({ errorMessage }) => {
             <Notification message={errorMessage} />
             <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
-                  <Filter filters={filters} onFilterChange={handleFilterChange} onCityChange={handleCityChange} />
+                  <Filter filters={filters} onFilterChange={handleFilterChange} onCityChange={handleCityChange} onTipoChange={handleTipoChange}  />
                 </Grid>
                 <Grid item xs={12} md={8}>
                     <Listing data={{'all': filteredFlats}} />
