@@ -1,6 +1,10 @@
 // Filter.js
-import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material'
-import cities from '../../../cities.json' // Ensure this path is correct
+import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
+import cities from '../../../cities.json'; // Ensure this path is correct
+
+const formatSliderLabel = (value, max) => {
+    return value === max ? `${max}+` : value
+}
 
 const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortChange }) => {
     const cityOptions = cities.locations
@@ -48,6 +52,7 @@ const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortCha
                     valueLabelDisplay="auto"
                     min={0}
                     max={1000000}
+                    valueLabelFormat={(value) => formatSliderLabel(value, 1000000)}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -61,6 +66,7 @@ const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortCha
                     valueLabelDisplay="auto"
                     min={0}
                     max={10}
+                    valueLabelFormat={(value) => formatSliderLabel(value, 10)}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -74,6 +80,7 @@ const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortCha
                     valueLabelDisplay="auto"
                     min={0}
                     max={500}
+                    valueLabelFormat={(value) => formatSliderLabel(value, 500)}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">

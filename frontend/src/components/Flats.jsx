@@ -64,11 +64,15 @@ const Flats = ({ errorMessage }) => {
     const applyFilters = () => {
         return allFlats.filter(flat => {
             return (
-                (flat.price_euro >= filters.precio[0] && flat.price_euro <= filters.precio[1]) &&
-                (flat.habitaciones >= filters.habitaciones[0] && flat.habitaciones <= filters.habitaciones[1]) &&
-                (flat.superficie_util_m2 >= filters.m2Utiles[0] && flat.superficie_util_m2 <= filters.m2Utiles[1]) &&
-                (flat.rating >= filters.rating[0] && flat.rating <= filters.rating[1])
-            )
+              flat.price_euro >= filters.precio[0] &&
+              (filters.precio[1] < 1000000 ? flat.price_euro <= filters.precio[1] : true) &&
+              flat.habitaciones >= filters.habitaciones[0] &&
+              (filters.habitaciones[1] < 10 ? flat.habitaciones <= filters.habitaciones[1] : true) &&
+              flat.superficie_util_m2 >= filters.m2Utiles[0] &&
+              (filters.m2Utiles[1] < 500 ? flat.superficie_util_m2 <= filters.m2Utiles[1] : true) &&
+              flat.rating >= filters.rating[0] &&
+              (filters.rating[1] < 0.75 ? flat.rating <= filters.rating[1] : true)
+          )
         })
     }
 
