@@ -105,7 +105,7 @@ const Flats = ({ errorMessage }) => {
                     />
                 </Grid>
                 <Grid item xs={12} md={8}>
-                    <Listing data={{ 'all': filteredFlats }} />
+                  <Listing data={{ [filters.ciudad || 'all']: filteredFlats }} />
                 </Grid>
             </Grid>
         </Container>
