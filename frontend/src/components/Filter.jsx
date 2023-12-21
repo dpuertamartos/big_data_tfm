@@ -2,7 +2,7 @@
 import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material'
 import cities from '../../../cities.json' // Ensure this path is correct
 
-const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange }) => {
+const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortChange }) => {
     const cityOptions = cities.locations
 
     return (
@@ -89,6 +89,22 @@ const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange }) => {
                     max={0.75}
                     step={0.05}
                 />
+            </FormControl>
+            <FormControl fullWidth margin="normal">
+                        <InputLabel id="sort-order-label">Ordenar por</InputLabel>
+                        <Select
+                            labelId="sort-order-label"
+                            value={filters.orderBy || '' }
+                            label="Ordenar por"
+                            onChange={onSortChange}
+                        >
+                            <MenuItem value="rating ASC">Rating (High to Low)</MenuItem>
+                            <MenuItem value="rating DESC">Rating (Low to High)</MenuItem>
+                            <MenuItem value="price_euro ASC">Precio (Low to High)</MenuItem>
+                            <MenuItem value="price_euro DESC">Precio (High to Low)</MenuItem>
+                            <MenuItem value="superficie_util_m2 ASC">Superficie (Low to High)</MenuItem>
+                            <MenuItem value="superficie_util_m2 DESC">Superficie (High to Low)</MenuItem>
+                        </Select>
             </FormControl>
         </Box>
     )

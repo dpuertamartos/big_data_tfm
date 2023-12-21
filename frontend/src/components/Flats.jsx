@@ -3,6 +3,7 @@ import Notification from './Notification';
 import Listing from './Listing';
 import Filter from './Filter';
 import { Container, Grid } from '@mui/material';
+
 import flatService from '../services/flats';
 import debounce from 'lodash/debounce'; // You might need to install lodash for this
 
@@ -14,7 +15,8 @@ const Flats = ({ errorMessage }) => {
         precio: [0, 1000000],
         habitaciones: [0, 10],
         m2Utiles: [0, 500],
-        rating: [-0.75, 0.75]
+        rating: [-0.75, 0.75],
+        orderBy: undefined
     });
 
     // Fetch flats based on major filters like city or type
@@ -26,7 +28,8 @@ const Flats = ({ errorMessage }) => {
               price_euro: filters.precio,
               habitaciones: filters.habitaciones,
               m2: filters.m2,
-              rating: filters.rating   
+              rating: filters.rating,
+              orderBy: filters.orderBy
             };
 
             const filteredFlats = await flatService.getFiltered(params); // Update the service to handle this method
@@ -81,6 +84,13 @@ const Flats = ({ errorMessage }) => {
         }));
     };
 
+    const handleSortChange = (event) => {
+        setFilters(prevFilters => ({
+          ...prevFilters,
+          orderBy: event.target.value
+      }));
+  };
+
     return (
         <Container>
             <Notification message={errorMessage} />
@@ -91,6 +101,7 @@ const Flats = ({ errorMessage }) => {
                         onFilterChange={handleFilterChange}
                         onCityChange={handleCityChange}
                         onTipoChange={handleTipoChange}
+                        onSortChange={handleSortChange}
                     />
                 </Grid>
                 <Grid item xs={12} md={8}>
