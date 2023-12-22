@@ -19,7 +19,7 @@ class AdUpCheckingSpider(scrapy.Spider):
 
         for collection in collections:
             print(f"checking collection {collection}")
-            for doc in self.db[collection].find():
+            for doc in self.db[collection].find({"active": True}):
                 link = doc.get('link')
                 if link:
                     yield Request(link, self.check_url, meta={'original_link': link, 'doc_id': doc['_id'], 'collection': collection})
@@ -48,4 +48,4 @@ class AdUpCheckingSpider(scrapy.Spider):
         self.client.close()
         print(f"Spider closed with reason: {reason}. Total flats checked: {self.number_of_flat_checked}. Total flats retired: {self.number_of_flat_retired}")
 
-# Additional methods or error handling as needed
+
