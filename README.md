@@ -79,5 +79,6 @@ Change sql_uri and logs to whatever path you want
 
 ## arquitecture 
 
-![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/68aad894-b75e-466b-aabb-476388762e7f)
+![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/a4a6c333-3fe6-4846-8ec7-ade61d227462)
+
 
