@@ -6,7 +6,7 @@ from airflow.utils.dates import days_ago
 
 def _choose_task_to_run():
     current_hour = datetime.now().hour
-    if current_hour < 12:  # Assuming 10:00 run is the first run of the day
+    if current_hour < 15:  # Assuming 10:00 run is the first run of the day
         return 'run_checking_deletes_task'
     else:
         return 'run_transformation_script'
