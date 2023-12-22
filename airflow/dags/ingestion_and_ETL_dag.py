@@ -2,14 +2,17 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import BranchPythonOperator
-from airflow.utils.dates import days_ago
+from airflow.utils.trigger_rule import TriggerRule
+
 
 def _choose_task_to_run():
+
     current_hour = datetime.now().hour
     if current_hour < 15:  # Assuming 10:00 run is the first run of the day
         return 'run_checking_deletes_task'
     else:
         return 'run_transformation_script'
+
 
 default_args = {
     'owner': 'airflow',
@@ -20,6 +23,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
+
 dag = DAG(
     'ingestion_transformation_dag',
     default_args=default_args,
@@ -29,12 +33,14 @@ dag = DAG(
     catchup=False,
 )
 
+
 # Ingestion Task
 ingestion_task = BashOperator(
     task_id='run_ingestion_script',
     bash_command="/home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh ",
     dag=dag,
 )
+
 
 # Branching Task
 branch_task = BranchPythonOperator(
@@ -43,6 +49,7 @@ branch_task = BranchPythonOperator(
     dag=dag,
 )
 
+
 # Checking Deletes Task (run only once per day)
 checking_deletes_task = BashOperator(
     task_id='run_checking_deletes_task',
@@ -50,15 +57,17 @@ checking_deletes_task = BashOperator(
     dag=dag,
 )
 
+
 # Transformation Task
 transformation_task = BashOperator(
     task_id='run_transformation_script',
     bash_command="/home/ubuntu/big_data_tfm/ETL/transformation_script.sh ",
+    trigger_rule=TriggerRule.ONE_SUCCESS,
     dag=dag,
 )
 
+
 # Setting Task Dependencies
 ingestion_task >> branch_task
-branch_task >> checking_deletes_task >> transformation_task
-branch_task >> transformation_task
-
+branch_task >> [checking_deletes_task, transformation_task]
+checking_deletes_task >> transformation_task
