@@ -46,18 +46,14 @@ Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos 
 7. `source ./venv/bin/activate`
 8. `pip install -r ./ingestion_scrapper/requirements.txt`
 9. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
-10. add to cron `crontab -e` the following lines
-
-`0 0 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh `
-
-`0 12 * * * /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh `
+10. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ad_up_checking_script.sh`
+11. configure airflow to run `ingestion_and_ETL_dag.py`
 
 ### mongo-db backup
 
 1. `chmod +x /home/ubuntu/big_data_tfm/ingestion_scrapper/mongodb/mongo_backup_script.sh`
-2. add to cron `crontab -e` the following line
+2. configure airflow to run `mongo_backup_dag.py`
 
-`0 2 */3 * * /home/ubuntu/big_data_tfm/ingestion_scrapper/mongodb/mongo_backup_script.sh >> /home/ubuntu/Desktop/backup_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
 
 3. to restore
 
@@ -71,9 +67,9 @@ Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos 
 1. `chmod +x /path/to/repo/main.py`
 2. `source /path/to/repo/venv/bin/activate`
 3. `pip install -r /path/to/repo/ETL/requirements.txt`
-4. add or uncomment this line to `/path/to/repo/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh`
+4. configure SQLuri `/path/to/repo/ETL/transformation_script.sh`
+5. configure airflow to run `ingestion_and_ETL_dag.py`
 
-`python3.11 /home/ubuntu/big_data_tfm/ETL/main.py --sql_uri=/home/ubuntu/Desktop/pisos.db >> /home/ubuntu/Desktop/ETL_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1`
 
 Change sql_uri and logs to whatever path you want
 

@@ -1,7 +1,8 @@
 import pandas as pd
 import json
 import re
-from transformation_utils import convert_to_snake_case, summarize_to_yes, clean_gastos, clean_to_commons, get_mascotas, extract_tipo_from_title
+from transformation_utils import convert_to_snake_case, summarize_to_yes, clean_gastos, clean_to_commons, get_mascotas, \
+    extract_tipo_from_title, convert_to_unixtime
 import logging
 
 
@@ -13,6 +14,11 @@ def transform_data(documents, city):
         if df[col].apply(isinstance, args=(list,)).any():
             df[col] = df[col].apply(json.dumps)
     df['city'] = city
+
+    # Convert relevant timestamp columns to Unix time
+    for timestamp_col in ['updatedAt', 'createdAt']:  # Add more timestamp columns if needed
+        if timestamp_col in df.columns:
+            df[timestamp_col] = df[timestamp_col].apply(convert_to_unixtime)
 
     df.columns = [convert_to_snake_case(col) for col in df.columns]
     # Transform the "price" and "old price" columns
@@ -100,7 +106,11 @@ def transform_all_data(all_documents):
 
     if len(list_of_dfs) > 0:
         all_data_transformed = pd.concat(list_of_dfs, ignore_index=True)
+
+        # Check for duplicates by 'id' and keep the ones with the largest 'updatedAt'
+        all_data_transformed = all_data_transformed.sort_values('updatedat', ascending=False).drop_duplicates('id', keep='first')
+
     else:
-        logging.info(f"No data was transformed from mongodb collections")
+        logging.info(f"No data was transformed from MongoDB collections")
 
     return all_data_transformed, collections_transformed
