@@ -8,7 +8,7 @@ from config import model_types, model_saving_path
 
 
 if __name__ == "__main__":
-    convert_db_to_csv.generate_csv_from_db("pisos_backup.db")
+    convert_db_to_csv.generate_csv_from_db("pisos_backup.db", age_in_months=6)
 
     df_all = pd.read_csv("pisos.csv")
 
