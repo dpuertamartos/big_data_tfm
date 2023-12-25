@@ -20,10 +20,7 @@ if __name__ == "__main__":
     data_cleaner_cheap = DataCleaningTransformer()
     data_cleaner_cheap.fit(df_cheap)
 
-    print(len(df_expensive), len(df_cheap))
-
-    print("Average Percentage:", data_cleaner_cheap.average_percentage)
-    print("Median Superficie Construida m2:", data_cleaner_cheap.median_superficie_construida_m2)
+    print(f'number of training rows, expensive= {len(df_expensive)}, cheap={len(df_cheap)}')
 
     rmse_results_all_models = {}
     all_models = {}
@@ -51,10 +48,10 @@ if __name__ == "__main__":
                                       data_cleaner_cheap=data_cleaner_cheap,
                                       data_cleaner_expensive=data_cleaner_expensive)
 
-    # # After saving the models, delete the 'pisos.csv' file
-    # if os.path.exists("pisos.csv"):
-    #     os.remove("pisos.csv")
-    #     print("pisos.csv has been cleared.")
+    # After saving the models, delete the 'pisos.csv' file
+    if os.path.exists("pisos.csv"):
+        os.remove("pisos.csv")
+        print("pisos.csv has been cleared.")
 
 
 
