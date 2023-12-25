@@ -33,7 +33,7 @@ class DataCleaningTransformer(BaseEstimator, TransformerMixin):
         for col in categorical_to_fill_DESCONOCIDO:
             df[col].fillna('DESCONOCIDO', inplace=True)
 
-        df = df[categorical + numerical]
+        df = df[categorical + numerical + ['id']]
 
         # Apply the average percentage and median value
         mask = df['superficie_construida_m2'].isna() & df['superficie_util_m2'].notna()

@@ -54,7 +54,7 @@ def create_model(df, city, model_type, data_cleaner):
     ])
 
     y = cleaned_df['price_euro']
-    cleaned_df = cleaned_df.drop(columns=['price_euro', 'old_price_euro'])
+    cleaned_df = cleaned_df.drop(columns=['price_euro', 'old_price_euro', 'id'])
     X_transformed = preprocessor.fit_transform(cleaned_df)
 
 
