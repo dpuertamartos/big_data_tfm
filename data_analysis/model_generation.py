@@ -119,24 +119,27 @@ def generate_models(unique_cities, df_cheap, df_expensive, data_cleaner_expensiv
 
     for city in unique_cities:
         # Process the 'cheap' category
-        city_df_cheap = df_cheap[df_cheap['city'] == city].copy()
-        cheap_model, cheap_rmse, cheap_preprocessor, cheap_mean_price = create_model(city_df_cheap, city, model_type, data_cleaner_cheap)
-        print("Cheap model -----------")
-        print(f"City: {city}, RMSE: {cheap_rmse:.2f}, mean_price: {cheap_mean_price}")
+        try:
+            city_df_cheap = df_cheap[df_cheap['city'] == city].copy()
+            cheap_model, cheap_rmse, cheap_preprocessor, cheap_mean_price = create_model(city_df_cheap, city, model_type, data_cleaner_cheap)
+            print("Cheap model -----------")
+            print(f"City: {city}, RMSE: {cheap_rmse:.2f}, mean_price: {cheap_mean_price}")
 
-        # Process the 'expensive' category
-        city_df_expensive = df_expensive[df_expensive['city'] == city].copy()
-        expensive_model, expensive_rmse, expensive_preprocessor, expensive_mean_price = create_model(city_df_expensive, city, model_type, data_cleaner_expensive)
-        print("Expensive model ----------")
-        print(f"City: {city}, RMSE: {expensive_rmse:.2f}, mean_price: {expensive_mean_price}")
+            # Process the 'expensive' category
+            city_df_expensive = df_expensive[df_expensive['city'] == city].copy()
+            expensive_model, expensive_rmse, expensive_preprocessor, expensive_mean_price = create_model(city_df_expensive, city, model_type, data_cleaner_expensive)
+            print("Expensive model ----------")
+            print(f"City: {city}, RMSE: {expensive_rmse:.2f}, mean_price: {expensive_mean_price}")
 
-        # Store both model and preprocessor
-        models[city] = {
-            'cheap': (cheap_model, cheap_preprocessor),
-            'expensive': (expensive_model, expensive_preprocessor)
-        }
-        rmse_scores[city] = {'cheap': cheap_rmse, 'expensive': expensive_rmse}
-        mean_prices[city] = {'cheap': cheap_mean_price, 'expensive': expensive_mean_price}
+            # Store both model and preprocessor
+            models[city] = {
+                'cheap': (cheap_model, cheap_preprocessor),
+                'expensive': (expensive_model, expensive_preprocessor)
+            }
+            rmse_scores[city] = {'cheap': cheap_rmse, 'expensive': expensive_rmse}
+            mean_prices[city] = {'cheap': cheap_mean_price, 'expensive': expensive_mean_price}
+        except Exception as e:
+            print(f'model {model_type} for city {city} failed to generate. Error: {str(e)}')
 
     rmse_scores_relative = {k: {'cheap': rmse_scores[k]['cheap'] / mean_prices[k]['cheap'],
                                 'expensive': rmse_scores[k]['expensive'] / mean_prices[k]['expensive']
@@ -162,6 +165,7 @@ def get_best_models(rmse_results):
                              key=lambda x: x[1])
         }
 
+    print("best_models", best_models)
     return best_models
 
 
@@ -176,8 +180,8 @@ def save_best_models(model_saving_path, best_models_for_each_city, all_models, d
         cheap_model, cheap_preprocessor = all_models[cheap_model_name][city]['cheap']
         expensive_model, expensive_preprocessor = all_models[expensive_model_name][city]['expensive']
 
-        joblib.dump((cheap_model, cheap_preprocessor), os.path.join(model_saving_path, f"{city}_cheap_{cheap_model_name}.joblib"))
-        joblib.dump((expensive_model, expensive_preprocessor), os.path.join(model_saving_path, f"{city}_expensive_{expensive_model_name}.joblib"))
+        joblib.dump((cheap_model, cheap_preprocessor), os.path.join(model_saving_path, f"{city}_cheap.joblib"))
+        joblib.dump((expensive_model, expensive_preprocessor), os.path.join(model_saving_path, f"{city}_expensive.joblib"))
 
 
 

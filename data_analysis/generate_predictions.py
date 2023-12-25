@@ -19,7 +19,7 @@ def load_required_models(df):
     models = {city: {} for city in unique_cities}
     for city in unique_cities:
         for category in unique_categories:
-            model_path = f"./models/{city}_{category}_RandomForest.joblib"
+            model_path = f"./models/{city}_{category}.joblib"
             models[city][category] = load_model(model_path)
 
     return models

@@ -18,7 +18,6 @@ categorical_to_fill_DESCONOCIDO = ['city', 'location', 'conservacion', 'antigued
 
 categorical = categorical_to_fill_NO + categorical_to_fill_DESCONOCIDO
 
-# model_types = ["RandomForest", "GradientBoosting", "AdaBoost", "ExtraTrees", "DecisionTree","LinearRegression","Ridge","Lasso","ElasticNet","SVR","KNN"]
-model_types = ["RandomForest"]
+model_types = ["RandomForest", "GradientBoosting", "AdaBoost", "ExtraTrees", "DecisionTree", "LinearRegression", "Ridge","Lasso", "ElasticNet", "SVR", "KNN"]
 
 model_saving_path = './models'
