@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 from config import categorical
 import joblib
 import os
+from data_cleaning import DataCleaningTransformer
+
 
 
 class DataFrameDummiesTransformer(BaseEstimator, TransformerMixin):
@@ -42,21 +44,19 @@ class DataFrameDummiesTransformer(BaseEstimator, TransformerMixin):
 
 
 
-# Preprocessing pipeline
-def preprocess_pipeline(columns_to_dummify):
-    pipeline = Pipeline([
-        ('dummies', DataFrameDummiesTransformer(columns_to_dummify))
-        # Add other preprocessing steps here if needed
-    ])
-    return pipeline
-
-
 # Model creation function
-def create_model(df, city, model_type):
-    preprocessor = preprocess_pipeline(categorical + ['habitaciones', 'banos', 'gastos_de_comunidad_cleaned'])
-    X = df.drop(columns=['price_euro', 'old_price_euro'])
-    y = df['price_euro']
-    X_transformed = preprocessor.fit_transform(X)
+def create_model(df, city, model_type, data_cleaner):
+
+    cleaned_df = data_cleaner.transform(df)
+
+    preprocessor = Pipeline([
+        ('dummies', DataFrameDummiesTransformer(categorical + ['habitaciones', 'banos', 'gastos_de_comunidad_cleaned']))
+    ])
+
+    y = cleaned_df['price_euro']
+    cleaned_df = cleaned_df.drop(columns=['price_euro', 'old_price_euro'])
+    X_transformed = preprocessor.fit_transform(cleaned_df)
+
 
     # Split the data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X_transformed, y, test_size=0.2, random_state=42)
@@ -112,7 +112,7 @@ def get_model_by_type(model_type):
     return model
 
 
-def generate_models(unique_cities, df_cheap, df_expensive, model_type="RandomForest"):
+def generate_models(unique_cities, df_cheap, df_expensive, data_cleaner_expensive, data_cleaner_cheap, model_type="RandomForest"):
     models = {}  # To store trained models and their preprocessors for each city
     rmse_scores = {}  # To store RMSE scores for each city
     mean_prices = {}
@@ -120,13 +120,13 @@ def generate_models(unique_cities, df_cheap, df_expensive, model_type="RandomFor
     for city in unique_cities:
         # Process the 'cheap' category
         city_df_cheap = df_cheap[df_cheap['city'] == city].copy()
-        cheap_model, cheap_rmse, cheap_preprocessor, cheap_mean_price = create_model(city_df_cheap, city, model_type)
+        cheap_model, cheap_rmse, cheap_preprocessor, cheap_mean_price = create_model(city_df_cheap, city, model_type, data_cleaner_cheap)
         print("Cheap model -----------")
         print(f"City: {city}, RMSE: {cheap_rmse:.2f}, mean_price: {cheap_mean_price}")
 
         # Process the 'expensive' category
         city_df_expensive = df_expensive[df_expensive['city'] == city].copy()
-        expensive_model, expensive_rmse, expensive_preprocessor, expensive_mean_price = create_model(city_df_expensive, city, model_type)
+        expensive_model, expensive_rmse, expensive_preprocessor, expensive_mean_price = create_model(city_df_expensive, city, model_type, data_cleaner_expensive)
         print("Expensive model ----------")
         print(f"City: {city}, RMSE: {expensive_rmse:.2f}, mean_price: {expensive_mean_price}")
 
@@ -166,7 +166,9 @@ def get_best_models(rmse_results):
 
 
 # Function to save the best models
-def save_best_models(model_saving_path, best_models_for_each_city, all_models):
+def save_best_models(model_saving_path, best_models_for_each_city, all_models, data_cleaner_cheap, data_cleaner_expensive):
+    joblib.dump(data_cleaner_cheap, os.path.join(model_saving_path, "data_cleaner_cheap.joblib"))
+    joblib.dump(data_cleaner_expensive, os.path.join(model_saving_path, "data_cleaner_expensive.joblib"))
     for city, models in best_models_for_each_city.items():
         cheap_model_name, _ = models['cheap']
         expensive_model_name, _ = models['expensive']

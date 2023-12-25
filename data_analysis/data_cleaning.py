@@ -1,43 +1,62 @@
 #data_cleaning.py
+from sklearn.base import BaseEstimator, TransformerMixin
 from config import categorical, categorical_to_fill_NO, categorical_to_fill_DESCONOCIDO
 import pandas as pd
 
-def clean_data(origin_df):
-    df = origin_df.copy()
 
-    numerical = ['price_euro', 'old_price_euro', 'superficie_construida_m2',
-                 'superficie_util_m2', 'habitaciones', 'banos',
-                 'superficie_solar_m2', 'gastos_de_comunidad_cleaned']
-    # Fill NaN values with 'NO' for selected categorical columns
-    for col in categorical_to_fill_NO:
-        df[col].fillna('NO', inplace=True)
+class DataCleaningTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        self.average_percentage = None
+        self.median_superficie_construida_m2 = None
 
-    for col in categorical_to_fill_DESCONOCIDO:
-        df[col].fillna('DESCONOCIDO', inplace=True)
+    def fit(self, X, y=None):
+        df = X.copy()
 
-    df = df[categorical + numerical]
+        mask = df['superficie_util_m2'].notna() & df['superficie_construida_m2'].notna()
+        percentage_diffs = (df.loc[mask, 'superficie_construida_m2'] - df.loc[mask, 'superficie_util_m2']) / df.loc[
+            mask, 'superficie_construida_m2']
+        self.average_percentage = percentage_diffs.mean()
 
-    # Create a mask for rows where both columns superficie are not null
-    mask = df['superficie_util_m2'].notna() & df['superficie_construida_m2'].notna()
-    # Calculate the percentage difference for these rows
-    percentage_diffs = (df.loc[mask, 'superficie_construida_m2'] - df.loc[mask, 'superficie_util_m2']) / df.loc[
-        mask, 'superficie_construida_m2']
-    # Calculate the average percentage
-    average_percentage = percentage_diffs.mean()
-    mask = df['superficie_construida_m2'].isna() & df['superficie_util_m2'].notna()
-    df.loc[mask, 'superficie_construida_m2'] = df.loc[mask, 'superficie_util_m2'] * (1 + average_percentage)
-    median_value = df['superficie_construida_m2'].median()
-    df['superficie_construida_m2'].fillna(median_value, inplace=True)
+        self.median_superficie_construida_m2 = df['superficie_construida_m2'].median()
 
-    mask = df['superficie_util_m2'].isna()
-    df.loc[mask, 'superficie_util_m2'] = df.loc[mask, 'superficie_construida_m2'] * (1 - average_percentage)
+        return self
 
-    df['superficie_solar_m2'].fillna(0, inplace=True)
+    def transform(self, X):
+        df = X.copy()
+        numerical = ['price_euro', 'old_price_euro', 'superficie_construida_m2',
+                     'superficie_util_m2', 'habitaciones', 'banos',
+                     'superficie_solar_m2', 'gastos_de_comunidad_cleaned']
 
-    df.dropna(subset=['price_euro'], inplace=True)
-    df['old_price_euro'].fillna(df['price_euro'], inplace=True)
+        # Fill NaN values with predefined categories
+        for col in categorical_to_fill_NO:
+            df[col].fillna('NO', inplace=True)
+        for col in categorical_to_fill_DESCONOCIDO:
+            df[col].fillna('DESCONOCIDO', inplace=True)
 
-    def convert_to_cat(val):
+        df = df[categorical + numerical]
+
+        # Apply the average percentage and median value
+        mask = df['superficie_construida_m2'].isna() & df['superficie_util_m2'].notna()
+        df.loc[mask, 'superficie_construida_m2'] = df.loc[mask, 'superficie_util_m2'] * (1 + self.average_percentage)
+        df['superficie_construida_m2'].fillna(self.median_superficie_construida_m2, inplace=True)
+
+        mask = df['superficie_util_m2'].isna()
+        df.loc[mask, 'superficie_util_m2'] = df.loc[mask, 'superficie_construida_m2'] * (1 - self.average_percentage)
+
+        df['superficie_solar_m2'].fillna(0, inplace=True)
+        df['old_price_euro'].fillna(df['price_euro'], inplace=True)
+
+        # Apply custom conversions
+        df['gastos_de_comunidad_cleaned'] = df['gastos_de_comunidad_cleaned'].apply(self.convert_gastos)
+        df['habitaciones'] = df['habitaciones'].apply(self.convert_to_cat)
+        df['banos'] = df['banos'].apply(self.convert_to_cat)
+
+        df.dropna(subset=['price_euro'], inplace=True)
+
+        assert not df.isna().sum().any()
+        return df
+
+    def convert_to_cat(self, val):
         if pd.isna(val):
             return "DESCONOCIDO"
         elif val <= 6:
@@ -45,7 +64,7 @@ def clean_data(origin_df):
         else:
             return "7 or more"
 
-    def convert_gastos(val):
+    def convert_gastos(self, val):
         if pd.isna(val):
             return "DESCONOCIDO"
         elif val == 0:
@@ -72,11 +91,3 @@ def clean_data(origin_df):
             return "180-200"
         elif val > 200:
             return "200+"
-
-    df['gastos_de_comunidad_cleaned'] = df['gastos_de_comunidad_cleaned'].apply(convert_gastos)
-    df['habitaciones'] = df['habitaciones'].apply(convert_to_cat)
-    df['banos'] = df['banos'].apply(convert_to_cat)
-
-    nan_counts = df[numerical + categorical].isna().sum()
-    assert (nan_counts.sum() == 0)
-    return df

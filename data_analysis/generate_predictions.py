@@ -1,7 +1,6 @@
 # generate_predictions.py
 import pandas as pd
 import joblib
-from data_cleaning import clean_data  # Assuming this is your data cleaning module
 import sqlite3
 import argparse
 import time
@@ -14,14 +13,10 @@ def load_model(model_path):
 
 
 def make_predictions(df, models):
-    # Initialize an empty Series to store predictions
     predictions = pd.Series(index=df.index)
 
-    # Group by city and price category
-    for (city, price_category), group_df in df.groupby(['city', df['price_euro'] <= 350000]):
-        price_category = 'cheap' if price_category else 'expensive'
-
-        # Select the appropriate model and its pipeline
+    for city, group_df in df.groupby('city'):
+        price_category = 'cheap' if group_df['price_euro'].iloc[0] <= 350000 else 'expensive'
         model, preprocessor = models[city][price_category]
 
         # Preprocess the group
@@ -64,23 +59,36 @@ def make_predictions(df, models):
 
 
 def main():
-    df = pd.read_csv("pisos.csv")
-    df_cleaned = clean_data(df)
+    df_all = pd.read_csv("pisos.csv")
 
-    # Get the list of unique cities from the DataFrame
-    cities = df_cleaned['city'].unique()
+    # Load data cleaners
+    data_cleaner_cheap = joblib.load("./models/data_cleaner_cheap.joblib")
+    data_cleaner_expensive = joblib.load("./models/data_cleaner_expensive.joblib")
 
-    models = {city: {} for city in cities}
+    # Separate data into 'cheap' and 'expensive' categories
+    df_cheap = df_all[df_all['price_euro'] <= 350000]
+    df_expensive = df_all[df_all['price_euro'] > 350000]
 
-    for city in cities:
+    # Clean data for each category
+    df_cheap_cleaned = data_cleaner_cheap.transform(df_cheap)
+    df_expensive_cleaned = data_cleaner_expensive.transform(df_expensive)
+
+    # Load models
+    models = {city: {} for city in df_all['city'].unique()}
+    for city in models:
         for category in ['cheap', 'expensive']:
             model_path = f"./models/{city}_{category}_RandomForest.joblib"  # Adjust model path as necessary
             models[city][category] = load_model(model_path)
 
-    df_cleaned['predictions'] = make_predictions(df_cleaned, models)
+    # Make predictions for each category
+    df_cheap_cleaned['predictions'] = make_predictions(df_cheap_cleaned, models)
+    df_expensive_cleaned['predictions'] = make_predictions(df_expensive_cleaned, models)
+
+    # Combine the datasets after making predictions
+    df_cleaned_with_predictions = pd.concat([df_cheap_cleaned, df_expensive_cleaned])
 
     # Save the DataFrame with predictions
-    df_cleaned.to_csv("predictions.csv", index=False)
+    df_cleaned_with_predictions.to_csv("predictions.csv", index=False)
 
 if __name__ == "__main__":
     main()
