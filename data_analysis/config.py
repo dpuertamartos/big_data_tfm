@@ -13,7 +13,7 @@ categorical_to_fill_DESCONOCIDO = ['city', 'location', 'conservacion', 'antigued
                                    'urbanizado_summary',
                                    'calle_alumbrada_summary', 'calle_asfaltada_summary', 'interior_summary',
                                    'mascotas_summary', 'carpinteria_exterior_cleaned', 'tipo_suelo_summary',
-                                   'cocina_summary', 'orientacion_summary', 'orientacion_summary',
+                                   'cocina_summary', 'orientacion_summary',
                                    'type']
 
 categorical = categorical_to_fill_NO + categorical_to_fill_DESCONOCIDO

@@ -23,7 +23,7 @@ if __name__ == "__main__":
     all_models = {}
 
     for model_type in model_types:
-        rmse_scores_relative, models = model_generation.generate_models(unique_cities=df_all['city'].unique(),
+        models, rmse_scores_relative = model_generation.generate_models(unique_cities=df_all['city'].unique(),
                                                        df_cheap=df_cheap,
                                                        df_expensive=df_expensive,
                                                        model_type=model_type)
