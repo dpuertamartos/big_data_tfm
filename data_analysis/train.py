@@ -23,28 +23,35 @@ if __name__ == "__main__":
     print(f'number of training rows, expensive= {len(df_expensive)}, cheap={len(df_cheap)}')
 
     rmse_results_all_models = {}
-    all_models = {}
-
+    best_models = {}
+    unique_cities = df_all['city'].unique()
     for model_type in model_types:
-        models, rmse_scores_relative = model_generation.generate_models(unique_cities=df_all['city'].unique(),
+        models, rmse_scores_relative = model_generation.generate_models(unique_cities=unique_cities,
                                                        df_cheap=df_cheap,
                                                        df_expensive=df_expensive,
                                                        model_type=model_type,
                                                        data_cleaner_cheap=data_cleaner_cheap,
                                                        data_cleaner_expensive=data_cleaner_expensive)
         rmse_results_all_models[model_type] = rmse_scores_relative
-        all_models[model_type] = models
+        # Iterate through the models to find and store the best ones
+        for city in unique_cities:
+            for category in ['cheap', 'expensive']:
+                model_key = (city, category)
+                current_rmse = rmse_scores_relative[city][category]
+                current_model = models[city][category]
 
-
-    # Get the best models for each city
-    best_models_for_each_city = model_generation.get_best_models(rmse_results_all_models)
+                if model_key not in best_models or current_rmse < best_models[model_key]['rmse']:
+                    best_models[model_key] = {
+                        'model': current_model,
+                        'rmse': current_rmse,
+                        'model_type': model_type
+                    }
 
     if not os.path.exists(model_saving_path):
         os.makedirs(model_saving_path)
 
     model_generation.save_best_models(model_saving_path=model_saving_path,
-                                      best_models_for_each_city=best_models_for_each_city,
-                                      all_models=all_models,
+                                      best_models=best_models,
                                       data_cleaner_cheap=data_cleaner_cheap,
                                       data_cleaner_expensive=data_cleaner_expensive)
 

@@ -148,40 +148,15 @@ def generate_models(unique_cities, df_cheap, df_expensive, data_cleaner_expensiv
     return models, rmse_scores_relative
 
 
-def get_best_models(rmse_results):
-    """
-    Determine the best model for each city and category based on RMSE.
-
-    rmse_results: Nested dictionary where the first key is model type,
-                  the second key is city name, and the value is a dictionary
-                  with 'cheap' and 'expensive' RMSEs.
-    """
-    best_models = {}
-
-    for city in rmse_results[next(iter(rmse_results))].keys():  # use next(iter()) to get the first model type
-        best_models[city] = {
-            "cheap": min([(model, data[city]['cheap']) for model, data in rmse_results.items()], key=lambda x: x[1]),
-            "expensive": min([(model, data[city]['expensive']) for model, data in rmse_results.items()],
-                             key=lambda x: x[1])
-        }
-
-    print("best_models", best_models)
-    return best_models
-
-
 # Function to save the best models
-def save_best_models(model_saving_path, best_models_for_each_city, all_models, data_cleaner_cheap, data_cleaner_expensive):
+def save_best_models(model_saving_path, best_models, data_cleaner_cheap, data_cleaner_expensive):
     joblib.dump(data_cleaner_cheap, os.path.join(model_saving_path, "data_cleaner_cheap.joblib"))
     joblib.dump(data_cleaner_expensive, os.path.join(model_saving_path, "data_cleaner_expensive.joblib"))
-    for city, models in best_models_for_each_city.items():
-        cheap_model_name, _ = models['cheap']
-        expensive_model_name, _ = models['expensive']
+    for (city, category), models in best_models.items():
+        model, preprocessor = best_models[(city, category)]['model']
+        print(city, category, best_models[(city, category)]['rmse'], best_models[(city, category)]['model_type'])
+        joblib.dump((model, preprocessor), os.path.join(model_saving_path, f"{city}_{category}.joblib"))
 
-        cheap_model, cheap_preprocessor = all_models[cheap_model_name][city]['cheap']
-        expensive_model, expensive_preprocessor = all_models[expensive_model_name][city]['expensive']
-
-        joblib.dump((cheap_model, cheap_preprocessor), os.path.join(model_saving_path, f"{city}_cheap.joblib"))
-        joblib.dump((expensive_model, expensive_preprocessor), os.path.join(model_saving_path, f"{city}_expensive.joblib"))
 
 
 
