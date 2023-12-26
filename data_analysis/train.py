@@ -37,15 +37,18 @@ if __name__ == "__main__":
         for city in unique_cities:
             for category in ['cheap', 'expensive']:
                 model_key = (city, category)
-                current_rmse = rmse_scores_relative[city][category]
-                current_model = models[city][category]
+                try:
+                    current_rmse = rmse_scores_relative[city][category]
+                    current_model = models[city][category]
 
-                if model_key not in best_models or current_rmse < best_models[model_key]['rmse']:
-                    best_models[model_key] = {
-                        'model': current_model,
-                        'rmse': current_rmse,
-                        'model_type': model_type
-                    }
+                    if model_key not in best_models or current_rmse < best_models[model_key]['rmse']:
+                        best_models[model_key] = {
+                            'model': current_model,
+                            'rmse': current_rmse,
+                            'model_type': model_type
+                        }
+                except KeyError:
+                    continue
 
     if not os.path.exists(model_saving_path):
         os.makedirs(model_saving_path)
