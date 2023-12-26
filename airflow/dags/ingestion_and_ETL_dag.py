@@ -67,7 +67,15 @@ transformation_task = BashOperator(
 )
 
 
+# Prediction Task
+prediction_task = BashOperator(
+    task_id='run_prediction_script',
+    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new",
+    dag=dag,
+)
+
 # Setting Task Dependencies
 ingestion_task >> branch_task
 branch_task >> [checking_deletes_task, transformation_task]
 checking_deletes_task >> transformation_task
+transformation_task >> prediction_task
