@@ -70,7 +70,7 @@ transformation_task = BashOperator(
 # Prediction Task
 prediction_task = BashOperator(
     task_id='run_prediction_script',
-    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new",
+    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new ",
     dag=dag,
 )
 

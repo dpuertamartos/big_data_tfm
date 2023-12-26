@@ -25,14 +25,14 @@ dag = DAG(
 # Prediction Task
 training_task = BashOperator(
     task_id='run_training_script',
-    bash_command="/home/ubuntu/big_data_tfm/data_analysis/train.sh",
+    bash_command="/home/ubuntu/big_data_tfm/data_analysis/train.sh ",
     dag=dag,
 )
 
 # Prediction Task
 prediction_task = BashOperator(
     task_id='run_prediction_script',
-    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new",
+    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new ",
     dag=dag,
 )
 
