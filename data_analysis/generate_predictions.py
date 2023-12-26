@@ -4,6 +4,7 @@ import joblib
 import sqlite3
 import argparse
 import time
+from config import db_path
 
 def load_model(model_path):
     # Loads both the model and its preprocessing pipeline
@@ -109,16 +110,15 @@ def main():
 
     args = parser.parse_args()
 
-    database_path = "pisos_backup.db"
 
     # Load data cleaners
     data_cleaner_cheap = joblib.load("./models/data_cleaner_cheap.joblib")
     data_cleaner_expensive = joblib.load("./models/data_cleaner_expensive.joblib")
 
     if args.mode == 'all':
-        predict_and_store_all(database_path, data_cleaner_cheap, data_cleaner_expensive)
+        predict_and_store_all(db_path, data_cleaner_cheap, data_cleaner_expensive)
     else:
-        predict_and_store_new_entries(database_path, data_cleaner_cheap, data_cleaner_expensive)
+        predict_and_store_new_entries(db_path, data_cleaner_cheap, data_cleaner_expensive)
 
 if __name__ == "__main__":
     main()

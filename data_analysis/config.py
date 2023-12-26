@@ -21,3 +21,5 @@ categorical = categorical_to_fill_NO + categorical_to_fill_DESCONOCIDO
 model_types = ["RandomForest", "GradientBoosting", "AdaBoost", "ExtraTrees", "DecisionTree", "LinearRegression", "Ridge","Lasso", "ElasticNet", "SVR", "KNN"]
 
 model_saving_path = './models'
+
+db_path = '/home/ubuntu/Desktop/pisos.db'

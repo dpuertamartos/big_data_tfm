@@ -3,11 +3,11 @@ import pandas as pd
 import convert_db_to_csv
 import model_generation
 import os
-from config import model_types, model_saving_path
+from config import model_types, model_saving_path, db_path
 from data_cleaning import DataCleaningTransformer
 
 if __name__ == "__main__":
-    convert_db_to_csv.generate_csv_from_db("pisos_backup.db", age_in_months=6)
+    convert_db_to_csv.generate_csv_from_db(db_path, age_in_months=6)
 
     df_all = pd.read_csv("pisos.csv")
 
