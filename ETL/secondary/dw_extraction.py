@@ -1,7 +1,7 @@
 import pandas as pd
 import sqlite3
 import itertools
-
+from config import categorical, categorical_to_fill_NO, categorical_to_fill_DESCONOCIDO
 
 def calculate_ratios(group, ratio_definitions):
     """Calculate average ratios for specified column pairs."""
@@ -38,26 +38,58 @@ def reindex(df, groups):
 
 def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, all_groups_possibilities, ratio_definitions):
     agg_funcs = {col: 'mean' for col in numeric_cols}
-    agg_funcs.update({col: 'count' for col in categorical_cols})
+    #TODO: add standard deviation for each numericl_col
+    #TODO: add count for each group
+    #TODO: generalize categoric columns function
 
     if groups_to_organize_by:
         grouped_df = df.groupby(groups_to_organize_by).agg(agg_funcs)
         # Apply custom function for all ratios
         ratio_df = df.groupby(groups_to_organize_by).apply(lambda x: calculate_ratios(x, ratio_definitions))
         grouped_df = grouped_df.join(ratio_df)
+
+        # Handling categorical columns
+        for col in categorical_cols:
+            cat_values = df[col].unique()
+            for value in cat_values:
+                if pd.isna(value):
+                    column_name = f"{col}_None_pct"
+                    grouped_df[column_name] = df.groupby(groups_to_organize_by)[col].apply(lambda x: x.isna().mean())
+                else:
+                    column_name = f"{col}_{value}_pct"
+                    grouped_df[column_name] = df.groupby(groups_to_organize_by)[col].apply(
+                        lambda x: (x == value).mean())
+
         grouped_df = reindex(grouped_df, groups_to_organize_by)
+
     else:
         # Aggregate without groupby when there are no groups
         grouped_df = df.agg(agg_funcs)
         ratios = calculate_ratios(df, ratio_definitions)
         for ratio in ratios.index:
             grouped_df[ratio] = ratios[ratio]
+
+        # Handling categorical columns for no-group case
+        total_count = len(df)
+        for col in categorical_cols:
+            cat_values = df[col].unique()
+            for value in cat_values:
+                if pd.isna(value):
+                    column_name = f"{col}_None_pct"
+                    count_value = df[col].isna().sum()
+                    grouped_df[column_name] = count_value / total_count
+                else:
+                    column_name = f"{col}_{value}_pct"
+                    count_value = (df[col] == value).sum()
+                    grouped_df[column_name] = count_value / total_count
+
         grouped_df = pd.DataFrame([grouped_df])
 
     # Set the value to 'all' for non-grouping columns
     for element in all_groups_possibilities:
         if element not in groups_to_organize_by:
             grouped_df[rename_col_to_group(element)] = 'all'
+
 
     return grouped_df
 
@@ -69,17 +101,23 @@ conn = sqlite3.connect('../../data_analysis/pisos_backup.db')
 query = 'SELECT * FROM pisos'
 df = pd.read_sql(query, conn)
 
+
 # Convert 'createdat' from Unix time to datetime
 df['updated_month'] = pd.to_datetime(df['createdat'], unit='s').dt.to_period('M')
 
 # Define the columns to be aggregated
 numeric_columns = ['price_euro', 'superficie_construida_m2', 'superficie_util_m2', 'superficie_solar_m2',
                    'habitaciones', 'banos', 'gastos_de_comunidad_cleaned']
-categorical_columns = ['city', 'type']  # Add more columns if needed
+categorical_columns = categorical_to_fill_NO  # Add more columns if needed
 
 # Aggregate data for all records
 
 # ------------------------START TRANSFORMATION---------------------------------------
+for col in categorical_to_fill_NO:
+    df[col].fillna('NO', inplace=True)
+for col in categorical_to_fill_DESCONOCIDO:
+    df[col].fillna('DESCONOCIDO', inplace=True)
+
 group_variables = ['updated_month', 'city', 'type', 'active']
 # Ratio definitions
 ratio_definitions = {
