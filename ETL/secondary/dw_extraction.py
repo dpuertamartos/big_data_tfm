@@ -4,13 +4,12 @@ import itertools
 
 
 def return_all_combinations(array):
-    all_combinations = []
-
+    combs = []
     for L in range(1, len(array) + 1):
         for subset in itertools.combinations(array, L):
-            all_combinations.append(list(subset))
+            combs.append(list(subset))
 
-    return all_combinations
+    return combs
 
 
 def rename_col_to_group(col):
@@ -28,15 +27,19 @@ def reindex(df, groups):
     return df.reset_index()
 
 
-# Aggregation function
 def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, all_groups_possibilities):
     agg_funcs = {col: 'mean' for col in numeric_cols}
     agg_funcs.update({col: 'count' for col in categorical_cols})
 
-    grouped_df = df.groupby(groups_to_organize_by).agg(agg_funcs)
-    grouped_df = reindex(grouped_df, groups_to_organize_by)
+    if groups_to_organize_by:
+        grouped_df = df.groupby(groups_to_organize_by).agg(agg_funcs)
+        grouped_df = reindex(grouped_df, groups_to_organize_by)
+    else:
+        # Aggregate without groupby when there are no groups
+        grouped_df = df.agg(agg_funcs)
+        grouped_df = pd.DataFrame([grouped_df])
 
-    #this will set the value to 'all' if we are not grouping by that group
+    # Set the value to 'all' for non-grouping columns
     for element in all_groups_possibilities:
         if element not in groups_to_organize_by:
             grouped_df[rename_col_to_group(element)] = 'all'
@@ -63,6 +66,7 @@ categorical_columns = ['city', 'type']  # Add more columns if needed
 # START TRANSFORMATION
 group_variables = ['updated_month', 'city', 'type', 'active']
 all_combinations = return_all_combinations(group_variables)
+all_combinations.append([]) #to get the stats without grouping by
 all_aggregated_data = [aggregate_data(df, numeric_columns, categorical_columns, groups, group_variables) for groups in all_combinations]
 
 # Concatenate the results
