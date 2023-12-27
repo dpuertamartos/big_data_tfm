@@ -23,32 +23,20 @@ def reindex(df, groups):
 
 
 # Aggregation function
-def aggregate_data(df, numeric_cols, categorical_cols, group_by_month=True):
+def aggregate_data(df, numeric_cols, categorical_cols, groups):
     agg_funcs = {col: 'mean' for col in numeric_cols}
     agg_funcs.update({col: 'count' for col in categorical_cols})
 
-    if group_by_month:
-        # Group by month, city, and type
-        groups = ['updated_month', 'city', 'type']
-        categ = 'all'
-
-    else:
-        # Group only by city and type for active records
-        groups = ['city', 'type']
-        categ = 'active'
-
     grouped_df = df.groupby(groups).agg(agg_funcs)
     grouped_df = reindex(grouped_df, groups)
-    grouped_df['category'] = categ
 
     return grouped_df
 
 
 # Aggregate data for all records
-agg_all_df = aggregate_data(df, numeric_columns, categorical_columns, group_by_month=True)
-
+agg_all_df = aggregate_data(df, numeric_columns, categorical_columns, groups=['updated_month', 'city', 'type'])
 # Aggregate data only for active records
-agg_active_df = aggregate_data(df[df['active'] == 1], numeric_columns, categorical_columns, group_by_month=False)
+agg_active_df = aggregate_data(df[df['active'] == 1], numeric_columns, categorical_columns, groups=['city', 'type'])
 
 # Concatenate the results
 final_df = pd.concat([agg_all_df, agg_active_df])
