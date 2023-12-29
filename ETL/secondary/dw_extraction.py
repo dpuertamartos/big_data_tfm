@@ -36,14 +36,17 @@ def reindex(df, groups):
     return df.reset_index()
 
 
-def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, all_groups_possibilities, ratio_definitions):
-    agg_funcs = {col: 'mean' for col in numeric_cols}
-    #TODO: add standard deviation for each numericl_col
-    #TODO: add count for each group
-    #TODO: generalize categoric columns function
+def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, all_groups_possibilities,
+                   ratio_definitions):
+
+    agg_funcs = {col: ['mean', 'std'] for col in numeric_cols}
+    agg_funcs['count'] = 'count'  # Add count for each group
+    df['count'] = 1
 
     if groups_to_organize_by:
         grouped_df = df.groupby(groups_to_organize_by).agg(agg_funcs)
+        grouped_df.columns = [f'{col}_{func}' if col != 'count' else 'count'
+                              for col, func in grouped_df.columns]
         # Apply custom function for all ratios
         ratio_df = df.groupby(groups_to_organize_by).apply(lambda x: calculate_ratios(x, ratio_definitions))
         grouped_df = grouped_df.join(ratio_df)
@@ -61,37 +64,38 @@ def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, al
                         lambda x: (x == value).mean())
 
         grouped_df = reindex(grouped_df, groups_to_organize_by)
-
     else:
-        # Aggregate without groupby when there are no groups
-        grouped_df = df.agg(agg_funcs)
-        ratios = calculate_ratios(df, ratio_definitions)
-        for ratio in ratios.index:
-            grouped_df[ratio] = ratios[ratio]
+        # Initialize a dictionary to hold general statistics
+        general_stats = {}
 
-        # Handling categorical columns for no-group case
-        total_count = len(df)
+        # Numeric columns: Calculate mean, std, and count
+        for col in numeric_cols:
+            general_stats[f'{col}_mean'] = df[col].mean()
+            general_stats[f'{col}_std'] = df[col].std()
+        general_stats['count'] = len(df)
+
+        # Calculate ratios
+        ratios = calculate_ratios(df, ratio_definitions)
+        for ratio_name, ratio_value in ratios.items():
+            general_stats[ratio_name] = ratio_value
+
+        # Categorical columns: Calculate percentage for each category
         for col in categorical_cols:
             cat_values = df[col].unique()
             for value in cat_values:
-                if pd.isna(value):
-                    column_name = f"{col}_None_pct"
-                    count_value = df[col].isna().sum()
-                    grouped_df[column_name] = count_value / total_count
-                else:
-                    column_name = f"{col}_{value}_pct"
-                    count_value = (df[col] == value).sum()
-                    grouped_df[column_name] = count_value / total_count
+                column_name = f"{col}_{value}_pct" if not pd.isna(value) else f"{col}_None_pct"
+                count_value = (df[col] == value).sum() if not pd.isna(value) else df[col].isna().sum()
+                general_stats[column_name] = count_value / len(df)
 
-        grouped_df = pd.DataFrame([grouped_df])
+        grouped_df = pd.Series(general_stats).to_frame().T
 
     # Set the value to 'all' for non-grouping columns
     for element in all_groups_possibilities:
         if element not in groups_to_organize_by:
             grouped_df[rename_col_to_group(element)] = 'all'
 
-
     return grouped_df
+
 
 # ------------------------START EXTRACTION---------------------------------------
 # Database connection (modify the path to your SQLite database file)
