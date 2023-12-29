@@ -66,6 +66,12 @@ transformation_task = BashOperator(
     dag=dag,
 )
 
+# Aggregation Task
+aggregation_task = BashOperator(
+    task_id='run_aggregation_script',
+    bash_command="/home/ubuntu/big_data_tfm/ETL/aggregation_script.sh ",
+    dag=dag,
+)
 
 # Prediction Task
 prediction_task = BashOperator(
@@ -78,4 +84,4 @@ prediction_task = BashOperator(
 ingestion_task >> branch_task
 branch_task >> [checking_deletes_task, transformation_task]
 checking_deletes_task >> transformation_task
-transformation_task >> prediction_task
+transformation_task >> aggregation_task >> prediction_task
