@@ -36,10 +36,30 @@ def reindex(df, groups):
     return df.reset_index()
 
 
+def mean_excluding_outliers(series):
+    q1 = series.quantile(0.25)
+    q3 = series.quantile(0.75)
+    iqr = q3 - q1
+    lower_bound = q1 - 5 * iqr
+    upper_bound = q3 + 5 * iqr
+    filtered_series = series[(series >= lower_bound) & (series <= upper_bound)]
+    return filtered_series.mean()
+
+
+def std_excluding_outliers(series):
+    q1 = series.quantile(0.25)
+    q3 = series.quantile(0.75)
+    iqr = q3 - q1
+    lower_bound = q1 - 5 * iqr
+    upper_bound = q3 + 5 * iqr
+    filtered_series = series[(series >= lower_bound) & (series <= upper_bound)]
+    return filtered_series.std()
+
+
 def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, all_groups_possibilities,
                    ratio_definitions):
 
-    agg_funcs = {col: ['mean', 'std'] for col in numeric_cols}
+    agg_funcs = {col: [mean_excluding_outliers, std_excluding_outliers] for col in numeric_cols}
     agg_funcs['count'] = 'count'  # Add count for each group
     df['count'] = 1
 
@@ -67,11 +87,9 @@ def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, al
     else:
         # Initialize a dictionary to hold general statistics
         general_stats = {}
-
-        # Numeric columns: Calculate mean, std, and count
         for col in numeric_cols:
-            general_stats[f'{col}_mean'] = df[col].mean()
-            general_stats[f'{col}_std'] = df[col].std()
+            general_stats[f'{col}_mean_excluding_outliers'] = mean_excluding_outliers(df[col])
+            general_stats[f'{col}_std_excluding_outliers'] = std_excluding_outliers(df[col])
         general_stats['count'] = len(df)
 
         # Calculate ratios
