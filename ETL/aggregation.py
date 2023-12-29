@@ -52,7 +52,6 @@ def rename_col_to_group(col):
 
 def reindex(df, groups):
     groups_new_names = [rename_col_to_group(element) for element in groups]
-    print(groups_new_names)
     if len(groups_new_names) > 1:
         for i, name in enumerate(groups_new_names):
             df.index = df.index.set_names(name, level=i)
@@ -157,6 +156,8 @@ if __name__ == "__main__":
 
     # ------------------------START EXTRACTION---------------------------------------
     # Database connection (modify the path to your SQLite database file)
+
+    print("starting extraction")
     conn = sqlite3.connect(sql_uri)
 
     # Read data from 'pisos' table
@@ -164,6 +165,8 @@ if __name__ == "__main__":
     df = pd.read_sql(query, conn)
 
     # ------------------------START TRANSFORMATION---------------------------------------
+
+    print("starting transformation")
 
     # Convert 'createdat' from Unix time to datetime
     df['updated_month'] = pd.to_datetime(df['createdat'], unit='s').dt.to_period('M')
@@ -201,9 +204,9 @@ if __name__ == "__main__":
 
     final_df['updated_month_group'] = final_df['updated_month_group'].astype(str)
 
-    print(final_df)
 
     # ------------------------START LOADING---------------------------------------
+    print("starting loading")
 
     # Insert aggregated data into 'pisos_dw'
     final_df.to_sql('pisos_dw', conn, if_exists='replace', index=False)
