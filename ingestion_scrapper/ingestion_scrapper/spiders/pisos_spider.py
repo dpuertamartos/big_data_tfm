@@ -1,6 +1,7 @@
 import scrapy
 import pymongo
 import datetime
+from ..config import mongodb_uri
 
 OLD_DATE = "Anuncio 15/10/1991"
 
@@ -32,7 +33,7 @@ class PisosSpider(scrapy.Spider):
     def __init__(self, update_mode=False, *args, **kwargs):
         self.update_mode = update_mode
         self.max_page_to_search = 100
-        self.client = pymongo.MongoClient("mongodb://localhost:27017/")  # Adjust the connection string if needed
+        self.client = pymongo.MongoClient(mongodb_uri)  # Adjust the connection string if needed
         self.db = self.client["pisos"]  # Change to your database name
         self.last_updated_dates_collection = self.client['pisos']['last_updated_dates']
         for city in self.cities:

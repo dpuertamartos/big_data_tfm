@@ -3,13 +3,14 @@ from pymongo import MongoClient
 from scrapy.http import Request
 from datetime import datetime, timedelta
 import time
+from ..config import mongodb_uri
 
 class AdUpCheckingSpider(scrapy.Spider):
     name = 'ad_up_checking'
 
     def __init__(self, request_limit=0, pause_time=120):
         # Establish MongoDB connection
-        self.client = MongoClient("mongodb://localhost:27017/")
+        self.client = MongoClient(mongodb_uri)
         self.db = self.client['pisos']
         self.number_of_flat_checked = 0
         self.number_of_flat_retired = 0
