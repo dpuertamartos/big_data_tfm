@@ -14,8 +14,6 @@ import matplotlib.pyplot as plt
 from config import categorical
 import joblib
 import os
-from data_cleaning import DataCleaningTransformer
-
 
 
 class DataFrameDummiesTransformer(BaseEstimator, TransformerMixin):
@@ -41,7 +39,6 @@ class DataFrameDummiesTransformer(BaseEstimator, TransformerMixin):
         X_transformed = X_transformed.reindex(columns=self.column_names, fill_value=0)
 
         return X_transformed
-
 
 
 # Model creation function
