@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /usr/src/app
 
 # Create a file with the WORKDIR path
-RUN echo "/usr/src/app/" > app_path.txt
+RUN echo "/usr/src/app" > app_path.txt
 
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
