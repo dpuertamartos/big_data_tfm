@@ -11,14 +11,20 @@ Prerequisites
 
 - Ensure MongoDB Container is Running
 
-` docker run --name mongodb-container --network custom-network -d -p 27017:27017 mongo`
+Firts run:
+
+`docker run --name mongodb-container --network custom-network -d -p 27017:27017 mongo`
+
+Later runs:
+
+`docker start mongodb-container`
 
 - Access to the ETL container's source code and Dockerfile.
 - Ensure you have a volume for the SQLite database containing the db file: `pisos.db`
 
 `docker volume create sqlite-db-volume`
 
-- Ensure you have a volume for the logs
+- Ensure you have a volume for the logs  (only once)
 
 `docker volume create logs`
 
@@ -41,12 +47,12 @@ Prerequisites
 1. TO BUILD THE CONTAINER
   - Navigate to the directory containing the Dockerfile `cd path/to/etl/project/ETL`
   - Build the Docker image `docker build -t etl-container .`
-
-cd path/to/etl/project`
+  
 2. TO RUN THE CONTAINER for transformation
 
 `docker run --rm -v logs:/usr/src/app/logs -v sqlite-db-volume:/usr/src/app/database -e SQL_URI=/database/pisos.db -e SCRIPT_NAME=transformation_script.sh --network custom-network etl-container`
-3. TO RUN THE CONTAINTER for aggregation
+
+3.TO RUN THE CONTAINER for aggregation
 
 `docker run --rm -v logs:/usr/src/app/logs -v sqlite-db-volume:/usr/src/app/database -e SQL_URI=/database/pisos.db -e SCRIPT_NAME=aggregation_script.sh --network custom-network etl-container`
 
