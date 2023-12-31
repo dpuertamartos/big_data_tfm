@@ -27,6 +27,7 @@ RUN chmod +x ./aggregation_script.sh
 
 # Define an environment variable with a default script
 ENV SCRIPT_NAME=transformation_script.sh
+ENV SQL_URI=/usr/src/app/database/pisos.db
 
 # Run the specified script when the container launches
 CMD ./$SCRIPT_NAME
