@@ -50,9 +50,9 @@ Later runs:
   
 2. TO RUN THE CONTAINER for transformation
 
-`docker run --rm -v logs:/usr/src/app/logs -v sqlite-db-volume:/usr/src/app/database -e SQL_URI=/database/pisos.db -e SCRIPT_NAME=transformation_script.sh --network custom-network etl-container`
+`docker run --rm --name my_etl -v logs:/usr/src/app/logs -v sqlite-db-volume:/usr/src/app/database -e SQL_URI=/usr/src/app/database/pisos.db -e SCRIPT_NAME=transformation_script.sh --network custom-network etl-container`
 
 3.TO RUN THE CONTAINER for aggregation
 
-`docker run --rm -v logs:/usr/src/app/logs -v sqlite-db-volume:/usr/src/app/database -e SQL_URI=/database/pisos.db -e SCRIPT_NAME=aggregation_script.sh --network custom-network etl-container`
+`docker run --rm --name my_aggregation -v logs:/usr/src/app/logs -v sqlite-db-volume:/usr/src/app/database -e SQL_URI=/usr/src/app/database/pisos.db -e SCRIPT_NAME=aggregation_script.sh --network custom-network etl-container`
 
