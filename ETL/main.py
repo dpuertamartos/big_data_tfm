@@ -3,7 +3,7 @@ from transformation import transform_all_data
 from loading import initialize_sql, load_data_to_sql
 import logging
 import argparse
-
+from config import mongo_uri
 
 def main(sql_uri="./pisos.db", mongo_uri="mongodb://localhost:27017/", mongo_db="pisos"):
 
@@ -22,7 +22,7 @@ def main(sql_uri="./pisos.db", mongo_uri="mongodb://localhost:27017/", mongo_db=
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ETL script for processing data.')
     parser.add_argument('--sql_uri', default='./pisos.db', help='SQL database URI.')
-    parser.add_argument('--mongo_uri', default='mongodb://localhost:27017/', help='MongoDB URI.')
+    parser.add_argument('--mongo_uri', default=mongo_uri, help='MongoDB URI.')
     parser.add_argument('--mongo_db', default='pisos', help='MongoDB database name.')
 
     args = parser.parse_args()

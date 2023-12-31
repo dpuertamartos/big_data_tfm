@@ -3,14 +3,7 @@ import sqlite3
 import itertools
 import re
 import unicodedata
-import os
-import sys
 import argparse
-# To allow import config from ../../data_analysis/config.py
-script_dir = os.path.dirname(os.path.abspath(__file__))  # Directory of the script
-parent_dir = os.path.dirname(script_dir)  # Parent directory
-data_analysis_dir = os.path.join(parent_dir, 'data_analysis')
-sys.path.insert(0, data_analysis_dir)
 from config import categorical_to_fill_NO, categorical_to_fill_DESCONOCIDO
 
 
