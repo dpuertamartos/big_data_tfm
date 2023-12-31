@@ -15,6 +15,7 @@ RUN python -m venv venv
 RUN . venv/bin/activate && pip install --no-cache-dir -r ./requirements.txt
 # Create a directory for the SQLite database and logs in case volume is not correctly provided
 RUN mkdir database
+RUN mkdir logs
 RUN mkdir /logs/ETL_logs
 RUN mkdir /logs/ETL_aggregation_logs
 # Define environment variable
