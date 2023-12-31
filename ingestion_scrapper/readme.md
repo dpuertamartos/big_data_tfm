@@ -28,7 +28,7 @@ Later runs:
 ### How to launch the container
 
 1. TO BUILD THE CONTAINER
-  - Navigate to the directory containing the Dockerfile `cd path/to/etl/project/ETL`
+  - Navigate to the directory containing the Dockerfile `cd path/to/project/ingestion_scrapper`
   - Build the Docker image `docker build -t scraper .`
 
 cd path/to/etl/project`

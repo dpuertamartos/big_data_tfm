@@ -13,6 +13,7 @@ COPY . .
 # Install any needed packages specified in requirements.txt
 RUN python -m venv venv
 RUN . venv/bin/activate && pip install --no-cache-dir -r ./requirements.txt
+RUN mkdir logs
 RUN mkdir logs/ingestion_logs
 RUN mkdir logs/checking_logs
 # Define environment variable
