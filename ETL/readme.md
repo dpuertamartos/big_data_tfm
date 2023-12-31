@@ -40,7 +40,7 @@ Prerequisites
 
 1. TO BUILD THE CONTAINER
   - Navigate to the directory containing the Dockerfile `cd path/to/etl/project/ETL`
-  - Build the Docker image `docker build -t etl-container`
+  - Build the Docker image `docker build -t etl-container .`
 
 cd path/to/etl/project`
 2. TO RUN THE CONTAINER for transformation
