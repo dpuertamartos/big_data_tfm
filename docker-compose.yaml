@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongodb-container:
+    image: mongo
+    container_name: mongodb-container
+    ports:
+      - "27017:27017"
+    networks:
+      - custom-network
+    volumes:
+      - mongo-db-volume:/data/db
+
+  scrapy-container:
+    build:
+      context: ./path/to/scrapy
+    container_name: scrapy-container
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb-container
+
+  etl-container:
+    build:
+      context: ./path/to/etl
+    container_name: etl-container
+    environment:
+      - SQL_URI=/usr/src/app/database/pisos.db
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb-container
+    volumes:
+      - logs-volume:/usr/src/app/logs
+      - sqlite-db-volume:/usr/src/app/database
+
+volumes:
+  mongo-db-volume:
+  logs-volume:
+  sqlite-db-volume:
+
+networks:
+  custom-network:
+    driver: bridge
