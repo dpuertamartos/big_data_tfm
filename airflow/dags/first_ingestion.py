@@ -28,7 +28,7 @@ ingestion_task = DockerOperator(
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     environment={
-        'SCRIPT_NAME': 'ingestion_script.sh',
+        'SCRIPT_NAME': 'ingestion_script.sh ',
         'UPDATE_MODE': 'False'
     },
     network_mode='custom-network',
