@@ -27,6 +27,7 @@ ingestion_task = DockerOperator(
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
+    volumes=['big_data_tfm_logs:/usr/src/app/logs'],
     environment={
         'SCRIPT_NAME': 'ingestion_script.sh ',
         'UPDATE_MODE': 'False'
