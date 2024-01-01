@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.docker_operator import DockerOperator
+from docker.types import Mount
 
 default_args = {
     'owner': 'airflow',
@@ -27,7 +28,9 @@ ingestion_task = DockerOperator(
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
-    volumes=['logs:/usr/src/app/logs'],
+    mounts=[
+        Mount(source="logs", target="/usr/src/app/logs", type="bind")
+    ],
     environment={
         'SCRIPT_NAME': 'ingestion_script.sh ',
         'UPDATE_MODE': 'False'
