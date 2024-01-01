@@ -1,44 +1,112 @@
 version: '3.8'
 
 services:
-  mongodb-container:
-    image: mongo
+  mongodb:
     container_name: mongodb-container
+    image: mongo:latest
+    volumes:
+      - mongodb-data:/data/db
     ports:
       - "27017:27017"
     networks:
       - custom-network
-    volumes:
-      - mongo-db-volume:/data/db
 
-  scrapy-container:
+  scraper:
+    container_name: scraper-container
     build:
-      context: ./path/to/scrapy
-    container_name: scrapy-container
+      context: ./ingestion_scrapper
+      dockerfile: Dockerfile
+    volumes:
+      - logs:/usr/src/app/logs
     networks:
       - custom-network
     depends_on:
-      - mongodb-container
+      - mongodb
 
-  etl-container:
-    build:
-      context: ./path/to/etl
+  etl:
     container_name: etl-container
-    environment:
-      - SQL_URI=/usr/src/app/database/pisos.db
+    build:
+      context: ./ETL
+      dockerfile: Dockerfile
+    volumes:
+      - logs:/usr/src/app/logs
+      - sqlite-db:/usr/src/app/database
     networks:
       - custom-network
     depends_on:
-      - mongodb-container
+      - mongodb
+
+  data_analysis:
+    container_name: ml-container
+    build:
+      context: ./data_analysis
+      dockerfile: Dockerfile
     volumes:
-      - logs-volume:/usr/src/app/logs
-      - sqlite-db-volume:/usr/src/app/database
+      - logs:/usr/src/app/logs
+      - sqlite-db:/usr/src/app/database
+      - ml-models:/usr/src/app/models
+    networks:
+      - custom-network
+
+#  web:
+#    container_name: web-container
+#    build:
+#      context: ./path_to_web_app
+#      dockerfile: Dockerfile
+#    volumes:
+#      - sqlite-db:/usr/src/app/database
+#    ports:
+#      - "80:80"
+#    networks:
+#      - custom-network
+
+  airflow_webserver:
+    container_name: airflow-webserver-container
+    image: apache/airflow:2.7.1
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW_UID=${UID:-50000}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - airflow-logs:/opt/airflow/logs
+      - airflow-data:/opt/airflow
+    command: webserver
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb
+
+  airflow_scheduler:
+    container_name: airflow-scheduler-container
+    image: apache/airflow:2.7.1
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW_UID=${UID:-50000}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - airflow-logs:/opt/airflow/logs
+      - airflow-data:/opt/airflow
+    command: scheduler
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb
 
 volumes:
-  mongo-db-volume:
-  logs-volume:
-  sqlite-db-volume:
+  mongodb-data:
+  logs:
+  sqlite-db:
+  ml-models:
+  airflow-logs:
+  airflow-data:
 
 networks:
   custom-network:
     driver: bridge
+
+
