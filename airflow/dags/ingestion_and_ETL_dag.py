@@ -1,18 +1,15 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.docker_operator import DockerOperator
 from airflow.operators.python_operator import BranchPythonOperator
 from airflow.utils.trigger_rule import TriggerRule
 
-
 def _choose_task_to_run():
-
     current_hour = datetime.now().hour
-    if current_hour < 15:  # Assuming 10:00 run is the first run of the day
+    if current_hour < 15:
         return 'run_checking_deletes_task'
     else:
         return 'run_transformation_script'
-
 
 default_args = {
     'owner': 'airflow',
@@ -23,24 +20,29 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-
 dag = DAG(
     'ingestion_transformation_dag',
     default_args=default_args,
-    description='Run ingestion_script.sh and transformation_script.sh at 10:00 and 22:00 daily',
+    description='Run ingestion and transformation at 10:00 and 22:00 daily',
     schedule_interval='0 10,22 * * *',
     start_date=datetime(2023, 9, 23),
     catchup=False,
 )
 
-
 # Ingestion Task
-ingestion_task = BashOperator(
+ingestion_task = DockerOperator(
     task_id='run_ingestion_script',
-    bash_command="/home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ingestion_script.sh ",
+    image='scraper-container',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    environment={
+        'SCRIPT_NAME': 'ingestion_script.sh',
+        'UPDATE_MODE': 'False'
+    },
+    network_mode='custom-network',
     dag=dag,
 )
-
 
 # Branching Task
 branch_task = BranchPythonOperator(
@@ -49,34 +51,52 @@ branch_task = BranchPythonOperator(
     dag=dag,
 )
 
-
-# Checking Deletes Task (run only once per day)
-checking_deletes_task = BashOperator(
+# Checking Deletes Task
+checking_deletes_task = DockerOperator(
     task_id='run_checking_deletes_task',
-    bash_command="/home/ubuntu/big_data_tfm/ingestion_scrapper/ingestion_scrapper/ad_up_checking_script.sh ",
+    image='scraper-container',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    environment={'SCRIPT_NAME': 'ad_up_checking_script.sh'},
+    network_mode='custom-network',
     dag=dag,
 )
 
-
 # Transformation Task
-transformation_task = BashOperator(
+transformation_task = DockerOperator(
     task_id='run_transformation_script',
-    bash_command="/home/ubuntu/big_data_tfm/ETL/transformation_script.sh ",
+    image='etl-container',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    environment={'SCRIPT_NAME': 'transformation_script.sh'},
     trigger_rule=TriggerRule.ONE_SUCCESS,
+    network_mode='custom-network',
     dag=dag,
 )
 
 # Aggregation Task
-aggregation_task = BashOperator(
+aggregation_task = DockerOperator(
     task_id='run_aggregation_script',
-    bash_command="/home/ubuntu/big_data_tfm/ETL/aggregation_script.sh ",
+    image='etl-container',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    environment={'SCRIPT_NAME': 'aggregation_script.sh'},
+    network_mode='custom-network',
     dag=dag,
 )
 
 # Prediction Task
-prediction_task = BashOperator(
+prediction_task = DockerOperator(
     task_id='run_prediction_script',
-    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new ",
+    image='ml-container',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    environment={'SCRIPT_NAME': 'predict.sh'},
+    network_mode='custom-network',
     dag=dag,
 )
 
@@ -85,3 +105,4 @@ ingestion_task >> branch_task
 branch_task >> [checking_deletes_task, transformation_task]
 checking_deletes_task >> transformation_task
 transformation_task >> aggregation_task >> prediction_task
+
