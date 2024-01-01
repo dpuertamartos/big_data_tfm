@@ -3,6 +3,8 @@ from airflow import DAG
 from airflow.operators.docker_operator import DockerOperator
 from docker.types import Mount
 
+project = 'big_data_tfm'
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -29,13 +31,13 @@ ingestion_task = DockerOperator(
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source="big_data_tfm_logs", target="/usr/src/app/logs", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume")
     ],
     environment={
         'SCRIPT_NAME': 'ingestion_script.sh ',
         'UPDATE_MODE': 'False'
     },
-    network_mode='custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 
