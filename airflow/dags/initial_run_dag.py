@@ -1,19 +1,8 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.docker_operator import DockerOperator
-from airflow.operators.python_operator import BranchPythonOperator
-from airflow.utils.trigger_rule import TriggerRule
 from docker.types import Mount
 from config import project
-
-
-def _choose_task_to_run():
-    current_hour = datetime.now().hour
-    if current_hour < 15:
-        return 'run_checking_deletes_task'
-    else:
-        return 'run_transformation_script'
-
 
 default_args = {
     'owner': 'airflow',
@@ -25,10 +14,10 @@ default_args = {
 }
 
 dag = DAG(
-    'ingestion_transformation_dag',
+    'initial_dag',
     default_args=default_args,
-    description='Run ingestion and transformation at 10:00 and 22:00 daily',
-    schedule_interval='0 10,22 * * *',
+    description='Manually run the first launch of the process. First ingestion, transformation, aggregation, training and prediction',
+    schedule_interval=None,  # This DAG will not be scheduled automatically
     start_date=datetime(2023, 9, 23),
     catchup=False,
 )
@@ -45,30 +34,8 @@ ingestion_task = DockerOperator(
     ],
     environment={
         'SCRIPT_NAME': 'ingestion_script.sh ',
-        'UPDATE_MODE': 'True'
+        'UPDATE_MODE': 'False'
     },
-    network_mode=f'{project}custom-network',
-    dag=dag,
-)
-
-# Branching Task
-branch_task = BranchPythonOperator(
-    task_id='branch_task',
-    python_callable=_choose_task_to_run,
-    dag=dag,
-)
-
-# Checking Deletes Task
-checking_deletes_task = DockerOperator(
-    task_id='run_checking_deletes_task',
-    image='scraper',
-    api_version='auto',
-    auto_remove=True,
-    docker_url='unix://var/run/docker.sock',
-    mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume")
-    ],
-    environment={'SCRIPT_NAME': 'ad_up_checking_script.sh '},
     network_mode=f'{project}custom-network',
     dag=dag,
 )
@@ -85,7 +52,6 @@ transformation_task = DockerOperator(
         Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume")
     ],
     environment={'SCRIPT_NAME': 'transformation_script.sh '},
-    trigger_rule=TriggerRule.ONE_SUCCESS,
     network_mode=f'{project}custom-network',
     dag=dag,
 )
@@ -102,6 +68,24 @@ aggregation_task = DockerOperator(
         Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume")
     ],
     environment={'SCRIPT_NAME': 'aggregation_script.sh '},
+    network_mode=f'{project}custom-network',
+    dag=dag,
+)
+
+
+# Training Task
+training_task = DockerOperator(
+    task_id='run_training_script',
+    image='data_analysis',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    mounts=[
+        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume"),
+        Mount(source=f"{project}ml-models", target="/usr/src/app/models", type="volume")
+    ],
+    environment={'SCRIPT_NAME': 'train.sh '},
     network_mode=f'{project}custom-network',
     dag=dag,
 )
@@ -123,9 +107,4 @@ prediction_task = DockerOperator(
     dag=dag,
 )
 
-# Setting Task Dependencies
-ingestion_task >> branch_task
-branch_task >> [checking_deletes_task, transformation_task]
-checking_deletes_task >> transformation_task
-transformation_task >> aggregation_task >> prediction_task
-
+ingestion_task >> transformation_task >> aggregation_task >> training_task >> prediction_task

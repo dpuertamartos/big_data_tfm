@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.docker_operator import DockerOperator
+from docker.types import Mount
+from config import project
 
 
 default_args = {
@@ -22,17 +24,37 @@ dag = DAG(
     catchup=False,
 )
 
-# Prediction Task
-training_task = BashOperator(
+# Training Task
+training_task = DockerOperator(
     task_id='run_training_script',
-    bash_command="/home/ubuntu/big_data_tfm/data_analysis/train.sh ",
+    image='data_analysis',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    mounts=[
+        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume"),
+        Mount(source=f"{project}ml-models", target="/usr/src/app/models", type="volume")
+    ],
+    environment={'SCRIPT_NAME': 'train.sh '},
+    network_mode=f'{project}custom-network',
     dag=dag,
 )
 
 # Prediction Task
-prediction_task = BashOperator(
+prediction_task = DockerOperator(
     task_id='run_prediction_script',
-    bash_command="/home/ubuntu/big_data_tfm/data_analysis/predict.sh new ",
+    image='data_analysis',
+    api_version='auto',
+    auto_remove=True,
+    docker_url='unix://var/run/docker.sock',
+    mounts=[
+        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume"),
+        Mount(source=f"{project}ml-models", target="/usr/src/app/models", type="volume")
+    ],
+    environment={'SCRIPT_NAME': 'predict.sh '},
+    network_mode=f'{project}custom-network',
     dag=dag,
 )
 
