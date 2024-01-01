@@ -59,7 +59,7 @@ Guardará la fecha del más reciente scrappeado por localización
 
 TIEMPO ESTIMADO: 10 inmuebles / s
 
-###Sucesivas ejuciones del scrapper
+###Sucesivas ejuciones del scrapper o si 
 
 `docker-compose run --rm -e SCRIPT_NAME=ingestion_script.sh scraper`
 
@@ -123,17 +123,32 @@ TO RUN THE CONTAINER for prediction
 
 ## 6. Mongodb 
 
+### Restaurar copia de mongodb (Para usarla de base del proyecto) - No obligatorio, podemos partir de 0
+
+1. Si existe previamente un volumen con datos de mongodb lo borramos
+
+`docker volume remove big_data_tfm_mongodb-data`
+
+2. Lanzamos el contenedor de mongodb, se creara un nuevo volumen big_data_tfm_mongodb-data
+
+`docker-compose up -d mongodb`
+
+3. Copiamos el backup (cambiar /path/to/backup/)
+
+`docker cp /path/to/backup/20231209/ mongodb-container:/tmp/bkup`
+
+4. Lo restauramos 
+
+`docker exec -it mongodb-container mongorestore /tmp/bkup`
+
+### Hacer copia de seguridad cada 3 días.
+
+AÑADIR INSTRUCCIONES
+
 
 ## 7. SQLite
 
-
-### purpose
-
-...
-
-## DEV-UTILS
-
-### How to copy the pisos.db file into the volume
+### How to restore the database file (named pisos.db) into the volume
 
 1. Ensure you know the path to your pisos.db file on your host machine. For example, it might be at /path/to/pisos.db.
 
