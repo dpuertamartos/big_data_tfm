@@ -6,27 +6,32 @@ services:
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
       - AIRFLOW_UID=${UID:-50000}
+      - AIRFLOW_HOME=/opt/airflow
     ports:
       - "8080:8080"
     volumes:
       - ./dags:/opt/airflow/dags
       - airflow-logs:/opt/airflow/logs
-      - airflow-data:/opt/airflow/data
+      - airflow-data:/opt/airflow
     command: webserver
 
   scheduler:
     image: apache/airflow:2.7.1
     environment:
       - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
       - AIRFLOW_UID=${UID:-50000}
+      - AIRFLOW_HOME=/opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - airflow-logs:/opt/airflow/logs
-      - airflow-data:/opt/airflow/data
+      - airflow-data:/opt/airflow
     command: scheduler
 
 volumes:
   airflow-logs:
   airflow-data:
+
 
