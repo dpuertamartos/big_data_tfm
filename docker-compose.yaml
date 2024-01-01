@@ -10,6 +10,7 @@ services:
       - "27017:27017"
     networks:
       - custom-network
+    restart: always
 
   scraper:
     container_name: scraper-container
@@ -79,6 +80,7 @@ services:
       - custom-network
     depends_on:
       - mongodb
+    restart: always
 
   airflow_scheduler:
     container_name: airflow-scheduler-container
@@ -96,6 +98,7 @@ services:
       - custom-network
     depends_on:
       - mongodb
+    restart: always
 
 volumes:
   mongodb-data:
