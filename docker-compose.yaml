@@ -75,6 +75,8 @@ services:
       - ./dags:/opt/airflow/dags
       - airflow-logs:/opt/airflow/logs
       - airflow-data:/opt/airflow
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+      - /tmp:/tmp  # Mount /tmp directory
     command: webserver
     networks:
       - custom-network
@@ -93,6 +95,8 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - airflow-logs:/opt/airflow/logs
       - airflow-data:/opt/airflow
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+      - /tmp:/tmp  # Mount /tmp directory
     command: scheduler
     networks:
       - custom-network
