@@ -25,3 +25,8 @@ services:
       - airflow-logs:/opt/airflow/logs
       - airflow-data:/opt/airflow/data
     command: scheduler
+
+volumes:
+  airflow-logs:
+  airflow-data:
+
