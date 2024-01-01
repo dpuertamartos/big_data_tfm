@@ -27,34 +27,34 @@ dag = DAG(
 # Training Task
 training_task = DockerOperator(
     task_id='run_training_script',
-    image='data_analysis',
+    image=f'{project}-data_analysis',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
-        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume"),
-        Mount(source=f"{project}ml-models", target="/usr/src/app/models", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}_sqlite-db", target="/usr/src/app/database", type="volume"),
+        Mount(source=f"{project}_ml-models", target="/usr/src/app/models", type="volume")
     ],
     environment={'SCRIPT_NAME': 'train.sh '},
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 
 # Prediction Task
 prediction_task = DockerOperator(
     task_id='run_prediction_script',
-    image='data_analysis',
+    image=f'{project}-data_analysis',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
-        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume"),
-        Mount(source=f"{project}ml-models", target="/usr/src/app/models", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}_sqlite-db", target="/usr/src/app/database", type="volume"),
+        Mount(source=f"{project}_ml-models", target="/usr/src/app/models", type="volume")
     ],
     environment={'SCRIPT_NAME': 'predict.sh '},
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 

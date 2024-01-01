@@ -36,18 +36,18 @@ dag = DAG(
 # Ingestion Task
 ingestion_task = DockerOperator(
     task_id='run_ingestion_script',
-    image='scraper',
+    image=f'{project}-scraper',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume")
     ],
     environment={
         'SCRIPT_NAME': 'ingestion_script.sh ',
         'UPDATE_MODE': 'True'
     },
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 
@@ -61,65 +61,65 @@ branch_task = BranchPythonOperator(
 # Checking Deletes Task
 checking_deletes_task = DockerOperator(
     task_id='run_checking_deletes_task',
-    image='scraper',
+    image=f'{project}-scraper',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume")
     ],
     environment={'SCRIPT_NAME': 'ad_up_checking_script.sh '},
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 
 # Transformation Task
 transformation_task = DockerOperator(
     task_id='run_transformation_script',
-    image='etl',
+    image=f'{project}-etl',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
-        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}_sqlite-db", target="/usr/src/app/database", type="volume")
     ],
     environment={'SCRIPT_NAME': 'transformation_script.sh '},
     trigger_rule=TriggerRule.ONE_SUCCESS,
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 
 # Aggregation Task
 aggregation_task = DockerOperator(
     task_id='run_aggregation_script',
-    image='etl',
+    image=f'{project}-etl',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
-        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}_sqlite-db", target="/usr/src/app/database", type="volume")
     ],
     environment={'SCRIPT_NAME': 'aggregation_script.sh '},
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 
 # Prediction Task
 prediction_task = DockerOperator(
     task_id='run_prediction_script',
-    image='data_analysis',
+    image=f'{project}-data_analysis',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume"),
-        Mount(source=f"{project}sqlite-db", target="/usr/src/app/database", type="volume"),
-        Mount(source=f"{project}ml-models", target="/usr/src/app/models", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume"),
+        Mount(source=f"{project}_sqlite-db", target="/usr/src/app/database", type="volume"),
+        Mount(source=f"{project}_ml-models", target="/usr/src/app/models", type="volume")
     ],
     environment={'SCRIPT_NAME': 'predict.sh '},
-    network_mode=f'{project}custom-network',
+    network_mode=f'{project}_custom-network',
     dag=dag,
 )
 

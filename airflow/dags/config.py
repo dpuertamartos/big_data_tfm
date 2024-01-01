@@ -1,2 +1,2 @@
 # config.py
-project = 'big_data_tfm_'
+project = 'big_data_tfm'
