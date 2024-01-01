@@ -12,9 +12,9 @@ default_args = {
 }
 
 dag = DAG(
-    'test_ingestion_dag',
+    'INITIAL_INGESTION_DAG',
     default_args=default_args,
-    description='Manually run ingestion_script.sh',
+    description='Manually run the first launch of the process. First ingestion, transformation, aggregation, training and prediction',
     schedule_interval=None,  # This DAG will not be scheduled automatically
     start_date=datetime(2023, 9, 23),
     catchup=False,
@@ -23,7 +23,7 @@ dag = DAG(
 # Ingestion Task
 ingestion_task = DockerOperator(
     task_id='run_ingestion_script',
-    image='scraper-container',
+    image='scraper',
     api_version='auto',
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
