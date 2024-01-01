@@ -6,6 +6,13 @@ overleaf link to memory https://www.overleaf.com/read/vjjqftkqphwy
 
 - Docker instalado
 - WSL (en el caso de utilizar windows)
+- Dar permisos de escritura y lectura en el socket de docker para todos los usuarios:
+
+`sudo chmod 666 /var/run/docker.sock` (Necesario para que lo utilice airflow)
+
+Se puede revertir con
+
+`sudo chmod 660 /var/run/docker.sock`
 
 ## Set up
 
