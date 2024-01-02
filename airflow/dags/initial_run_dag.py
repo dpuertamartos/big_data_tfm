@@ -30,7 +30,7 @@ ingestion_task = DockerOperator(
     auto_remove=True,
     docker_url='unix://var/run/docker.sock',
     mounts=[
-        Mount(source=f"{project}logs", target="/usr/src/app/logs", type="volume")
+        Mount(source=f"{project}_logs", target="/usr/src/app/logs", type="volume")
     ],
     environment={
         'SCRIPT_NAME': 'ingestion_script.sh ',

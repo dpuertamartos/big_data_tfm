@@ -141,6 +141,10 @@ TO RUN THE CONTAINER for prediction
 
 `docker exec -it mongodb-container mongorestore /tmp/bkup`
 
+5. Eliminamos el backup
+
+`docker exec mongodb-container rm -rf /tmp/bkup`
+
 ### Hacer copia de seguridad cada 3 días.
 
 AÑADIR INSTRUCCIONES
@@ -154,13 +158,34 @@ AÑADIR INSTRUCCIONES
 
 2. Run a temporary container with the sqlite-db-volume volume mounted.
 
-`docker run -it --rm --name temp-container -v sqlite-db:/tmp/volume alpine`
+`docker run -it --rm -d --name temp-container -v sqlite-db:/volume alpine`
 
 3. Open another terminal. Use the docker cp command to copy the pisos.db file from your host to the temporary container's mounted volume.
 
-`docker cp /path/to/pisos.db temp-container:/tmp/volume/`
+`docker cp /path/to/pisos.db temp-container:/volume/ && docker stop temp-container`
 
-4. Exit the temporary container. `exit` It will autodelete
+
+## DEV-UTILS
+
+### Inspect volume contents
+
+`docker run -it --rm --name temp-container -v big_data_tfm_logs:/data alpine sh`
+
+### Copy data from volume to local file system
+
+1. `docker run --rm -d -v [VOLUME_NAME]:/data --name temp-container alpine`
+
+2. `docker cp temp-container:/data /path/to/local/destination && docker stop temp-container`
+
+### Exporting the mongodb volume (or any) to another machine
+
+1. `docker run --rm -v big_data_tfm_mongodb-data:/data -v $(pwd):/backup ubuntu tar czvf /backup/mongodb-volume-backup.tar.gz -C /data .`
+
+In a new machine:
+
+2. `docker volume create big_data_tfm_mongodb-data`
+3. `docker run --rm -v big_data_tfm_mongodb-data:/data -v /path/where/backup/is/stored:/backup ubuntu tar xzvf /backup/volume-backup.tar.gz -C /data`
+
 
 ## arquitecture 
 

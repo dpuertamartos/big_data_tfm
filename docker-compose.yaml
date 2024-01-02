@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   mongodb:
@@ -14,6 +14,7 @@ services:
 
   scraper:
     container_name: scraper-container
+    image: big_data_tfm-scraper
     build:
       context: ./ingestion_scrapper
       dockerfile: Dockerfile
@@ -26,6 +27,7 @@ services:
 
   etl:
     container_name: etl-container
+    image: big_data_tfm-etl
     build:
       context: ./ETL
       dockerfile: Dockerfile
@@ -39,6 +41,7 @@ services:
 
   data_analysis:
     container_name: ml-container
+    image: big_data_tfm-data_analysis
     build:
       context: ./data_analysis
       dockerfile: Dockerfile
@@ -72,7 +75,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./airflow/dags:/opt/airflow/dags
       - airflow-logs:/opt/airflow/logs
       - airflow-data:/opt/airflow
       - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
