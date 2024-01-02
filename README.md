@@ -14,6 +14,8 @@ Se puede revertir con
 
 `sudo chmod 660 /var/run/docker.sock`
 
+- (Opcional: Activar docker al inicio de sistema. Nota: Si se usa WSL hay que activar WSL al inicio de sistema) `sudo systemctl enable docker`
+
 ## Set up
 
 Este proyecto se lanza utilizando Docker containers para mayor facilidad.
@@ -39,6 +41,9 @@ docker-compose run --rm airflow_webserver airflow users create \
     --password admin
 `
 
+3.b. (OPCIONAL) Restaura el volumen de mongodb siguiendo las intrucciones al final de este README en dev-utils
+
+
 4. Lanza la mongodb, airflow y el sitio web:
 
 `docker-compose up -d mongodb airflow_webserver airflow_scheduler web`
@@ -46,6 +51,10 @@ docker-compose run --rm airflow_webserver airflow users create \
 5. Construye las imágenes para el scraper, etl y análisis de datos. Estos servicios son lanzados en batch y no estan continuamente corriendo:
 
 `docker-compose build scraper etl data_analysis`
+
+6. Lanza el DAG 'restore_from_mongodb_volume_dag' o 'initial_run_dag' manualmente desde airflow
+
+7. Cuando hayan acabado (pueden tardar varias horas estos dag iniciales) activa el resto de dag y el proyecto funcionará con normalidad
 
 ## 1. Ingestion
 
