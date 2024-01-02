@@ -1,16 +1,10 @@
 #!/bin/bash
-
-# Check if the mode is provided as an argument
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 [all|new]"
-    exit 1
-fi
-
-MODE=$1
+APP_PATH=$(cat app_path.txt)
+LOG_DIR="$APP_PATH/logs/prediction_logs"
+# Ensure log directory exists
+mkdir -p $LOG_DIR
 
 # Activate the virtual environment and change to folder
-source /home/ubuntu/big_data_tfm/venv/bin/activate
-cd /home/ubuntu/big_data_tfm/data_analysis/
-
+source $APP_PATH/venv/bin/activate
 # Run the Python script with the specified mode
-python3.11 /home/ubuntu/big_data_tfm/data_analysis/generate_predictions.py --mode $MODE >> /home/ubuntu/Desktop/prediction_logs/cron_log_$(date +%Y%m%d%H%M%S).log 2>&1
+python3.11 $APP_PATH/generate_predictions.py --mode $MODE >> $LOG_DIR/cron_log_$(date +%Y%m%d%H%M%S).log 2>&1

@@ -39,6 +39,16 @@ def create_index(cursor, table_name, column_name):
         logging.info(f"Index already exists on column {column_name} of table {table_name}")
 
 
+def add_columns_to_table(conn):
+    # Adding the 'prediction' column
+    conn.execute("ALTER TABLE pisos ADD COLUMN prediction REAL")
+    # Adding the 'predictionupdatedat' column
+    conn.execute("ALTER TABLE pisos ADD COLUMN predictionupdatedat TIMESTAMP")
+    # Adding the 'rating' column
+    conn.execute("ALTER TABLE pisos ADD COLUMN rating REAL")
+    conn.commit()
+
+
 def load_data_to_sql(df, list_of_collections_correctly_transformed, future_run_update_dates, conn, cursor):
     logging.info("loading data into sql...")
 
@@ -48,6 +58,8 @@ def load_data_to_sql(df, list_of_collections_correctly_transformed, future_run_u
             df.head(0).to_sql("pisos", conn, if_exists='replace', index=False)
             create_index(cursor, 'pisos', 'id')
             logging.info("table created and indexed")
+            add_columns_to_table(conn)
+            logging.info("columns needed for ML added to table pisos")
 
     if df is not None:
         # Existing IDs in the 'pisos' table

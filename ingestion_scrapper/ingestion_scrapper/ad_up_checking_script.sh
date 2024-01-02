@@ -1,4 +1,10 @@
 #!/bin/bash
-source /home/ubuntu/big_data_tfm/venv/bin/activate
-cd /home/ubuntu/big_data_tfm/ingestion_scrapper
-scrapy crawl ad_up_checking -a request_limit=5000 -a pause_time=60 >> /home/ubuntu/Desktop/checking_logs/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1
+# Read the app path from the file
+APP_PATH=$(cat app_path.txt)
+LOG_DIR="$APP_PATH/logs/checking_logs"
+# Ensure log directory exists
+mkdir -p $LOG_DIR
+
+source $APP_PATH/venv/bin/activate
+cd $APP_PATH/ingestion_scrapper
+scrapy crawl ad_up_checking -a request_limit=5000 -a pause_time=60 >> $LOG_DIR/cron_log_$(date +\%Y\%m\%d\%H\%M\%S).log 2>&1

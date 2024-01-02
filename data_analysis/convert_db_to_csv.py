@@ -2,6 +2,7 @@ import pandas as pd
 import sqlite3
 import time
 
+
 def generate_csv_from_db(database, age_in_months=6, csv_name='pisos.csv'):
     # Connect to SQLite database
     conn = sqlite3.connect(database)

@@ -4,7 +4,8 @@ import joblib
 import sqlite3
 import argparse
 import time
-from config import db_path
+from config import db_path, model_saving_path
+
 
 def load_model(model_path):
     # Loads both the model and its preprocessing pipeline
@@ -20,7 +21,7 @@ def load_required_models(df):
     models = {city: {} for city in unique_cities}
     for city in unique_cities:
         for category in unique_categories:
-            model_path = f"./models/{city}_{category}.joblib"
+            model_path = f"{model_saving_path}/{city}_{category}.joblib"
             models[city][category] = load_model(model_path)
 
     return models
@@ -102,23 +103,22 @@ def predict_and_store_new_entries(database, data_cleaner_cheap, data_cleaner_exp
     store_predictions_in_db(database, new_cleaned_with_predictions[['id', 'predictions', 'price_euro']])
 
 
-
 def main():
     parser = argparse.ArgumentParser(description="Predict prices for real estate listings.")
-    parser.add_argument('--mode', choices=['all', 'new'], default='all',
+    parser.add_argument('--mode', choices=['all', 'new'], default='new',
                         help='Choose "all" to predict for all entries or "new" for only new entries.')
 
     args = parser.parse_args()
 
-
     # Load data cleaners
-    data_cleaner_cheap = joblib.load("./models/data_cleaner_cheap.joblib")
-    data_cleaner_expensive = joblib.load("./models/data_cleaner_expensive.joblib")
+    data_cleaner_cheap = joblib.load(f"{model_saving_path}/data_cleaner_cheap.joblib")
+    data_cleaner_expensive = joblib.load(f"{model_saving_path}/data_cleaner_expensive.joblib")
 
     if args.mode == 'all':
         predict_and_store_all(db_path, data_cleaner_cheap, data_cleaner_expensive)
     else:
         predict_and_store_new_entries(db_path, data_cleaner_cheap, data_cleaner_expensive)
+
 
 if __name__ == "__main__":
     main()

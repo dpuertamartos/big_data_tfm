@@ -1,0 +1,122 @@
+version: '3'
+
+services:
+  mongodb:
+    container_name: mongodb-container
+    image: mongo:latest
+    volumes:
+      - mongodb-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - custom-network
+    restart: always
+
+  scraper:
+    container_name: scraper-container
+    image: big_data_tfm-scraper
+    build:
+      context: ./ingestion_scrapper
+      dockerfile: Dockerfile
+    volumes:
+      - logs:/usr/src/app/logs
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb
+
+  etl:
+    container_name: etl-container
+    image: big_data_tfm-etl
+    build:
+      context: ./ETL
+      dockerfile: Dockerfile
+    volumes:
+      - logs:/usr/src/app/logs
+      - sqlite-db:/usr/src/app/database
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb
+
+  data_analysis:
+    container_name: ml-container
+    image: big_data_tfm-data_analysis
+    build:
+      context: ./data_analysis
+      dockerfile: Dockerfile
+    volumes:
+      - logs:/usr/src/app/logs
+      - sqlite-db:/usr/src/app/database
+      - ml-models:/usr/src/app/models
+    networks:
+      - custom-network
+
+#  web:
+#    container_name: web-container
+#    build:
+#      context: ./path_to_web_app
+#      dockerfile: Dockerfile
+#    volumes:
+#      - sqlite-db:/usr/src/app/database
+#    ports:
+#      - "80:80"
+#    networks:
+#      - custom-network
+
+  airflow_webserver:
+    container_name: airflow-webserver-container
+    image: apache/airflow:2.7.1
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW_UID=${UID:-50000}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - airflow-logs:/opt/airflow/logs
+      - airflow-data:/opt/airflow
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+      - /tmp:/tmp  # Mount /tmp directory
+    command: webserver
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb
+    restart: always
+
+  airflow_scheduler:
+    container_name: airflow-scheduler-container
+    image: apache/airflow:2.7.1
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW_UID=${UID:-50000}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - airflow-logs:/opt/airflow/logs
+      - airflow-data:/opt/airflow
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+      - /tmp:/tmp  # Mount /tmp directory
+    command: scheduler
+    networks:
+      - custom-network
+    depends_on:
+      - mongodb
+    restart: always
+
+volumes:
+  mongodb-data:
+  logs:
+  sqlite-db:
+  ml-models:
+  airflow-logs:
+  airflow-data:
+
+networks:
+  custom-network:
+    driver: bridge
+
+
