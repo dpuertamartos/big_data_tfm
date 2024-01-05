@@ -25,9 +25,6 @@ const App = () => {
             home
           </Button>
           <Button color="inherit" component={Link} to="/flats">
-            flats
-          </Button>
-          <Button color="inherit" component={Link} to="/explore">
             explore
           </Button>
           <Button color="inherit" component={Link} to="/trends">
