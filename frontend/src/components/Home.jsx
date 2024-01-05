@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import flatService from '../services/flats'
-
+import trendService from '../services/trends'
 import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import Listing from './Listing'
@@ -8,43 +8,10 @@ import cities from '../../../cities.json'
 
 
 
-const data = [
-  {
-    name: '2023-08 prev',
-    all: 4000,
-    madrid: 2400,
-    jaen: 2400,
-  },
-  {
-    name: '2023-09',
-    all: 3000,
-    madrid: 1398,
-    jaen: 2210,
-  },
-  {
-    name: '2023-10',
-    all: 2000,
-    madrid: 9800,
-    jaen: 2290,
-  },
-  {
-    name: '2023-11',
-    all: 2780,
-    madrid: 3908,
-    jaen: 2000,
-  },
-  {
-    name: '2023-12',
-    all: 1890,
-    madrid: 4800,
-    jaen: 2181,
-  }
-]
-
-
 const Home = () => {
   const [bestFlats, setBestFlats] = useState({})
   const [selectedCities, setSelectedCities] = useState(["all"])
+  const [trendData, setTrendData] = useState([])
 
   useEffect(() => {
     const fetchBestFlats = async () => {
@@ -58,9 +25,24 @@ const Home = () => {
         console.error("Error fetching initial flats:", error)
       }
     }
+
+    const fetchInitialTrends = async () => {
+      try {
+        const initialTrends = await trendService.get({
+          active: 'all',
+          type: 'all'
+        })
+        setTrendData(initialTrends);
+      } catch (error) {
+        console.error("Error fetching initial trends:", error);
+      }
+    }
+
     fetchBestFlats()
+    fetchInitialTrends()
   }, [])
 
+  console.log(trendData)
   const handleChange = async (event) => {
     const newSelectedCities = event.target.value
     setSelectedCities(newSelectedCities)
@@ -98,7 +80,7 @@ const Home = () => {
   return (
     <span>
       <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
-      <LineGraph selectedCities={selectedCities} data={data} activeDotSelector={'all'} />
+      <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} />
       <Listing data={bestFlats} />
     </span>
   )
