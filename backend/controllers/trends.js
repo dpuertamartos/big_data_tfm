@@ -1,79 +1,41 @@
 const router = require('express').Router()
 const { sequelize, select } = require('../util/db')
 
-const getAvgPrice = async () => {
-    return await sequelize.query(
-        `SELECT 
-                AVG(price_euro) AS average_price, 
-                AVG(superficie_util_m2) AS average_square_meters, 
-                AVG(habitaciones) AS average_habs, 
-                COUNT(*) AS total_listings, 
-                strftime('%Y-%m', datetime(createdat, 'unixepoch')) AS month_year
-        FROM pisos 
-        GROUP BY month_year
-        ORDER BY month_year DESC`,
-        { type: select }
-    )
-}
+const getAggregatedData = async (options) => {
+    let whereClause = ''
+    const conditions = []
 
-const getTrendsByCity = async (city) => {
-    return await sequelize.query(
-        `SELECT city, 
-                AVG(price_euro) AS average_price, 
-                AVG(superficie_util_m2) AS average_square_meters, 
-                AVG(habitaciones) AS average_habs, 
-                COUNT(*) AS total_listings, 
-                strftime('%Y-%m', datetime(createdat, 'unixepoch')) AS month_year
-         FROM pisos 
-         WHERE city = :city 
-         GROUP BY city, month_year
-         ORDER BY month_year DESC`,
-        {
-            type: select,
-            replacements: { city: city }
-        }
-    )
-}
+    if (options.city) {
+        conditions.push(`city_group = '${options.city}'`)
+    }
+    if (options.type) {
+        conditions.push(`type_group = '${options.type}'`)
+    }
+    if (options.active) {
+        conditions.push(`active_group = '${options.active}'`)
+    }
+    if (options.month) {
+        conditions.push(`updated_month_group = '${options.month}'`)
+    }
 
-const getTrendsByCitySqMax = async (city, sqmax) => {
-    return await sequelize.query(
-        `SELECT city, 
-                AVG(price_euro) AS average_price, 
-                AVG(superficie_util_m2) AS average_square_meters, 
-                AVG(habitaciones) AS average_habs, 
-                COUNT(*) AS total_listings, 
-                strftime('%Y-%m', datetime(createdat, 'unixepoch')) AS month_year
-         FROM pisos 
-         WHERE city = :city AND superficie_util_m2 <= :sqmax
-         GROUP BY city, month_year
-         ORDER BY month_year DESC`,
-        {
-            type: select,
-            replacements: {
-                city: city,
-                sqmax: sqmax
-            }
-        }
-    )
+    if (conditions.length > 0) {
+        whereClause = 'WHERE ' + conditions.join(' AND ')
+    }
+
+    const query = `SELECT * FROM pisos_dw ${whereClause}`
+    return await sequelize.query(query, { type: select })
 }
 
 router.get('/', async (req, res) => {
-    const avg = await getAvgPrice()
-    res.json(avg)
+    try {
+        const { city, type, active, month } = req.query
+        const options = { city, type, active, month }
+        const data = await getAggregatedData(options)
+        res.json(data)
+    } catch (error) {
+        console.error('Error fetching filtered data:', error)
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
 })
-
-router.get('/:city', async (req, res) => {
-    const city = req.params.city
-    const trends = await getTrendsByCity(city)
-    res.json(trends)
-})
-
-router.get('/:city/:m2', async (req, res) => {
-    const m2 = Number(req.params.m2)
-    const city = req.params.city
-    const trends = await getTrendsByCitySqMax(city, m2)
-    res.json(trends)
-})
-
 
 module.exports = router
