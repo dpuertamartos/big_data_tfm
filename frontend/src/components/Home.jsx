@@ -17,7 +17,7 @@ const Home = () => {
     const fetchBestFlats = async () => {
       try {
         const initialFlats = await flatService.getFiltered({
-          orderBy: 'rating ASC',
+          orderBy: 'rating DESC',
           limitNumber: 10
         })
         setBestFlats({ all: initialFlats })
@@ -55,7 +55,7 @@ const Home = () => {
         try {
           const params = {
               city: city !== 'all' ? city : undefined,
-              orderBy: 'rating ASC', 
+              orderBy: 'rating DESC', 
               limitNumber: 10
           }
           const flats = await flatService.getFiltered(params)
