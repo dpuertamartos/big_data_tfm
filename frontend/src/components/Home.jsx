@@ -4,7 +4,7 @@ import trendService from '../services/trends'
 import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import Listing from './Listing'
-import cities from '../../../cities.json'
+import cities from '../../cities.json'
 
 
 

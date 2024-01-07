@@ -1,6 +1,6 @@
 // Filter.js
 import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
-import cities from '../../../cities.json'; // Ensure this path is correct
+import cities from '../../cities.json'; // Ensure this path is correct
 
 const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value
