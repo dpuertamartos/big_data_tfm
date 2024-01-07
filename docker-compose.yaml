@@ -52,18 +52,6 @@ services:
     networks:
       - custom-network
 
-#  web:
-#    container_name: web-container
-#    build:
-#      context: ./path_to_web_app
-#      dockerfile: Dockerfile
-#    volumes:
-#      - sqlite-db:/usr/src/app/database
-#    ports:
-#      - "80:80"
-#    networks:
-#      - custom-network
-
   airflow_webserver:
     container_name: airflow-webserver-container
     image: apache/airflow:2.7.1
@@ -107,6 +95,42 @@ services:
       - mongodb
     restart: always
 
+  app:
+    container_name: app-container
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - web-network
+    depends_on:
+      - backend
+    restart: always
+  
+  backend:
+    container_name: backend-container
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - sqlite-db:/usr/src/app/database
+    networks:
+      - web-network
+    restart: always
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 80:80
+    container_name: reverse-proxy
+    depends_on:
+      - app 
+      - backend
+    networks:
+      - web-network
+    restart: always
+
 volumes:
   mongodb-data:
   logs:
@@ -117,6 +141,8 @@ volumes:
 
 networks:
   custom-network:
+    driver: bridge
+  web-network:
     driver: bridge
 
 
