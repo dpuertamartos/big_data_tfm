@@ -129,6 +129,19 @@ TO RUN THE CONTAINER for prediction
 
 ## 5. Web
 
+### For dev mode
+
+Si queremos node_modules montado variablemente en el container, necesitamos npm en local
+
+1. Borra el volumen `- /usr/src/app/node_modules` de app y backend en docker-compose-web.dev.yaml
+2. Run `npm install` en backend
+3. Run `npm install` en frontend
+4. Run `docker compose -f docker-compose-web.dev.yaml up --build`
+
+Si no queremos instalar nada en local (tendremos que actualizar package.json cuando queramos usar alguna libreria adicional):
+
+1. Run `docker compose -f docker-compose-web.dev.yaml up --build`
+
 
 ## 6. Mongodb 
 

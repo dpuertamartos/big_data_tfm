@@ -7,6 +7,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     volumes:
+      - /usr/src/app/node_modules
       - ./frontend/:/usr/src/app
     networks:
       - web-network
@@ -20,6 +21,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - sqlite-db:/usr/src/app/database
+      - /usr/src/app/node_modules
       - ./backend/:/usr/src/app
     networks:
       - web-network
