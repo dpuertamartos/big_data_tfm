@@ -8,6 +8,7 @@ import {
 import Home from './components/Home'
 import FlatDetailed from './components/FlatDetailed'
 import Flats from './components/Flats'
+import Trends from './components/Trends'
 import Footer from './components/Footer'
 
 
@@ -38,6 +39,7 @@ const App = () => {
       <Routes>
         <Route path="/flats/:id" element={<FlatDetailed />} />
         <Route path="/flats" element={<Flats errorMessage={errorMessage} />} />
+        <Route path="/trends" element={<Trends />} />
         <Route path="/" element={<Home />} />
       </Routes>
       
