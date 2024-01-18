@@ -1,7 +1,12 @@
+import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 
-const LineGraph = ({selectedCities, data, activeDotSelector}) => {
+
+
+const LineGraph = ({selectedCities, data, activeDotSelector, yAxisOptions, yAxisDefault}) => {
+  const [yAxisKey, setYAxisKey] = useState([yAxisDefault]); // Default to the first option
 
   // Transform the data to the required format
   const transformData = (rawData) => {
@@ -17,7 +22,8 @@ const LineGraph = ({selectedCities, data, activeDotSelector}) => {
       if (!monthMap[month]) {
         monthMap[month] = { name: month }
       }
-      monthMap[month][item.city_group] = item.price_euro_mean_excluding_outliers;
+      monthMap[month][item.city_group] = item[yAxisKey];
+      //monthMap[month][item.city_group] = item.price_euro_mean_excluding_outliers;
     })
 
     return Object.values(monthMap)
@@ -45,20 +51,31 @@ const LineGraph = ({selectedCities, data, activeDotSelector}) => {
     return hashStringToColor(city);
   };
   
+  const handleYAxisChange = (event) => {
+    setYAxisKey(event.target.value);
+  };
 
   return (
-    <div style={{ width: '100%', height: 500 }}>
-      <ResponsiveContainer width="100%" height="100%">
+    <div>
+      <FormControl style={{ minWidth: 120, margin: '20px' }}>
+        <InputLabel id="y-axis-select-label">Y-Axis Key</InputLabel>
+        <Select
+          labelId="y-axis-select-label"
+          id="y-axis-select"
+          value={yAxisKey}
+          onChange={handleYAxisChange}
+        >
+          {yAxisOptions.map((option) => (
+            <MenuItem key={option} value={option}>{option}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <ResponsiveContainer width="100%" height={500}>
         <LineChart
           width={500}
           height={300}
           data={transformedData}
-          margin={{
-            top: 40,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
+          margin={{ top: 40, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />

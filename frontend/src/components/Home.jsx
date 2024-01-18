@@ -79,8 +79,8 @@ const Home = () => {
 
   return (
     <span>
-      <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
-      <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} label="cities"/>
+      <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} label="provinces"/>
+      <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","superficie_construida_m2_mean_excluding_outliers","superficie_util_m2_mean_excluding_outliers","superficie_solar_m2_mean_excluding_outliers","habitaciones_mean_excluding_outliers","banos_mean_excluding_outliers","gastos_de_comunidad_cleaned_mean_excluding_outliers","count","price_per_m2","price_per_hab","price_per_wc"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
       <Listing data={bestFlats} />
     </span>
   )
