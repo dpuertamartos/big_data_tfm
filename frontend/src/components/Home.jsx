@@ -80,7 +80,7 @@ const Home = () => {
   return (
     <span>
       <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} />
-      <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} />
+      <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} label="cities"/>
       <Listing data={bestFlats} />
     </span>
   )

@@ -1,9 +1,9 @@
 import { FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
 
-const SelectFilter = ({selectedElements, handleChange, elementToChoose} ) => {
+const SelectFilter = ({selectedElements, handleChange, elementToChoose, label} ) => {
     return (
         <FormControl style={{ minWidth: 120, marginTop: 40 }}>
-            <InputLabel id="demo-mutiple-chip-label">Cities</InputLabel>
+            <InputLabel id="demo-mutiple-chip-label">{label}</InputLabel>
             <Select
             labelId="demo-mutiple-chip-label"
             id="demo-mutiple-chip"
