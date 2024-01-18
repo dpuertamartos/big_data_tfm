@@ -195,7 +195,7 @@ AÑADIR INSTRUCCIONES
 
 ### Copy data from volume to local file system
 
-1. `docker run --rm -d -v [VOLUME_NAME]:/data --name temp-container alpine`
+1. `docker run -it -d --rm -v [VOLUME_NAME]:/data --name temp-container alpine`
 
 2. `docker cp temp-container:/data /path/to/local/destination && docker stop temp-container`
 
