@@ -5,11 +5,11 @@ import SelectFilter from './SelectFilter'
 import cities from '../../cities.json'
 import LineGraph from './LineGraph'
 
-//TODO1: INCLUDE A BACKEND SERVICE TO RETRIEVE ONLY THE 'ALL' WHEN 'ALL' IS SELECTED AND SOME CATEGORY TO RETRIEVE ONLY 'ALL' IS SELECTED
-//TODO1: TOP WE SHOULD HAVE FILTER THAT FILTERS DATASET (CITY, TYPE, MONTH, ACTIVE OR NOT OR ALL)
-//The idea is to have numerical variables and categorical variables (percentage) separated, so A and B part of the dashboard
-// The numerical variables will have a graph and a numeric aggregator/map - The categorical variables will have a graph and a map
-//Each A and B can have dimension selected which will change the type of graph (time line graph, city map, type bar with drawings in X axis?)
+//
+//TODO1: TOP FILTER INCLUDE TIME
+//TODO2 The numerical PART will have a graph and a numeric aggregator/map - 
+//TODO3: The categorical variables will have a graph and a map
+//TODO4: Each A and B can have dimension selected which will change the type of graph (time line graph, city map, type bar with drawings in X axis?)
 //MAP ALWAYS PRESENT IF TIME DIMENSION SHOW TIME = 'ALL' TYPE 'ALL', IF TYPE DIMENSION SHOW TIME 'ALL' CITY WHERE
 
 
@@ -69,53 +69,123 @@ const CategoricalBarChart = ({ data, selectedCities }) => {
       </ResponsiveContainer>
     );
   };
-  
+
+  const NumericalGraphContainer = ({ trendData, selectedCities }) => {
+    const [selectedDimension, setSelectedDimension] = useState(["location"])
+
+
+    return (
+      <>
+        <div>
+        <SelectFilter
+          selectedElements={selectedDimension}
+          handleChange={(event) => setSelectedDimension(event.target.value)}
+          elementToChoose={["location","time","type"]}
+          label="dimension"
+        />
+        </div>
+        <LineGraph
+          selectedCities={selectedCities}
+          data={trendData}
+          activeDotSelector={'all'}
+          yAxisOptions={[
+            "price_euro_mean_excluding_outliers",
+            "superficie_construida_m2_mean_excluding_outliers",
+            "superficie_util_m2_mean_excluding_outliers",
+            "superficie_solar_m2_mean_excluding_outliers",
+            "habitaciones_mean_excluding_outliers",
+            "banos_mean_excluding_outliers",
+            "gastos_de_comunidad_cleaned_mean_excluding_outliers",
+            "count",
+            "price_per_m2",
+            "price_per_hab",
+            "price_per_wc"
+          ]}
+          yAxisDefault={"price_euro_mean_excluding_outliers"}
+        />
+      </>
+    );
+};
+
+const CategoricalGraphContainer = ({ selectedCities, trendData }) => {
+  const [selectedDimension, setSelectedDimension] = useState(["location"])
+
+
+  return (
+    <>
+      <div>
+      <SelectFilter
+        selectedElements={selectedDimension}
+        handleChange={(event) => setSelectedDimension(event.target.value)}
+        elementToChoose={["location","time","type"]}
+        label="dimension"
+      />
+      </div>
+      <CategoricalBarChart data={trendData.filter(flat => flat.updated_month_group == 'all')} selectedCities={selectedCities}/>
+    </>
+  );
+}
 
 const Trends = () => {
   const [trendData, setTrendData] = useState([]);
-  const [trendDataForBar, setTrendDataForBar] = useState([]);
   const [selectedCities, setSelectedCities] = useState(["all"])
-  const [selectedDimension, setSelectedDimension] = useState(["location"])
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedActivity, setSelectedActivity] = useState("all");
 
   useEffect(() => {
-    const fetchTrendData = async () => {
-      try {
-        const initialTrends = await trendService.get({
-          active: 'all',
-          type: 'all'
-        })
-        console.log("trends", initialTrends)
-        setTrendData(initialTrends);
-        //for now this sirves TODO 1
-        setTrendDataForBar(initialTrends.filter(flat => flat.updated_month_group == 'all'));
-      } catch (error) {
-        console.error("Error fetching initial trends:", error);
-      }
-    };
+    // Fetch initial data
+    fetchTrendData(selectedActivity, selectedType);
+  }, [selectedActivity, selectedType]);
 
-    fetchTrendData();
-  }, []);
+  const fetchTrendData = async (activity, type) => {
+    try {
+      const data = await trendService.get({ active: activity, type: type });
+      setTrendData(data);
+    } catch (error) {
+      console.error("Error fetching trends:", error);
+    }
+  };
 
   // Function to transform data here if necessary
+    // Filter data based on selected options
+  const getFilteredData = () => {
+      return trendData.filter(item => 
+        selectedCities.includes(item.city_group) 
+      );
+  };
+  
+  const filteredData = getFilteredData()
+  console.log('filtered', filteredData)
 
   return (
     <div>
       <h2>Trends Dashboard</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <SelectFilter
-        selectedElements={selectedDimension}
-        handleChange={(event) => setSelectedDimension(event.target.value)}
-        elementToChoose={["location","time","type"]}
-        label="dimension"
-        />
+        <span>filters</span>
         <SelectFilter
         selectedElements={selectedCities}
         handleChange={(event) => setSelectedCities(event.target.value)}
         elementToChoose={cities.locations.concat('all')}
         label="provinces"
         />
-        <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","superficie_construida_m2_mean_excluding_outliers","superficie_util_m2_mean_excluding_outliers","superficie_solar_m2_mean_excluding_outliers","habitaciones_mean_excluding_outliers","banos_mean_excluding_outliers","gastos_de_comunidad_cleaned_mean_excluding_outliers","count","price_per_m2","price_per_hab","price_per_wc"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
-        <CategoricalBarChart data={trendDataForBar} selectedCities={selectedCities}/>
+        <SelectFilter
+        selectedElements={selectedType}
+        handleChange={(event) => setSelectedType(event.target.value)}
+        elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
+        label="type"
+        multiple={false}
+        />
+        <SelectFilter
+        selectedElements={selectedActivity}
+        handleChange={(event) => setSelectedActivity(event.target.value)}
+        elementToChoose={['all','0','1']}
+        label="activity"
+        multiple={false}
+        />
+        <div>numerical part of dashboard</div>
+        <NumericalGraphContainer selectedCities={selectedCities} trendData={filteredData}  />
+        <div>categorical part of dashboard</div>
+        <CategoricalGraphContainer selectedCities={selectedCities} trendData={filteredData}  />
       </ResponsiveContainer>
     </div>
   );
