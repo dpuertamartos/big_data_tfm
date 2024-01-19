@@ -126,7 +126,7 @@ const CategoricalGraphContainer = ({ selectedCities, trendData }) => {
       
       <div style={{ display: 'flex' }}>
         <div style={{ flex: '1' }}>
-          <CategoricalBarChart data={trendData} selectedCities={selectedCities} />
+        <CategoricalBarChart data={trendData.filter(flat => flat.updated_month_group == 'all')} selectedCities={selectedCities}/>
         </div>
         <div style={{ flex: '1' }}>
           <SpainMap />

@@ -18,14 +18,13 @@ const SpainMap = () => {
   });
 
   return (
-    <div style={{ height: '500px', width: '800px', margin: '20px auto' }}>
+    <div style={{ height: '500px', width: '500px', margin: '20px auto' }}>
         <MapContainer center={position} zoom={6} style={{ height: '100%', width: '100%' }}>
-
-        <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-
+            {/* Using CartoDB's Positron (light) tiles for a minimalistic look */}
+            <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'
+            />
         </MapContainer>
     </div>
   );
