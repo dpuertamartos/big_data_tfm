@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import SelectFilter from './SelectFilter'
 import cities from '../../cities.json'
 import LineGraph from './LineGraph'
+import SpainMap from './Map';
 
 //
 //TODO1: TOP FILTER INCLUDE TIME
@@ -121,7 +122,16 @@ const CategoricalGraphContainer = ({ selectedCities, trendData }) => {
         label="dimension"
       />
       </div>
-      <CategoricalBarChart data={trendData.filter(flat => flat.updated_month_group == 'all')} selectedCities={selectedCities}/>
+      {/* <CategoricalBarChart data={trendData.filter(flat => flat.updated_month_group == 'all')} selectedCities={selectedCities}/> */}
+      
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: '1' }}>
+          <CategoricalBarChart data={trendData} selectedCities={selectedCities} />
+        </div>
+        <div style={{ flex: '1' }}>
+          <SpainMap />
+        </div>
+      </div>
     </>
   );
 }
