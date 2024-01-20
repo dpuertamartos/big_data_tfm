@@ -2,6 +2,7 @@ import scrapy
 import pymongo
 import datetime
 from ..config import mongodb_uri
+import re
 
 OLD_DATE = "Anuncio 15/10/1991"
 
@@ -20,7 +21,6 @@ class PisosSpider(scrapy.Spider):
               'pamplona_iruna', 'pontevedra', 'salamanca', 'san_sebastian_donostia',
               'santander', 'segovia', 'sevilla', 'soria', 'tarragona', 'tenerife',
               'teruel', 'toledo', 'valencia', 'valladolid', 'vigo', 'vitoria_gasteiz_zona_urbana', 'vizcaya_bizkaia', 'zamora', 'zaragoza']
-
 
 
     #Ciudades a crawlear
@@ -68,8 +68,6 @@ class PisosSpider(scrapy.Spider):
                 'description': ad.css('p.ad-preview__description::text').get(),
                 'link': response.urljoin(ad.css('a.ad-preview__title::attr(href)').get()),
             }
-
-            print("could i get the basic data?", data)
             # Make a request to the detailed page using the link and pass the current data as meta
             yield scrapy.Request(data['link'], callback=self.parse_detail, meta={'data': data, 'city': city})
 
@@ -78,17 +76,27 @@ class PisosSpider(scrapy.Spider):
 
         current_city_homepage = '/'.join(response.url.split('/')[:-2]) + '/'
 
-        if self.should_continue_scraping[city] and response.url != current_city_homepage and next_page_number <= self.max_page_to_search and self.flats_stored_counter <= 3:
+        if self.should_continue_scraping[city] and response.url != current_city_homepage and next_page_number <= self.max_page_to_search:
             yield scrapy.Request(next_page_url, callback=self.parse)
 
     def parse_detail(self, response):
-
+        #TODO: Extraction of photos is not reliable, sometimes it works and sometimes not. Understand why and make it reliable
         data = response.meta['data']  # Get the previously extracted data passed as meta
         city = response.meta['city']  # Get the city name passed as meta
         collection = self.db[city]  # Use the city as the collection name
 
-        # Extracting the updated date
-        updated_date = response.css('p.last-update__date::text').get().strip() or OLD_DATE
+        updated_date_element = response.css('p.last-update__date::text').get()
+        if updated_date_element:
+            updated_date = updated_date_element.strip()
+        else:
+            if self.update_mode:
+                raise ValueError(f'CAREFUL!! Updated date not found for URL: {response.url}')
+            updated_date = OLD_DATE
+
+            # If we did not find the updated_date_element
+            #   In case we are not in update mode (first execution) we will still ingest the add
+            #   In case we are in update mode we will skip adding this ad because
+            #       if we continue, it will use the OLD_DATE and determine we should finish scrapping the entire collection
 
         current_last_known_date = self.latest_dates_per_city_db.get(city, OLD_DATE)
 
@@ -123,49 +131,48 @@ class PisosSpider(scrapy.Spider):
 
         data['updated_date'] = updated_date
 
-        # Loop through each characteristic item
-        for charblock in response.css('ul.charblock-list.charblock-basics > li.charblock-element'):
-            # Extract the name of the characteristic
-            characteristic_name = charblock.css('.icon-inline::text').get()
+        # Extract characteristics from the provided HTML structure
+        try:
+            features = response.css('div.details__block .features-container .features__feature')
+            for feature in features:
+                characteristic_name = feature.css('.features__label::text').get()
+                characteristic_value = feature.css('.features__value::text').get()
 
-            # Extract the value of the characteristic
-            characteristic_value = charblock.css('span:last-child::text').get()
+                if characteristic_name:
+                    characteristic_name = characteristic_name.strip().replace(":", "").replace(" ", "_").lower()
+                    characteristic_value = characteristic_value.strip() if characteristic_value else "Si"  # Default value for features without specific value
 
-            if characteristic_name and characteristic_value:
-                characteristic_name = characteristic_name.strip().replace(" ",
-                                                                          "_").lower()  # Convert to a safe key format for dictionary
-                characteristic_value = characteristic_value.strip().lstrip(":").strip()  # Clean the value
+                    data[characteristic_name] = characteristic_value
+        except Exception as e:
+            print(f'could not ingest characteristics, error {e}')
 
-                data[characteristic_name] = characteristic_value
+        # Extract full description
+        try:
+            description = response.css('div.description__content::text').get()
+            if description:
+                    data['description'] = description.strip()
+        except Exception as e:
+            print(f'could not ingest full description, error {e}')
 
-        # Extract "other " details
-        for charblock in response.css(
-                'div.charblock > div.charblock-right > ul.charblock-list > li.charblock-element'):
-            characteristic_name = charblock.css('span:first-child::text').get()
-            characteristic_value = charblock.css('span:last-child::text').get()
-
-            if characteristic_name and characteristic_value:
-                characteristic_name = characteristic_name.strip().replace(" ", "_").lower()
-                characteristic_value = characteristic_value.strip().lstrip(":").strip()
-                data[characteristic_name] = characteristic_value
-            elif characteristic_name:  # Some elements might not have a specific value (e.g., Amueblado)
-                characteristic_name = characteristic_name.strip().replace(" ", "_").lower()
-                data[characteristic_name] = "Si"  # default value
-
-        # Extract description
-        description = response.css('div.description-container.description-body::text').get()
-        if description:
-            data['description'] = description.strip()
-
-        # Extract oldPrice if it exists
-            old_price = response.css('div.oldPrice::text').get()
-            if old_price:
-                data['old_price'] = old_price.strip()
+        #Extract old price in legacy mode (updated web does not show old price, only the difference).
+        #We extract in legacy mode to not affect transformation later
+        try:
+            old_price_difference = response.css('div.price__drop::text').get()
+            if old_price_difference:
+                    data['old_price'] = old_price_difference.strip()
+                    price_to_int = int(re.sub('[^0-9]', '', data.get("price")))
+                    old_price_difference_to_int = int(re.sub('[^0-9]', '', data.get("old_price").split("€")[0]))
+                    data['old_price'] = str(price_to_int+old_price_difference_to_int)+" €"
+        except Exception as e:
+            print(f'could not ingest old_price, error {e}')
 
         # Extracting the photo links
+        try:
             photo_links = response.css('input#PhotosPath::attr(value)').get()
             if photo_links:
                 data['photos'] = photo_links.split('#,!')
+        except Exception as e:
+            print(f'could not ingest photo links, error {e}')
 
         data['active'] = True
         data['createdAt'] = datetime.datetime.now()
