@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  app:
+    container_name: app-container
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /usr/src/app/node_modules
+      - ./frontend/:/usr/src/app
+    networks:
+      - web-network
+    depends_on:
+      - backend
+  
+  backend:
+    container_name: backend-container
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - sqlite-db:/usr/src/app/database
+      - /usr/src/app/node_modules
+      - ./backend/:/usr/src/app
+    networks:
+      - web-network
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8081:80
+    container_name: reverse-proxy
+    depends_on:
+      - app 
+      - backend
+    networks:
+      - web-network
+
+volumes:
+  sqlite-db:
+
+networks:
+  web-network:
+    driver: bridge

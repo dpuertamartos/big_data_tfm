@@ -1,6 +1,6 @@
 // Filter.js
 import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
-import cities from '../../../cities.json'; // Ensure this path is correct
+import cities from '../../cities.json'; // Ensure this path is correct
 
 const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value
@@ -92,9 +92,10 @@ const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortCha
                     value={filters.rating}
                     onChange={onFilterChange}
                     valueLabelDisplay="auto"
-                    min={-0.75}
-                    max={0.75}
-                    step={0.05}
+                    min={-1}
+                    max={2}
+                    step={0.1}
+                    valueLabelFormat={(value) => formatSliderLabel(value, 2)}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -105,8 +106,8 @@ const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortCha
                             label="Ordenar por"
                             onChange={onSortChange}
                         >
-                            <MenuItem value="rating ASC">Rating (High to Low)</MenuItem>
-                            <MenuItem value="rating DESC">Rating (Low to High)</MenuItem>
+                            <MenuItem value="rating ASC">Rating (Low to High)</MenuItem>
+                            <MenuItem value="rating DESC">Rating (High to Low)</MenuItem>
                             <MenuItem value="price_euro ASC">Precio (Low to High)</MenuItem>
                             <MenuItem value="price_euro DESC">Precio (High to Low)</MenuItem>
                             <MenuItem value="superficie_util_m2 ASC">Superficie (Low to High)</MenuItem>

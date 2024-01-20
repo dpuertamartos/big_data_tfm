@@ -1,32 +1,33 @@
 import { FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
 
-const SelectFilter = ({selectedElements, handleChange, elementToChoose} ) => {
-    return (
-        <FormControl style={{ minWidth: 120, marginTop: 40 }}>
-            <InputLabel id="demo-mutiple-chip-label">Cities</InputLabel>
-            <Select
-            labelId="demo-mutiple-chip-label"
-            id="demo-mutiple-chip"
-            multiple
-            value={selectedElements}
-            onChange={handleChange}
-            renderValue={(selected) => (
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {selected.map((value) => (
-                    <Chip key={value} label={value} style={{ margin: 2 }} />
-                ))}
-                </div>
-            )}
-            >
-            {elementToChoose.map((name) => (
-                <MenuItem key={name} value={name}>
-                {name}
-                </MenuItem>
+const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, multiple = true }) => {
+  return (
+    <FormControl style={{ minWidth: 120, marginTop: 40 }}>
+      <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
+      <Select
+        labelId={`select-label-${label}`}
+        id={`select-${label}`}
+        multiple={multiple}
+        value={selectedElements}
+        onChange={handleChange}
+        renderValue={multiple ? (selected => (
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            {selected.map(value => (
+              <Chip key={value} label={value} style={{ margin: 2 }} />
             ))}
-            </Select>
-        </FormControl>
-    )
-}  
+          </div>
+        )) : undefined}
+      >
+        {elementToChoose.map(name => (
+          <MenuItem key={name} value={name}>
+            {name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
 
-export default SelectFilter
+export default SelectFilter;
+
 

@@ -15,7 +15,7 @@ const Flats = ({ errorMessage }) => {
         precio: [0, 1000000],
         habitaciones: [0, 10],
         m2Utiles: [0, 500],
-        rating: [-0.75, 0.75],
+        rating: [-1, 2],
         orderBy: undefined
     })
 
