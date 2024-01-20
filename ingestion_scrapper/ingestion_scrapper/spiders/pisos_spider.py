@@ -80,7 +80,6 @@ class PisosSpider(scrapy.Spider):
             yield scrapy.Request(next_page_url, callback=self.parse)
 
     def parse_detail(self, response):
-        #TODO: Extraction of photos is not reliable, sometimes it works and sometimes not. Understand why and make it reliable
         data = response.meta['data']  # Get the previously extracted data passed as meta
         city = response.meta['city']  # Get the city name passed as meta
         collection = self.db[city]  # Use the city as the collection name
@@ -89,14 +88,11 @@ class PisosSpider(scrapy.Spider):
         if updated_date_element:
             updated_date = updated_date_element.strip()
         else:
+            print(f'CAREFUL!!--------------------------------------------------------------------------- Updated date not found for URL: {response.url}')
             if self.update_mode:
-                raise ValueError(f'CAREFUL!! Updated date not found for URL: {response.url}')
+                return
             updated_date = OLD_DATE
 
-            # If we did not find the updated_date_element
-            #   In case we are not in update mode (first execution) we will still ingest the add
-            #   In case we are in update mode we will skip adding this ad because
-            #       if we continue, it will use the OLD_DATE and determine we should finish scrapping the entire collection
 
         current_last_known_date = self.latest_dates_per_city_db.get(city, OLD_DATE)
 
@@ -166,13 +162,21 @@ class PisosSpider(scrapy.Spider):
         except Exception as e:
             print(f'could not ingest old_price, error {e}')
 
-        # Extracting the photo links
+        # Extracting photo links
         try:
-            photo_links = response.css('input#PhotosPath::attr(value)').get()
-            if photo_links:
-                data['photos'] = photo_links.split('#,!')
+            photo_urls = []
+            thumbnail_elements = response.css('div.masonry__content.media-thumbnail')
+            for thumbnail in thumbnail_elements:
+                photo_url = thumbnail.css('picture img::attr(src)').get()
+                if not photo_url:
+                    photo_url = thumbnail.css('picture img::attr(data-src)').get()
+                if photo_url:
+                    photo_urls.append(photo_url.strip())
+
+            if photo_urls:
+                data['photos'] = photo_urls
         except Exception as e:
-            print(f'could not ingest photo links, error {e}')
+            print(f'Could not ingest photo links, error: {e}')
 
         data['active'] = True
         data['createdAt'] = datetime.datetime.now()
