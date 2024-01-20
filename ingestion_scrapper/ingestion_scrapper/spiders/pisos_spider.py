@@ -68,6 +68,8 @@ class PisosSpider(scrapy.Spider):
                 'description': ad.css('p.ad-preview__description::text').get(),
                 'link': response.urljoin(ad.css('a.ad-preview__title::attr(href)').get()),
             }
+
+            print("could i get the basic data?", data)
             # Make a request to the detailed page using the link and pass the current data as meta
             yield scrapy.Request(data['link'], callback=self.parse_detail, meta={'data': data, 'city': city})
 
@@ -76,7 +78,7 @@ class PisosSpider(scrapy.Spider):
 
         current_city_homepage = '/'.join(response.url.split('/')[:-2]) + '/'
 
-        if self.should_continue_scraping[city] and response.url != current_city_homepage and next_page_number <= self.max_page_to_search:
+        if self.should_continue_scraping[city] and response.url != current_city_homepage and next_page_number <= self.max_page_to_search and self.flats_stored_counter <= 3:
             yield scrapy.Request(next_page_url, callback=self.parse)
 
     def parse_detail(self, response):
@@ -86,7 +88,7 @@ class PisosSpider(scrapy.Spider):
         collection = self.db[city]  # Use the city as the collection name
 
         # Extracting the updated date
-        updated_date = response.css('div.updated-date::text').get().strip() or OLD_DATE
+        updated_date = response.css('p.last-update__date::text').get().strip() or OLD_DATE
 
         current_last_known_date = self.latest_dates_per_city_db.get(city, OLD_DATE)
 
