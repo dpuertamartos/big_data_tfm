@@ -8,7 +8,7 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = "ingestion_scrapper"
-DOWNLOAD_DELAY = 0.1  # Delay de 2 segundos entre solicitudes.
+DOWNLOAD_DELAY = 0.1 # Delay entre solicitudes.
 DOWNLOAD_DELAY_RANDOMIZE = True
 SPIDER_MODULES = ["ingestion_scrapper.spiders"]
 NEWSPIDER_MODULE = "ingestion_scrapper.spiders"
@@ -18,7 +18,7 @@ NEWSPIDER_MODULE = "ingestion_scrapper.spiders"
 #USER_AGENT = "ingestion_scrapper (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
