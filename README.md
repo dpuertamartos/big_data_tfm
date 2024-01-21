@@ -50,7 +50,7 @@ y comenzar la visualización
 
 4. Lanza la mongodb, airflow y el sitio web:
 
-`docker-compose up -d mongodb airflow_webserver airflow_scheduler web`
+`docker-compose up -d mongodb airflow_webserver airflow_scheduler app backend nginx`
 
 5. Construye las imágenes para el scraper, etl y análisis de datos. Estos servicios son lanzados en batch y no estan continuamente corriendo:
 
@@ -95,14 +95,10 @@ Debido a la flexibilidad del scrapper se puede ejecutar con la frecuencia que se
 
 Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos una vez a la semana. Para evitar perdida de datos de ciudades que tengan +200 anuncios nuevos por día.
 
-### mongo-db backup
+### mongo-db backup outside of docker volumes
 
 1. `chmod +x /path/to/project/ingestion_scrapper/mongodb/mongo_backup_script.sh`
-2. configure airflow to run `mongo_backup_dag.py`
-
-3. to restore
-
-`mongorestore --host <your_mongodb_host> --port <your_mongodb_port> /path/to/your/mongodb-dump/`
+2. `crontab -e` add `0 7 */3 * * /path/to/project/ingestion_scrapper/mongo_backup_script.sh`
 
 ## 2. ETL
 
@@ -132,10 +128,24 @@ TO RUN THE CONTAINER for prediction
 
 ## 4. Orquestación
 
+Llevada a cabo por airflow. En el folder de airflow del proyecto se encuentran simplemente las dags.
+Simplemente montamos las imágenes de airflow con docker siguiendo el SetUp de este readme.
+
+Podemos acceder a la interfaz de airflow a traves del navegador en `http://0.0.0.0:8080/home` (user/pass predefinido en setup: admin/admin)
 
 ## 5. Web
 
-### For dev mode
+### Frontend
+
+El frontend está hecho con react, utilizando el packaging de vite.
+Para instalar en local sin docker `cd /path/to/repo/frontend` y `npm install` (necesitas node.js y npm), posteriormente `npm run dev`
+
+### Backend
+
+El backend está hecho con node.js y express, conectando a la SQLite.
+Para instalar en local sin docker `cd /path/to/repo/backend y `npm install` (necesitas node.js y npm), posteriormente `npm run dev`
+
+### For dev mode in docker
 
 Si queremos node_modules montado variablemente en el container, necesitamos npm en local
 
