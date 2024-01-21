@@ -75,20 +75,28 @@ class PisosSpider(scrapy.Spider):
         if self.should_continue_scraping[province] and response.url != current_province_homepage and next_page_number <= self.max_page_to_search:
             yield scrapy.Request(next_page_url, callback=self.parse)
 
+
     def parse_detail(self, response):
         data = response.meta['data']  # Get the previously extracted data passed as meta
         province = response.meta['province']  # Get the province name passed as meta
         collection = self.db[province]  # Use the province as the collection name
 
-        updated_date_element = response.css('p.last-update__date::text').get()
-        if updated_date_element:
-            updated_date = updated_date_element.strip()
+        updated_date_new_web = response.css('p.last-update__date::text').get()
+        updated_date_old_web = response.css('div.updated-date::text').get()
+
+        parse_mode = 'OLD'
+
+        print(f'OLD-> {updated_date_old_web}, NEW-> {updated_date_new_web}')
+
+        if updated_date_new_web:
+            updated_date = updated_date_new_web.strip()
+            parse_mode = 'NEW'
+        elif updated_date_old_web:
+            updated_date = updated_date_old_web.strip()
         else:
             print(f'CAREFUL!!--------------------------------------------------------------------------- Updated date not found for URL: {response.url}')
             if self.update_mode:
                 return
-            updated_date = OLD_DATE
-
 
         current_last_known_date = self.latest_dates_per_province_db.get(province, OLD_DATE)
 
@@ -125,52 +133,98 @@ class PisosSpider(scrapy.Spider):
 
         # Extract characteristics from the provided HTML structure
         try:
-            features = response.css('div.details__block .features-container .features__feature')
-            for feature in features:
-                characteristic_name = feature.css('.features__label::text').get()
-                characteristic_value = feature.css('.features__value::text').get()
+            if parse_mode == 'NEW':
+                features = response.css('div.details__block .features-container .features__feature')
+                for feature in features:
+                    characteristic_name = feature.css('.features__label::text').get()
+                    characteristic_value = feature.css('.features__value::text').get()
 
-                if characteristic_name:
-                    characteristic_name = characteristic_name.strip().replace(":", "").replace(" ", "_").lower()
-                    characteristic_value = characteristic_value.strip() if characteristic_value else "Si"  # Default value for features without specific value
+                    if characteristic_name:
+                        characteristic_name = characteristic_name.strip().replace(":", "").replace(" ", "_").lower()
+                        characteristic_value = characteristic_value.strip() if characteristic_value else "Si"  # Default value for features without specific value
 
-                    data[characteristic_name] = characteristic_value
+                        data[characteristic_name] = characteristic_value
+            else:
+                # Loop through each characteristic item
+                for charblock in response.css('ul.charblock-list.charblock-basics > li.charblock-element'):
+                    # Extract the name of the characteristic
+                    characteristic_name = charblock.css('.icon-inline::text').get()
+
+                    # Extract the value of the characteristic
+                    characteristic_value = charblock.css('span:last-child::text').get()
+
+                    if characteristic_name and characteristic_value:
+                        characteristic_name = characteristic_name.strip().replace(" ",
+                                                                                  "_").lower()  # Convert to a safe key format for dictionary
+                        characteristic_value = characteristic_value.strip().lstrip(":").strip()  # Clean the value
+
+                        data[characteristic_name] = characteristic_value
+
+                # Extract "other " details
+                for charblock in response.css(
+                        'div.charblock > div.charblock-right > ul.charblock-list > li.charblock-element'):
+                    characteristic_name = charblock.css('span:first-child::text').get()
+                    characteristic_value = charblock.css('span:last-child::text').get()
+
+                    if characteristic_name and characteristic_value:
+                        characteristic_name = characteristic_name.strip().replace(" ", "_").lower()
+                        characteristic_value = characteristic_value.strip().lstrip(":").strip()
+                        data[characteristic_name] = characteristic_value
+                    elif characteristic_name:  # Some elements might not have a specific value (e.g., Amueblado)
+                        characteristic_name = characteristic_name.strip().replace(" ", "_").lower()
+                        data[characteristic_name] = "Si"  # default value
+
         except Exception as e:
             print(f'could not ingest characteristics, error {e}')
 
         # Extract full description
         try:
-            description = response.css('div.description__content::text').get()
+            if parse_mode == 'NEW':
+                description = response.css('div.description__content::text').get()
+            else:
+                description = response.css('div.description-container.description-body::text').get()
+
             if description:
-                    data['description'] = description.strip()
+                data['description'] = description.strip()
         except Exception as e:
             print(f'could not ingest full description, error {e}')
 
         #Extract old price in legacy mode (updated web does not show old price, only the difference).
         #We extract in legacy mode to not affect transformation later
         try:
-            old_price_difference = response.css('div.price__drop::text').get()
-            if old_price_difference:
-                    data['old_price'] = old_price_difference.strip()
-                    price_to_int = int(re.sub('[^0-9]', '', data.get("price")))
-                    old_price_difference_to_int = int(re.sub('[^0-9]', '', data.get("old_price").split("€")[0]))
-                    data['old_price'] = str(price_to_int+old_price_difference_to_int)+" €"
+            if parse_mode == 'NEW':
+                old_price_difference = response.css('div.price__drop::text').get()
+                if old_price_difference:
+                        data['old_price'] = old_price_difference.strip()
+                        price_to_int = int(re.sub('[^0-9]', '', data.get("price")))
+                        old_price_difference_to_int = int(re.sub('[^0-9]', '', data.get("old_price").split("€")[0]))
+                        data['old_price'] = str(price_to_int+old_price_difference_to_int)+" €"
+            else:
+                old_price = response.css('div.oldPrice::text').get()
+                if old_price:
+                    data['old_price'] = old_price.strip()
         except Exception as e:
             print(f'could not ingest old_price, error {e}')
 
         # Extracting photo links
         try:
-            photo_urls = []
-            thumbnail_elements = response.css('div.masonry__content.media-thumbnail')
-            for thumbnail in thumbnail_elements:
-                photo_url = thumbnail.css('picture img::attr(src)').get()
-                if not photo_url:
-                    photo_url = thumbnail.css('picture img::attr(data-src)').get()
-                if photo_url:
-                    photo_urls.append(photo_url.strip())
+            if parse_mode == 'NEW':
+                photo_urls = []
+                thumbnail_elements = response.css('div.masonry__content.media-thumbnail')
+                for thumbnail in thumbnail_elements:
+                    photo_url = thumbnail.css('picture img::attr(src)').get()
+                    if not photo_url:
+                        photo_url = thumbnail.css('picture img::attr(data-src)').get()
+                    if photo_url:
+                        photo_urls.append(photo_url.strip())
 
-            if photo_urls:
-                data['photos'] = photo_urls
+                if photo_urls:
+                    data['photos'] = photo_urls
+            else:
+                photo_links = response.css('input#PhotosPath::attr(value)').get()
+                if photo_links:
+                    data['photos'] = photo_links.split('#,!')
+
         except Exception as e:
             print(f'Could not ingest photo links, error: {e}')
 
