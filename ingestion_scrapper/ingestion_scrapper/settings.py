@@ -8,7 +8,7 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = "ingestion_scrapper"
-DOWNLOAD_DELAY = 0.1 # Delay entre solicitudes.
+DOWNLOAD_DELAY = 0.7 # Delay entre solicitudes.
 DOWNLOAD_DELAY_RANDOMIZE = True
 SPIDER_MODULES = ["ingestion_scrapper.spiders"]
 NEWSPIDER_MODULE = "ingestion_scrapper.spiders"

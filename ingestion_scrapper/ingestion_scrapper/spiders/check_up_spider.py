@@ -9,6 +9,11 @@ from ..config import mongodb_uri
 class AdUpCheckingSpider(scrapy.Spider):
     name = 'ad_up_checking'
 
+    # Add custom settings for this spider
+    custom_settings = {
+        'DOWNLOAD_DELAY': 0.1  # set download delay to 0.1 seconds
+    }
+
     def __init__(self, request_limit=0, pause_time=120):
         # Establish MongoDB connection
         self.client = MongoClient(mongodb_uri)
