@@ -24,9 +24,9 @@ if __name__ == "__main__":
 
     rmse_results_all_models = {}
     best_models = {}
-    unique_cities = df_all['city'].unique()
+    unique_provinces = df_all['province'].unique()
     for model_type in model_types:
-        models, rmse_scores_relative = model_generation.generate_models(unique_cities=unique_cities,
+        models, rmse_scores_relative = model_generation.generate_models(unique_provinces=unique_provinces,
                                                        df_cheap=df_cheap,
                                                        df_expensive=df_expensive,
                                                        model_type=model_type,
@@ -34,12 +34,12 @@ if __name__ == "__main__":
                                                        data_cleaner_expensive=data_cleaner_expensive)
         rmse_results_all_models[model_type] = rmse_scores_relative
         # Iterate through the models to find and store the best ones
-        for city in unique_cities:
+        for province in unique_provinces:
             for category in ['cheap', 'expensive']:
-                model_key = (city, category)
+                model_key = (province, category)
                 try:
-                    current_rmse = rmse_scores_relative[city][category]
-                    current_model = models[city][category]
+                    current_rmse = rmse_scores_relative[province][category]
+                    current_model = models[province][category]
 
                     if model_key not in best_models or current_rmse < best_models[model_key]['rmse']:
                         best_models[model_key] = {
