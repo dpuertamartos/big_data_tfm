@@ -141,15 +141,16 @@ const Trends = () => {
   const [selectedCities, setSelectedCities] = useState(["all"])
   const [selectedType, setSelectedType] = useState("all");
   const [selectedActivity, setSelectedActivity] = useState("all");
+  const [selectedIsCapital, setSelectedIsCapital] = useState("all");
 
   useEffect(() => {
     // Fetch initial data
-    fetchTrendData(selectedActivity, selectedType);
-  }, [selectedActivity, selectedType]);
+    fetchTrendData(selectedActivity, selectedType, selectedIsCapital);
+  }, [selectedActivity, selectedType, selectedIsCapital]);
 
-  const fetchTrendData = async (activity, type) => {
+  const fetchTrendData = async (activity, type, isCapital) => {
     try {
-      const data = await trendService.get({ active: activity, type: type });
+      const data = await trendService.get({ active: activity, type: type, isCapital: isCapital });
       setTrendData(data);
     } catch (error) {
       console.error("Error fetching trends:", error);
