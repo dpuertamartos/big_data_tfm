@@ -41,6 +41,4 @@ province_to_capital = {
 
 #db_path = '/home/ubuntu/Desktop/pisos.db'
 
-
-#mongo_uri = 'mongodb://mongodb-container:27017/'
-mongo_uri = 'mongodb://localhost:27017/'
+mongo_uri = 'mongodb://mongodb-container:27017/'
