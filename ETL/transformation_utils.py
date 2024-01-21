@@ -1,13 +1,41 @@
 import re
 from unidecode import unidecode
+import unicodedata
 import pandas as pd
+from config import province_to_capital
+
+
+def check_capital(location, province):
+    # Get the capital city of the province from the dictionary
+    capital_city = province_to_capital.get(province, "").lower()
+
+    clean_location = remove_spanish_accentuation(location).lower()
+    # Check if the capital city is in the location or if 'capital' is in the location
+    if capital_city in clean_location or "capital" in clean_location:
+        return 1
+    else:
+        return 0
+
+
+def remove_spanish_accentuation(input_str):
+    # Normalize the string to decompose the accented characters
+    normalized_str = unicodedata.normalize('NFD', input_str)
+
+    # Filter out the non-spacing marks (which represent the accents)
+    unaccented_str = ''.join(char for char in normalized_str if unicodedata.category(char) != 'Mn')
+
+    return unaccented_str
+
 
 def convert_to_unixtime(item):
+
     if isinstance(item, pd.Timestamp):
         return int(item.timestamp())
     return item
 
+
 def convert_to_snake_case(name):
+
     name = unidecode(name)  # Remove accented characters
     name = re.sub('[^0-9a-zA-Z]+', '_', name)  # Replace any non-alphanumeric characters with underscore
     return name.lower()  # Convert to lower case to get snake_case
