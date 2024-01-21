@@ -11,7 +11,8 @@ class AdUpCheckingSpider(scrapy.Spider):
 
     # Add custom settings for this spider
     custom_settings = {
-        'DOWNLOAD_DELAY': 0.1  # set download delay to 0.1 seconds
+        'DOWNLOAD_DELAY': 0.05,
+        'CONCURRENT_REQUESTS': 32
     }
 
     def __init__(self, request_limit=0, pause_time=120):
