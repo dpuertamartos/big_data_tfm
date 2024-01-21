@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
     # Aggregate data for all records
 
-    group_variables = ['updated_month', 'province', 'type', 'active']
+    group_variables = ['updated_month', 'province', 'type', 'active', 'capital']
     # Ratio definitions
     ratio_definitions = {
         'price_per_m2': ('price_euro', 'superficie_util_m2'),

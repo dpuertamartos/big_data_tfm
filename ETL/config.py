@@ -9,7 +9,7 @@ categorical_to_fill_NO = ['exterior_summary', 'vidrios_dobles_summary',
                           'amueblado_summary', 'cocina_equipada_summary', 'calefaccion_summary',
                           ]
 
-categorical_to_fill_DESCONOCIDO = ['province', 'location', 'conservacion', 'antiguedad', 'tipo_de_casa',
+categorical_to_fill_DESCONOCIDO = ['province', 'capital', 'location', 'conservacion', 'antiguedad', 'tipo_de_casa',
                                    'urbanizado_summary',
                                    'calle_alumbrada_summary', 'calle_asfaltada_summary', 'interior_summary',
                                    'mascotas_summary', 'carpinteria_exterior_cleaned', 'tipo_suelo_summary',
