@@ -17,6 +17,9 @@ const getAggregatedData = async (options) => {
     if (options.month) {
         conditions.push(`updated_month_group = '${options.month}'`)
     }
+    if (options.isCapital) {
+        conditions.push(`capital_group = '${options.isCapital}'`)
+    }
 
     if (conditions.length > 0) {
         whereClause = 'WHERE ' + conditions.join(' AND ')
@@ -28,8 +31,8 @@ const getAggregatedData = async (options) => {
 
 router.get('/', async (req, res) => {
     try {
-        const { province, type, active, month } = req.query
-        const options = { province, type, active, month }
+        const { province, type, active, month, isCapital } = req.query
+        const options = { province, type, active, month, isCapital }
         const data = await getAggregatedData(options)
         res.json(data)
     } catch (error) {
