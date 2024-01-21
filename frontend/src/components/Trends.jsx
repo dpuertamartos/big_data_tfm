@@ -180,6 +180,13 @@ const Trends = () => {
         label="provinces"
         />
         <SelectFilter
+        selectedElements={selectedIsCapital}
+        handleChange={(event) => setSelectedIsCapital(event.target.value)}
+        elementToChoose={["all","0","1"]}
+        label="capital"
+        multiple={false}
+        />
+        <SelectFilter
         selectedElements={selectedType}
         handleChange={(event) => setSelectedType(event.target.value)}
         elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
