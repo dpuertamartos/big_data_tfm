@@ -142,7 +142,7 @@ def aggregate_data(df, numeric_cols, categorical_cols, groups_to_organize_by, al
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ETL script for aggregating data.')
-    parser.add_argument('--sql_uri', default='../data_analysis/pisos_backup.db', help='SQL database URI.')
+    parser.add_argument('--sql_uri', default='./pisos.db', help='SQL database URI.')
 
     args = parser.parse_args()
     sql_uri = args.sql_uri
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
     # Aggregate data for all records
 
-    group_variables = ['updated_month', 'city', 'type', 'active']
+    group_variables = ['updated_month', 'province', 'type', 'active', 'capital']
     # Ratio definitions
     ratio_definitions = {
         'price_per_m2': ('price_euro', 'superficie_util_m2'),

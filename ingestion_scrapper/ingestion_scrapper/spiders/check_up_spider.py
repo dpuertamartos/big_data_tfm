@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import time
 from ..config import mongodb_uri
 
+
 class AdUpCheckingSpider(scrapy.Spider):
     name = 'ad_up_checking'
 
@@ -44,10 +45,20 @@ class AdUpCheckingSpider(scrapy.Spider):
         original_link = response.meta['original_link']
         doc_id = response.meta['doc_id']
         collection = response.meta['collection']
+        flat_inactive = False
 
+        # Check if the URL has been redirected
         if response.url != original_link:
-            print(f'Ad retired for URL: {original_link}')
-            # Update the document in MongoDB
+            print(f'Ad retired due to URL redirection for: {original_link}')
+            flat_inactive = True
+
+        # Check if the specific HTML element is present
+        elif response.css('p.notification__disabled--title'):
+            print(f'Ad retired due to inactivity message for: {original_link}')
+            flat_inactive = True
+
+        # Update MongoDB if the flat is inactive
+        if flat_inactive:
             self.db[collection].update_one(
                 {'_id': doc_id},
                 {
@@ -56,8 +67,6 @@ class AdUpCheckingSpider(scrapy.Spider):
                 }
             )
             self.number_of_flat_retired += 1
-
-
 
     def closed(self, reason):
         # Close MongoDB connection when spider is closed

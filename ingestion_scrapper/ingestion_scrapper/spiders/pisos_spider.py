@@ -2,6 +2,7 @@ import scrapy
 import pymongo
 import datetime
 from ..config import mongodb_uri
+import re
 
 OLD_DATE = "Anuncio 15/10/1991"
 
@@ -9,26 +10,21 @@ OLD_DATE = "Anuncio 15/10/1991"
 class PisosSpider(scrapy.Spider):
     name = 'general'
 
-    cities = ['a_coruna', 'alava_araba', 'albacete', 'alicante', 'almeria', 'andorra', 'asturias', 'avila',
-              'badajoz', 'barcelona', 'bilbao', 'burgos', 'caceres',
-              'cadiz', 'cantabria', 'castellon_castello', 'cerdanya_francesa', 'ceuta', 'ciudad_real', 'cordoba',
-              'cuenca', 'el_hierro', 'formentera', 'fuerteventura', 'gijon_concejo_xixon_conceyu_gijon',
-              'guipuzcoa_gipuzkoa', 'girona', 'granada', 'guadalajara', 'huelva', 'huesca', 'isla_de_ibiza_eivissa',
-              'jaen', 'la_palma', 'la_rioja', 'lanzarote', 'las_palmas', 'leon',
-              'lleida', 'logrono', 'lugo', 'madrid', 'malaga', 'isla_de_mallorca', 'melilla', 'isla_de_menorca', 'murcia',
-              'navarra_nafarroa', 'oviedo', 'pais_vasco_frances_iparralde', 'palencia',
-              'pamplona_iruna', 'pontevedra', 'salamanca', 'san_sebastian_donostia',
-              'santander', 'segovia', 'sevilla', 'soria', 'tarragona', 'tenerife',
-              'teruel', 'toledo', 'valencia', 'valladolid', 'vigo', 'vitoria_gasteiz_zona_urbana', 'vizcaya_bizkaia', 'zamora', 'zaragoza']
-
+    cities = ['a_coruna', 'alava_araba', 'albacete', 'alicante', 'almeria', 'andorra', 'asturias', 'avila', 'badajoz',
+              'barcelona', 'burgos', 'caceres', 'cadiz', 'cantabria', 'castellon_castello', 'ceuta', 'ciudad_real',
+              'cordoba', 'cuenca', 'girona', 'granada', 'guadalajara', 'guipuzcoa_gipuzkoa', 'huelva', 'huesca',
+              'islas_baleares_illes_balears', 'jaen', 'la_rioja', 'las_palmas', 'leon', 'lleida', 'lugo', 'madrid',
+              'malaga', 'melilla', 'murcia', 'navarra_nafarroa', 'ourense', 'palencia', 'pontevedra', 'salamanca',
+              'santa_cruz_de_tenerife', 'segovia', 'sevilla', 'soria', 'tarragona', 'teruel', 'toledo', 'valencia',
+              'valladolid', 'vizcaya_bizkaia', 'zamora', 'zaragoza']
 
 
     #Ciudades a crawlear
-    start_urls = ['https://www.pisos.com/venta/pisos-{}/fecharecientedesde-desc/1/'.format(city) for city in cities]
+    start_urls = ['https://www.pisos.com/venta/pisos-{}/fecharecientedesde-desc/1/'.format(province) for province in cities]
 
     should_continue_scraping = {}
-    latest_dates_per_city_db = {}
-    latest_dates_per_city_current_execution = {}
+    latest_dates_per_province_db = {}
+    latest_dates_per_province_current_execution = {}
 
     def __init__(self, update_mode=False, *args, **kwargs):
         self.update_mode = update_mode
@@ -36,16 +32,16 @@ class PisosSpider(scrapy.Spider):
         self.client = pymongo.MongoClient(mongodb_uri)  # Adjust the connection string if needed
         self.db = self.client["pisos"]  # Change to your database name
         self.last_updated_dates_collection = self.client['pisos']['last_updated_dates']
-        for city in self.cities:
-            self.should_continue_scraping[city] = True
-            self.latest_dates_per_city_db[city] = self.get_last_known_date(city)
-            self.latest_dates_per_city_current_execution[city] = OLD_DATE
+        for province in self.cities:
+            self.should_continue_scraping[province] = True
+            self.latest_dates_per_province_db[province] = self.get_last_known_date(province)
+            self.latest_dates_per_province_current_execution[province] = OLD_DATE
 
         self.flats_stored_counter = 0
         super(PisosSpider, self).__init__(*args, **kwargs)
 
-    def get_last_known_date(self, city):
-        record = self.last_updated_dates_collection.find_one({"city": city})
+    def get_last_known_date(self, province):
+        record = self.last_updated_dates_collection.find_one({"province": province})
         if record:
             return record.get("last_updated_date", OLD_DATE)
         return OLD_DATE  # Return an OLD_DATE
@@ -54,8 +50,8 @@ class PisosSpider(scrapy.Spider):
         if response.status in range(300, 310):
             return
 
-        city = response.url.split('-')[1].split('/')[0]
-        collection = self.db[city]  # Use the city's name as the collection name
+        province = response.url.split('-')[1].split('/')[0]
+        collection = self.db[province]  # Use the province's name as the collection name
 
         for ad in response.css('div.ad-preview'):
             id = ad.xpath('@id').get()
@@ -63,32 +59,38 @@ class PisosSpider(scrapy.Spider):
                 'id': id,
                 'title': ad.css('a.ad-preview__title::text').get(),
                 'location': ad.css('p.p-sm::text').get(),
-                'city': city,
+                'province': province,
                 'price': ad.css('span.ad-preview__price::text').get().strip(),
                 'description': ad.css('p.ad-preview__description::text').get(),
                 'link': response.urljoin(ad.css('a.ad-preview__title::attr(href)').get()),
             }
             # Make a request to the detailed page using the link and pass the current data as meta
-            yield scrapy.Request(data['link'], callback=self.parse_detail, meta={'data': data, 'city': city})
+            yield scrapy.Request(data['link'], callback=self.parse_detail, meta={'data': data, 'province': province})
 
         next_page_number = int(response.url.split('/')[-2]) + 1
         next_page_url = '/'.join(response.url.split('/')[:-2]) + '/' + str(next_page_number) + '/'
 
-        current_city_homepage = '/'.join(response.url.split('/')[:-2]) + '/'
+        current_province_homepage = '/'.join(response.url.split('/')[:-2]) + '/'
 
-        if self.should_continue_scraping[city] and response.url != current_city_homepage and next_page_number <= self.max_page_to_search:
+        if self.should_continue_scraping[province] and response.url != current_province_homepage and next_page_number <= self.max_page_to_search:
             yield scrapy.Request(next_page_url, callback=self.parse)
 
     def parse_detail(self, response):
-
         data = response.meta['data']  # Get the previously extracted data passed as meta
-        city = response.meta['city']  # Get the city name passed as meta
-        collection = self.db[city]  # Use the city as the collection name
+        province = response.meta['province']  # Get the province name passed as meta
+        collection = self.db[province]  # Use the province as the collection name
 
-        # Extracting the updated date
-        updated_date = response.css('div.updated-date::text').get().strip() or OLD_DATE
+        updated_date_element = response.css('p.last-update__date::text').get()
+        if updated_date_element:
+            updated_date = updated_date_element.strip()
+        else:
+            print(f'CAREFUL!!--------------------------------------------------------------------------- Updated date not found for URL: {response.url}')
+            if self.update_mode:
+                return
+            updated_date = OLD_DATE
 
-        current_last_known_date = self.latest_dates_per_city_db.get(city, OLD_DATE)
+
+        current_last_known_date = self.latest_dates_per_province_db.get(province, OLD_DATE)
 
         print("update_date ->", updated_date, current_last_known_date)
         is_more_recent_than_db, is_equal_than_db = self.more_recent(updated_date, current_last_known_date)
@@ -96,7 +98,7 @@ class PisosSpider(scrapy.Spider):
 
         if self.update_mode:
             if not (is_equal_than_db or is_more_recent_than_db):
-                self.should_continue_scraping[city] = False
+                self.should_continue_scraping[province] = False
                 return
             elif is_equal_than_db and collection.find_one({"id": data['id']}):
                 #when we are in the same day that last update, this will prevent to add ads that were already added
@@ -105,65 +107,72 @@ class PisosSpider(scrapy.Spider):
                 #therefore for 07/08/2023 (is_equal) we have to check if the id is in the colection already
                 return
 
-            current_execution_last_date = self.latest_dates_per_city_current_execution.get(city, OLD_DATE)
+            current_execution_last_date = self.latest_dates_per_province_current_execution.get(province, OLD_DATE)
             is_more_recent_than_current, _ = self.more_recent(updated_date, current_execution_last_date)
             if is_more_recent_than_current:
-                self.latest_dates_per_city_current_execution[city] = updated_date
+                self.latest_dates_per_province_current_execution[province] = updated_date
                 if is_more_recent_than_db:
-                    self.update_date_in_db(self.last_updated_dates_collection, city, updated_date)
+                    self.update_date_in_db(self.last_updated_dates_collection, province, updated_date)
                     #do not update the dictionary since we want to retain the original date of the database to not surpass it
         else:
             # when not in update mode
             # if the updated_date is more_recent_than_db update the db and the dictionary
             if is_more_recent_than_db:
-                self.update_date_in_db(self.last_updated_dates_collection, city, updated_date)
-                self.latest_dates_per_city_db[city] = updated_date
+                self.update_date_in_db(self.last_updated_dates_collection, province, updated_date)
+                self.latest_dates_per_province_db[province] = updated_date
 
         data['updated_date'] = updated_date
 
-        # Loop through each characteristic item
-        for charblock in response.css('ul.charblock-list.charblock-basics > li.charblock-element'):
-            # Extract the name of the characteristic
-            characteristic_name = charblock.css('.icon-inline::text').get()
+        # Extract characteristics from the provided HTML structure
+        try:
+            features = response.css('div.details__block .features-container .features__feature')
+            for feature in features:
+                characteristic_name = feature.css('.features__label::text').get()
+                characteristic_value = feature.css('.features__value::text').get()
 
-            # Extract the value of the characteristic
-            characteristic_value = charblock.css('span:last-child::text').get()
+                if characteristic_name:
+                    characteristic_name = characteristic_name.strip().replace(":", "").replace(" ", "_").lower()
+                    characteristic_value = characteristic_value.strip() if characteristic_value else "Si"  # Default value for features without specific value
 
-            if characteristic_name and characteristic_value:
-                characteristic_name = characteristic_name.strip().replace(" ",
-                                                                          "_").lower()  # Convert to a safe key format for dictionary
-                characteristic_value = characteristic_value.strip().lstrip(":").strip()  # Clean the value
+                    data[characteristic_name] = characteristic_value
+        except Exception as e:
+            print(f'could not ingest characteristics, error {e}')
 
-                data[characteristic_name] = characteristic_value
+        # Extract full description
+        try:
+            description = response.css('div.description__content::text').get()
+            if description:
+                    data['description'] = description.strip()
+        except Exception as e:
+            print(f'could not ingest full description, error {e}')
 
-        # Extract "other " details
-        for charblock in response.css(
-                'div.charblock > div.charblock-right > ul.charblock-list > li.charblock-element'):
-            characteristic_name = charblock.css('span:first-child::text').get()
-            characteristic_value = charblock.css('span:last-child::text').get()
+        #Extract old price in legacy mode (updated web does not show old price, only the difference).
+        #We extract in legacy mode to not affect transformation later
+        try:
+            old_price_difference = response.css('div.price__drop::text').get()
+            if old_price_difference:
+                    data['old_price'] = old_price_difference.strip()
+                    price_to_int = int(re.sub('[^0-9]', '', data.get("price")))
+                    old_price_difference_to_int = int(re.sub('[^0-9]', '', data.get("old_price").split("€")[0]))
+                    data['old_price'] = str(price_to_int+old_price_difference_to_int)+" €"
+        except Exception as e:
+            print(f'could not ingest old_price, error {e}')
 
-            if characteristic_name and characteristic_value:
-                characteristic_name = characteristic_name.strip().replace(" ", "_").lower()
-                characteristic_value = characteristic_value.strip().lstrip(":").strip()
-                data[characteristic_name] = characteristic_value
-            elif characteristic_name:  # Some elements might not have a specific value (e.g., Amueblado)
-                characteristic_name = characteristic_name.strip().replace(" ", "_").lower()
-                data[characteristic_name] = "Si"  # default value
+        # Extracting photo links
+        try:
+            photo_urls = []
+            thumbnail_elements = response.css('div.masonry__content.media-thumbnail')
+            for thumbnail in thumbnail_elements:
+                photo_url = thumbnail.css('picture img::attr(src)').get()
+                if not photo_url:
+                    photo_url = thumbnail.css('picture img::attr(data-src)').get()
+                if photo_url:
+                    photo_urls.append(photo_url.strip())
 
-        # Extract description
-        description = response.css('div.description-container.description-body::text').get()
-        if description:
-            data['description'] = description.strip()
-
-        # Extract oldPrice if it exists
-            old_price = response.css('div.oldPrice::text').get()
-            if old_price:
-                data['old_price'] = old_price.strip()
-
-        # Extracting the photo links
-            photo_links = response.css('input#PhotosPath::attr(value)').get()
-            if photo_links:
-                data['photos'] = photo_links.split('#,!')
+            if photo_urls:
+                data['photos'] = photo_urls
+        except Exception as e:
+            print(f'Could not ingest photo links, error: {e}')
 
         data['active'] = True
         data['createdAt'] = datetime.datetime.now()
@@ -187,11 +196,11 @@ class PisosSpider(scrapy.Spider):
         print("saved data...", data)
 
 
-    def update_date_in_db(self, collection, city, updated_date):
+    def update_date_in_db(self, collection, province, updated_date):
         collection.update_one(
-            {"city": city},
+            {"province": province},
             {"$set": {"last_updated_date": updated_date}},
-            upsert=True  # If the city doesn't exist, it will create a new entry
+            upsert=True  # If the province doesn't exist, it will create a new entry
         )
 
     def more_recent(self, date_str1, date_str2):

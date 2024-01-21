@@ -14,15 +14,15 @@ def load_model(model_path):
 
 
 def load_required_models(df):
-    # Identify unique cities and price categories in the DataFrame
-    unique_cities = df['city'].unique()
+    # Identify unique provinces and price categories in the DataFrame
+    unique_provinces = df['province'].unique()
     unique_categories = ['cheap', 'expensive']  # Assuming only these two categories
 
-    models = {city: {} for city in unique_cities}
-    for city in unique_cities:
+    models = {province: {} for province in unique_provinces}
+    for province in unique_provinces:
         for category in unique_categories:
-            model_path = f"{model_saving_path}/{city}_{category}.joblib"
-            models[city][category] = load_model(model_path)
+            model_path = f"{model_saving_path}/{province}_{category}.joblib"
+            models[province][category] = load_model(model_path)
 
     return models
 
@@ -30,9 +30,9 @@ def load_required_models(df):
 def make_predictions(df, models):
     predictions = pd.Series(index=df.index)
 
-    for city, group_df in df.groupby('city'):
+    for province, group_df in df.groupby('province'):
         price_category = 'cheap' if group_df['price_euro'].iloc[0] <= 350000 else 'expensive'
-        model, preprocessor = models[city][price_category]
+        model, preprocessor = models[province][price_category]
 
         # Preprocess the group
         processed_group = preprocessor.transform(group_df)

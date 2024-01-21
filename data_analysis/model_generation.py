@@ -42,7 +42,7 @@ class DataFrameDummiesTransformer(BaseEstimator, TransformerMixin):
 
 
 # Model creation function
-def create_model(df, city, model_type, data_cleaner):
+def create_model(df, province, model_type, data_cleaner):
 
     cleaned_df = data_cleaner.transform(df)
 
@@ -109,34 +109,34 @@ def get_model_by_type(model_type):
     return model
 
 
-def generate_models(unique_cities, df_cheap, df_expensive, data_cleaner_expensive, data_cleaner_cheap, model_type="RandomForest"):
-    models = {}  # To store trained models and their preprocessors for each city
-    rmse_scores = {}  # To store RMSE scores for each city
+def generate_models(unique_provinces, df_cheap, df_expensive, data_cleaner_expensive, data_cleaner_cheap, model_type="RandomForest"):
+    models = {}  # To store trained models and their preprocessors for each province
+    rmse_scores = {}  # To store RMSE scores for each province
     mean_prices = {}
 
-    for city in unique_cities:
+    for province in unique_provinces:
         # Process the 'cheap' category
         try:
-            city_df_cheap = df_cheap[df_cheap['city'] == city].copy()
-            cheap_model, cheap_rmse, cheap_preprocessor, cheap_mean_price = create_model(city_df_cheap, city, model_type, data_cleaner_cheap)
+            province_df_cheap = df_cheap[df_cheap['province'] == province].copy()
+            cheap_model, cheap_rmse, cheap_preprocessor, cheap_mean_price = create_model(province_df_cheap, province, model_type, data_cleaner_cheap)
             print("Cheap model -----------")
-            print(f"City: {city}, RMSE: {cheap_rmse:.2f}, mean_price: {cheap_mean_price}")
+            print(f"province: {province}, RMSE: {cheap_rmse:.2f}, mean_price: {cheap_mean_price}")
 
             # Process the 'expensive' category
-            city_df_expensive = df_expensive[df_expensive['city'] == city].copy()
-            expensive_model, expensive_rmse, expensive_preprocessor, expensive_mean_price = create_model(city_df_expensive, city, model_type, data_cleaner_expensive)
+            province_df_expensive = df_expensive[df_expensive['province'] == province].copy()
+            expensive_model, expensive_rmse, expensive_preprocessor, expensive_mean_price = create_model(province_df_expensive, province, model_type, data_cleaner_expensive)
             print("Expensive model ----------")
-            print(f"City: {city}, RMSE: {expensive_rmse:.2f}, mean_price: {expensive_mean_price}")
+            print(f"province: {province}, RMSE: {expensive_rmse:.2f}, mean_price: {expensive_mean_price}")
 
             # Store both model and preprocessor
-            models[city] = {
+            models[province] = {
                 'cheap': (cheap_model, cheap_preprocessor),
                 'expensive': (expensive_model, expensive_preprocessor)
             }
-            rmse_scores[city] = {'cheap': cheap_rmse, 'expensive': expensive_rmse}
-            mean_prices[city] = {'cheap': cheap_mean_price, 'expensive': expensive_mean_price}
+            rmse_scores[province] = {'cheap': cheap_rmse, 'expensive': expensive_rmse}
+            mean_prices[province] = {'cheap': cheap_mean_price, 'expensive': expensive_mean_price}
         except Exception as e:
-            print(f'model {model_type} for city {city} failed to generate. Error: {str(e)}')
+            print(f'model {model_type} for province {province} failed to generate. Error: {str(e)}')
 
     rmse_scores_relative = {k: {'cheap': rmse_scores[k]['cheap'] / mean_prices[k]['cheap'],
                                 'expensive': rmse_scores[k]['expensive'] / mean_prices[k]['expensive']
@@ -149,10 +149,10 @@ def generate_models(unique_cities, df_cheap, df_expensive, data_cleaner_expensiv
 def save_best_models(model_saving_path, best_models, data_cleaner_cheap, data_cleaner_expensive):
     joblib.dump(data_cleaner_cheap, os.path.join(model_saving_path, "data_cleaner_cheap.joblib"))
     joblib.dump(data_cleaner_expensive, os.path.join(model_saving_path, "data_cleaner_expensive.joblib"))
-    for (city, category), models in best_models.items():
-        model, preprocessor = best_models[(city, category)]['model']
-        print(city, category, best_models[(city, category)]['rmse'], best_models[(city, category)]['model_type'])
-        joblib.dump((model, preprocessor), os.path.join(model_saving_path, f"{city}_{category}.joblib"))
+    for (province, category), models in best_models.items():
+        model, preprocessor = best_models[(province, category)]['model']
+        print(province, category, best_models[(province, category)]['rmse'], best_models[(province, category)]['model_type'])
+        joblib.dump((model, preprocessor), os.path.join(model_saving_path, f"{province}_{category}.joblib"))
 
 
 

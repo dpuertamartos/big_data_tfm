@@ -2,18 +2,21 @@ import pandas as pd
 import json
 import re
 from transformation_utils import convert_to_snake_case, summarize_to_yes, clean_gastos, clean_to_commons, get_mascotas, \
-    extract_tipo_from_title, convert_to_unixtime
+    extract_tipo_from_title, convert_to_unixtime, check_capital
 import logging
 
 
-def transform_data(documents, city):
+def transform_data(documents, province):
     df = pd.DataFrame(documents)
     if '_id' in df.columns:
         df = df.drop('_id', axis=1)
     for col in df.columns:
         if df[col].apply(isinstance, args=(list,)).any():
             df[col] = df[col].apply(json.dumps)
-    df['city'] = city
+    df['province'] = province
+
+    # New logic to check for capital
+    df['capital'] = df.apply(lambda row: check_capital(row['location'], province), axis=1)
 
     # Convert relevant timestamp columns to Unix time
     for timestamp_col in ['updatedAt', 'createdAt']:  # Add more timestamp columns if needed

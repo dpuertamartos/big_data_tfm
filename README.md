@@ -41,7 +41,11 @@ docker-compose run --rm airflow_webserver airflow users create \
     --password admin
 `
 
-3.b. (OPCIONAL) Restaura el volumen de mongodb siguiendo las intrucciones al final de este README en dev-utils
+3.b. 
+
+(OPCIONAL) Restaura el volumen de mongodb siguiendo las intrucciones de 8.3.B -> Permite en el punto 6 restaurar desde mongodb
+(OPCIONAL) Restaura demás el volumen de SQLite y los modelos siguiendo las intrucciones -> Permite en el punto 7 restaurar rápidamente 
+y comenzar la visualización
 
 
 4. Lanza la mongodb, airflow y el sitio web:
@@ -52,9 +56,11 @@ docker-compose run --rm airflow_webserver airflow users create \
 
 `docker-compose build scraper etl data_analysis`
 
-6. Lanza el DAG 'restore_from_mongodb_volume_dag' o 'initial_run_dag' manualmente desde airflow
+6. Lanza el DAG 'restore_from_mongodb_volume_dag' / 'restore_from_mongodb_sql_trained_dag' / 'initial_run_dag' manualmente desde airflow
 
-7. Cuando hayan acabado (pueden tardar varias horas estos dag iniciales) activa el resto de dag y el proyecto funcionará con normalidad
+7. Cuando hayan acabado activa el resto de dag y el proyecto funcionará con normalidad. 
+Según el grado de backup habrá más funcionalidades desde el inicio o puede tardar un par de horas.
+Para que la web esté completamente funcional se necesita haber completado el punto 6 desde el punto de partida correcto.
 
 ## 1. Ingestion
 
@@ -187,26 +193,31 @@ AÑADIR INSTRUCCIONES
 `docker cp /path/to/pisos.db temp-container:/volume/ && docker stop temp-container`
 
 
-## DEV-UTILS
+## 8. DEV-UTILS
 
-### Inspect volume contents
+### 8.1 Inspect volume contents
 
 `docker run -it --rm --name temp-container -v big_data_tfm_logs:/data alpine sh`
 
-### Copy data from volume to local file system
+### 8.2 Copy data from volume to local file system
 
 1. `docker run -it -d --rm -v [VOLUME_NAME]:/data --name temp-container alpine`
 
 2. `docker cp temp-container:/data /path/to/local/destination && docker stop temp-container`
 
-### Exporting the mongodb volume (or any) to another machine
+### 8.3 Exporting the mongodb volume (or any) to another machine
 
-1. `docker run --rm -v big_data_tfm_mongodb-data:/data -v $(pwd):/backup ubuntu tar czvf /backup/mongodb-volume-backup.tar.gz -C /data .`
+8.3.A Exporting
 
-In a new machine:
+`docker run --rm -v big_data_tfm_mongodb-data:/data -v $(pwd):/backup ubuntu tar czvf /backup/mongodb-volume-backup.tar.gz -C /data .`
 
-2. `docker volume create big_data_tfm_mongodb-data`
-3. `docker run --rm -v big_data_tfm_mongodb-data:/data -v /path/where/backup/is/stored:/backup ubuntu tar xzvf /backup/volume-backup.tar.gz -C /data`
+8.3.B Importing the volume backup in a new machine:
+
+1. `docker compose up -d mongo` (recommended: it will create big_data_tfm_mongodb-data volume) 
+
+1.B `docker volume create big_data_tfm_mongodb-data` (not recommended: will trigger warning after docker-compose up)
+
+2. `docker run --rm -v big_data_tfm_mongodb-data:/data -v /path/where/backup/is/stored:/backup ubuntu tar xzvf /backup/mongodb-volume-backup.tar.gz -C /data`
 
 
 ## arquitecture 
