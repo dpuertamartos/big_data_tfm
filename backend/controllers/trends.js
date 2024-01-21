@@ -5,8 +5,8 @@ const getAggregatedData = async (options) => {
     let whereClause = ''
     const conditions = []
 
-    if (options.city) {
-        conditions.push(`city_group = '${options.city}'`)
+    if (options.province) {
+        conditions.push(`province_group = '${options.province}'`)
     }
     if (options.type) {
         conditions.push(`type_group = '${options.type}'`)
@@ -28,8 +28,8 @@ const getAggregatedData = async (options) => {
 
 router.get('/', async (req, res) => {
     try {
-        const { city, type, active, month } = req.query
-        const options = { city, type, active, month }
+        const { province, type, active, month } = req.query
+        const options = { province, type, active, month }
         const data = await getAggregatedData(options)
         res.json(data)
     } catch (error) {

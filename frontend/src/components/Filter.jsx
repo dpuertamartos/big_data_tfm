@@ -6,15 +6,15 @@ const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value
 }
 
-const Filter = ({ filters, onFilterChange, onCityChange, onTipoChange, onSortChange }) => {
-    const cityOptions = cities.locations
+const Filter = ({ filters, onFilterChange, onprovinceChange, onTipoChange, onSortChange }) => {
+    const provinceOptions = cities.locations
 
     return (
         <Box>
             <Autocomplete
                 value={filters.ciudad}
-                onChange={onCityChange}
-                options={cityOptions}
+                onChange={onprovinceChange}
+                options={provinceOptions}
                 getOptionLabel={(option) => option ? option : ''}
                 renderInput={(params) => (
                     <TextField {...params} label="Ciudad" margin="normal" />

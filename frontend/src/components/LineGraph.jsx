@@ -16,14 +16,14 @@ const LineGraph = ({ selectedCities, data, activeDotSelector, yAxisOptions, yAxi
       if (!monthMap[month]) {
         monthMap[month] = { name: month };
       }
-      monthMap[month][item.city_group] = item[yAxisKey];
+      monthMap[month][item.province_group] = item[yAxisKey];
     });
 
     return Object.values(monthMap);
   };
 
   // Function to generate a unique stroke color for each line
-  const getStrokeColor = (city) => {
+  const getStrokeColor = (province) => {
     const hashStringToColor = (str) => {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
@@ -37,7 +37,7 @@ const LineGraph = ({ selectedCities, data, activeDotSelector, yAxisOptions, yAxi
       }
       return color;
     };
-    return hashStringToColor(city);
+    return hashStringToColor(province);
   };
 
   const handleYAxisChange = (event) => {
@@ -79,13 +79,13 @@ const LineGraph = ({ selectedCities, data, activeDotSelector, yAxisOptions, yAxi
               <YAxis />
               <Tooltip />
               <Legend />
-              {selectedCities.map(city => (
+              {selectedCities.map(province => (
                 <Line 
-                  key={city}
+                  key={province}
                   type="monotone" 
-                  dataKey={city} 
-                  stroke={getStrokeColor(city)} 
-                  activeDot={city === activeDotSelector ? { r: 8 } : null}
+                  dataKey={province} 
+                  stroke={getStrokeColor(province)} 
+                  activeDot={province === activeDotSelector ? { r: 8 } : null}
                 />
               ))} 
             </LineChart>

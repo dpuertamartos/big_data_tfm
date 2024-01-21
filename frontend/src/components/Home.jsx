@@ -50,26 +50,26 @@ const Home = () => {
     let updatedFlats = { ...bestFlats }
   
     // Fetch new flats for newly selected cities
-    for (const city of newSelectedCities) {
-      if (!bestFlats[city]) {
+    for (const province of newSelectedCities) {
+      if (!bestFlats[province]) {
         try {
           const params = {
-              city: city !== 'all' ? city : undefined,
+              province: province !== 'all' ? province : undefined,
               orderBy: 'rating DESC', 
               limitNumber: 10
           }
           const flats = await flatService.getFiltered(params)
-          updatedFlats[city] = flats
+          updatedFlats[province] = flats
         } catch (error) {
-          console.error(`Error fetching flats for ${city}:`, error)
+          console.error(`Error fetching flats for ${province}:`, error)
         }
       }
     }
   
     // Remove flats for unselected cities
-    for (const city in bestFlats) {
-      if (!newSelectedCities.includes(city)) {
-        delete updatedFlats[city]
+    for (const province in bestFlats) {
+      if (!newSelectedCities.includes(province)) {
+        delete updatedFlats[province]
       }
     }
   

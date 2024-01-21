@@ -22,7 +22,7 @@ const Flats = ({ errorMessage }) => {
     const fetchFilteredFlats = async () => {
       try {
           const params = { 
-              city: filters.ciudad, 
+              province: filters.ciudad, 
               type: filters.tipo,
               orderBy: filters.orderBy
           }
@@ -87,7 +87,7 @@ const Flats = ({ errorMessage }) => {
         }))
     }
 
-    const handleCityChange = (event, newValue) => {
+    const handleprovinceChange = (event, newValue) => {
         setFilters(prevFilters => ({
             ...prevFilters,
             ciudad: newValue
@@ -116,7 +116,7 @@ const Flats = ({ errorMessage }) => {
                     <Filter
                         filters={filters}
                         onFilterChange={handleFilterChange}
-                        onCityChange={handleCityChange}
+                        onprovinceChange={handleprovinceChange}
                         onTipoChange={handleTipoChange}
                         onSortChange={handleSortChange}
                     />

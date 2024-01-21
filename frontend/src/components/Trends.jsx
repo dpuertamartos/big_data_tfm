@@ -10,8 +10,8 @@ import SpainMap from './Map';
 //TODO1: TOP FILTER INCLUDE TIME
 //TODO2 The numerical PART will have a graph and a numeric aggregator/map - 
 //TODO3: The categorical variables will have a graph and a map
-//TODO4: Each A and B can have dimension selected which will change the type of graph (time line graph, city map, type bar with drawings in X axis?)
-//MAP ALWAYS PRESENT IF TIME DIMENSION SHOW TIME = 'ALL' TYPE 'ALL', IF TYPE DIMENSION SHOW TIME 'ALL' CITY WHERE
+//TODO4: Each A and B can have dimension selected which will change the type of graph (time line graph, province map, type bar with drawings in X axis?)
+//MAP ALWAYS PRESENT IF TIME DIMENSION SHOW TIME = 'ALL' TYPE 'ALL', IF TYPE DIMENSION SHOW TIME 'ALL' province WHERE
 
 
 const CategoricalBarChart = ({ data, selectedCities }) => {
@@ -34,7 +34,7 @@ const CategoricalBarChart = ({ data, selectedCities }) => {
     const colors = generateColorArray(selectedCategories.length);
     // Filter data to include only selected cities
     const filteredData = data.filter(item => 
-        selectedCities.includes(item.city_group) || selectedCities.includes("all")
+        selectedCities.includes(item.province_group) || selectedCities.includes("all")
     );
 
     return (
@@ -51,7 +51,7 @@ const CategoricalBarChart = ({ data, selectedCities }) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
-          dataKey="city_group" 
+          dataKey="province_group" 
           interval={0} // Display all ticks
           tick={{ 
             angle: -45, 
@@ -160,7 +160,7 @@ const Trends = () => {
     // Filter data based on selected options
   const getFilteredData = () => {
       return trendData.filter(item => 
-        selectedCities.includes(item.city_group) 
+        selectedCities.includes(item.province_group) 
       );
   };
   
