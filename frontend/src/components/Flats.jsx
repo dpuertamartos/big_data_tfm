@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Notification from './Notification'
 import Listing from './Listing'
 import Filter from './Filter'
-import { Container, Grid } from '@mui/material'
+import { Grid, Container, Box, useTheme, useMediaQuery } from '@mui/material'
 
 import flatService from '../services/flats'
 import debounce from 'lodash/debounce' // You might need to install lodash for this
@@ -118,27 +118,36 @@ const Flats = ({ errorMessage }) => {
       }))
   }
 
-  console.log(filteredFlats)
-    return (
-        <Container>
-            <Notification message={errorMessage} />
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                    <Filter
-                        filters={filters}
-                        onFilterChange={handleFilterChange}
-                        onprovinceChange={handleprovinceChange}
-                        onIsCapitalChange={handleIsCapitalChange}
-                        onTipoChange={handleTipoChange}
-                        onSortChange={handleSortChange}
-                    />
-                </Grid>
-                <Grid item xs={12} md={8}>
+
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+
+  return (
+      <Container fixed>
+          <Notification message={errorMessage} />
+          <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                  <Box sx={{
+                      position: isLargeScreen ? 'fixed' : 'relative', 
+                      width: '100%', 
+                      maxWidth: 360
+                  }}>
+                      <Filter
+                          filters={filters}
+                          onFilterChange={handleFilterChange}
+                          onprovinceChange={handleprovinceChange}
+                          onIsCapitalChange={handleIsCapitalChange}
+                          onTipoChange={handleTipoChange}
+                          onSortChange={handleSortChange}
+                      />
+                  </Box>
+              </Grid>
+              <Grid item xs={12} md={8} sx={{ ml: isLargeScreen ? '400px' : 0 }}>
                   <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
-                </Grid>
-            </Grid>
-        </Container>
-    )
+              </Grid>
+          </Grid>
+      </Container>
+  );
 }
 
 export default Flats
