@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
 
-const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, multiple = true }) => {
+const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, multiple = true, disabled = false }) => {
   return (
     <FormControl style={{ minWidth: 120, marginTop: 40 }}>
       <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
@@ -17,6 +17,7 @@ const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, 
             ))}
           </div>
         )) : undefined}
+        disabled ={disabled}
       >
         {elementToChoose.map(name => (
           <MenuItem key={name} value={name}>
