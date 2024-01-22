@@ -28,7 +28,7 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
                             const offset = categoryOffsets[category];
                             newMarkers.push({
                                 coordinates: [provinceInfo.coordinates[1] + offset.y, provinceInfo.coordinates[0] + offset.x],
-                                radius: Math.max(item[category] * 20, 0.2),
+                                radius: Math.max(item[category] * 30, 1),
                                 category,
                                 value: item[category],
                                 province: item.province_group,
@@ -50,9 +50,10 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
         <div style={{ height: '500px', width: '500px', margin: '20px auto' }}>
             <MapContainer center={position} zoom={6} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'
+                  url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'
                 />
+                
                 {markers.map((marker) => (
                     <CircleMarker
                         key={`${marker.province}-${marker.category}-${marker.color}`} // Unique key for each marker
@@ -64,7 +65,7 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
                         opacity={0.7}
                         fillOpacity={0.7}
                     >
-                        <Popup>{marker.category} ({(marker.value * 100).toFixed(2)}%): Radius {marker.radius}</Popup>
+                        <Popup>{marker.province}: ({(marker.value * 100).toFixed(2)}%), {marker.category} </Popup>
                     </CircleMarker>
                 ))}
             </MapContainer>
