@@ -114,7 +114,7 @@ const Home = () => {
       <SelectFilter 
         selectedElements={selectedprovinces} 
         handleChange={(event) => handleChange(event, false)} 
-        elementToChoose={provinces.locations} 
+        elementToChoose={["all"].concat(provinces.locations)} 
         label="provinces"
         disabled={isLoading}
         />
