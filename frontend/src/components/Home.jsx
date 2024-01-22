@@ -12,76 +12,122 @@ const Home = () => {
   const [bestFlats, setBestFlats] = useState({})
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
   const [trendData, setTrendData] = useState([])
+  const [selectedIsCapital, setSelectedIsCapital] = useState("all");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBestFlats = async () => {
-      try {
-        const initialFlats = await flatService.getFiltered({
-          orderBy: 'rating DESC',
-          limitNumber: 10
-        })
-        setBestFlats({ all: initialFlats })
-      } catch (error) {
-        console.error("Error fetching initial flats:", error)
-      }
-    }
+    setIsLoading(true);
 
     const fetchInitialTrends = async () => {
       try {
         const initialTrends = await trendService.get({
           active: 'all',
-          type: 'all'
-        })
+          type: 'all',
+          isCapital: selectedIsCapital
+        });
         setTrendData(initialTrends);
       } catch (error) {
         console.error("Error fetching initial trends:", error);
       }
+    };
+
+    const fetchBestFlats = async () => {
+      try {
+        let updatedFlats = {}
+        for (const province of selectedprovinces) {
+          try {
+            const params = {
+                isCapital: selectedIsCapital !== 'all' ? selectedIsCapital: undefined,
+                orderBy: 'rating DESC', 
+                limitNumber: 10
+            }
+    
+            if (province !== 'all') {
+              params.province = province
+            }
+            const flats = await flatService.getFiltered(params)
+            updatedFlats[province] = flats
+          } catch (error) {
+            console.error(`Error fetching flats for ${province}:`, error)
+        }
+        await setBestFlats({...updatedFlats})
+      }} catch (error) {
+        console.error("Error fetching initial flats:", error)
+      } 
     }
 
-    fetchBestFlats()
     fetchInitialTrends()
-  }, [])
+    fetchBestFlats()
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2500); // Set loading to false
+  }, [selectedIsCapital]);
 
-  console.log(trendData)
-  const handleChange = async (event) => {
-    const newSelectedprovinces = event.target.value
-    setSelectedprovinces(newSelectedprovinces)
+
+  const handleChange = async (event, isCapitalChange = false) => {
+    setIsLoading(true); // Set loading to true immediately
   
-    let updatedFlats = { ...bestFlats }
+    if (isCapitalChange) {
+      setSelectedIsCapital(event.target.value);
+    } else {
+      const newSelectedprovinces = event.target.value;
+      setSelectedprovinces(newSelectedprovinces);
   
-    // Fetch new flats for newly selected provinces
-    for (const province of newSelectedprovinces) {
-      if (!bestFlats[province]) {
-        try {
-          const params = {
+      let updatedFlats = { ...bestFlats };
+  
+      // Fetch new flats for newly selected provinces
+      for (const province of newSelectedprovinces) {
+        if (!bestFlats[province]) {
+          try {
+            const params = {
               province: province !== 'all' ? province : undefined,
               orderBy: 'rating DESC', 
-              limitNumber: 10
+              limitNumber: 10,
+              isCapital: selectedIsCapital !== 'all' ? selectedIsCapital : undefined
+            };
+            const flats = await flatService.getFiltered(params);
+            updatedFlats[province] = flats;
+          } catch (error) {
+            console.error(`Error fetching flats for ${province}:`, error);
           }
-          const flats = await flatService.getFiltered(params)
-          updatedFlats[province] = flats
-        } catch (error) {
-          console.error(`Error fetching flats for ${province}:`, error)
         }
       }
-    }
   
-    // Remove flats for unselected provinces
-    for (const province in bestFlats) {
-      if (!newSelectedprovinces.includes(province)) {
-        delete updatedFlats[province]
+      // Remove flats for unselected provinces
+      for (const province in bestFlats) {
+        if (!newSelectedprovinces.includes(province)) {
+          delete updatedFlats[province];
+        }
       }
+  
+      setBestFlats(updatedFlats);
     }
   
-    setBestFlats(updatedFlats)
-  }
-  
+    // Delay setting isLoading to false
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };  
 
   return (
     <span>
-      <SelectFilter selectedElements={selectedprovinces} handleChange={handleChange} elementToChoose={provinces.locations} label="provinces"/>
+      <SelectFilter 
+        selectedElements={selectedprovinces} 
+        handleChange={(event) => handleChange(event, false)} 
+        elementToChoose={provinces.locations} 
+        label="provinces"
+        disabled={isLoading}
+        />
+      <SelectFilter
+        selectedElements={selectedIsCapital}
+        handleChange={(event) => handleChange(event, true)}
+        elementToChoose={["all","0","1"]}
+        label="capital"
+        multiple={false}
+        disabled={isLoading}
+        />
       <LineGraph selectedprovinces={selectedprovinces} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
-      <Listing data={bestFlats} />
+      <Listing data={bestFlats} isCapital={selectedIsCapital} />
     </span>
   )
 }

@@ -6,7 +6,7 @@ const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value
 }
 
-const Filter = ({ filters, onFilterChange, onprovinceChange, onTipoChange, onSortChange }) => {
+const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, onTipoChange, onSortChange }) => {
     const provinceOptions = provinces.locations
 
     return (
@@ -22,6 +22,19 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onTipoChange, onSor
                 fullWidth
                 freeSolo
             />
+            <FormControl fullWidth margin="normal">
+                <InputLabel id="capital-label">Capital</InputLabel>
+                <Select
+                    labelId="capital-label"
+                    name="capital"
+                    value={filters.isCapital || ''} // Ensure the value is not undefined
+                    label="Capital"
+                    onChange={onIsCapitalChange}
+                >
+                    <MenuItem value="1">En la capital</MenuItem>
+                    <MenuItem value="0">Fuera de la capital</MenuItem>
+                </Select>
+            </FormControl>
             <FormControl fullWidth margin="normal">
                 <InputLabel id="tipo-label">Tipo</InputLabel>
                 <Select

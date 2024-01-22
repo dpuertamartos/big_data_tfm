@@ -10,7 +10,8 @@ import debounce from 'lodash/debounce' // You might need to install lodash for t
 const Flats = ({ errorMessage }) => {
     const [allFlats, setAllFlats] = useState([]) // To store all flats fetched from backend
     const [filters, setFilters] = useState({
-        ciudad: '',
+        provincia: '',
+        isCapital: '',
         tipo: '',
         precio: [0, 1000000],
         habitaciones: [0, 10],
@@ -22,7 +23,8 @@ const Flats = ({ errorMessage }) => {
     const fetchFilteredFlats = async () => {
       try {
           const params = { 
-              province: filters.ciudad, 
+              province: filters.provincia, 
+              isCapital: filters.isCapital,
               type: filters.tipo,
               orderBy: filters.orderBy
           }
@@ -90,7 +92,14 @@ const Flats = ({ errorMessage }) => {
     const handleprovinceChange = (event, newValue) => {
         setFilters(prevFilters => ({
             ...prevFilters,
-            ciudad: newValue
+            provincia: newValue
+        }))
+    }
+
+    const handleIsCapitalChange = (event) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            isCapital: event.target.value
         }))
     }
 
@@ -117,12 +126,13 @@ const Flats = ({ errorMessage }) => {
                         filters={filters}
                         onFilterChange={handleFilterChange}
                         onprovinceChange={handleprovinceChange}
+                        onIsCapitalChange={handleIsCapitalChange}
                         onTipoChange={handleTipoChange}
                         onSortChange={handleSortChange}
                     />
                 </Grid>
                 <Grid item xs={12} md={8}>
-                  <Listing data={{ [filters.ciudad || 'all']: filteredFlats }} />
+                  <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
                 </Grid>
             </Grid>
         </Container>
