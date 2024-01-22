@@ -163,7 +163,7 @@ router.get('/filtered', async (req, res) => {
             minRating: minRatingValue || minRating,
             maxRating: maxRatingValue,
             orderBy: sort,
-            columns: 'id, price_euro, title, rating, habitaciones, superficie_util_m2, type, province',
+            columns: 'id, province, price_euro, title, rating, habitaciones, superficie_util_m2, type',
             limitNumber
         }
 
