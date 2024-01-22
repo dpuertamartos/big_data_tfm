@@ -141,7 +141,7 @@ router.get('/province/:provinceName', async (req, res) => {
 
 router.get('/filtered', async (req, res) => {
     try {
-        const { province, isCapital, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber } = req.query
+        const { province, isCapital, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber, columns } = req.query
         let [minPrice, maxPrice] = price_euro ? price_euro.map(Number) : [0, null]
         let [minHabitaciones, maxHabitaciones] = habitaciones ? habitaciones.map(Number) : [null, null]
         let [minM2, maxM2] = m2 ? m2.map(Number) : [null, null]
@@ -163,7 +163,7 @@ router.get('/filtered', async (req, res) => {
             minRating: minRatingValue || minRating,
             maxRating: maxRatingValue,
             orderBy: sort,
-            columns: 'id, province,  price_euro, title, rating, habitaciones, superficie_util_m2, type',
+            columns: columns,
             limitNumber
         }
 
