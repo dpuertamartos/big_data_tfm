@@ -6,7 +6,7 @@ import Flats from './components/Flats';
 import Trends from './components/Trends';
 import Footer from './components/Footer';
 import { AppBar, Toolbar, Button, CssBaseline, Container, IconButton, useTheme, useMediaQuery, Box } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from '@mui/icons-material/Tune';
 
 const App = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
