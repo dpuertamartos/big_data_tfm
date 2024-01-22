@@ -136,19 +136,23 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             sx={{
                 display: { xs: 'block', md: 'none' },
                 '& .MuiDrawer-paper': {
-                width: '100%', // Sets the drawer's width to 100%
-                maxHeight: '100vh', // Optional: Restricts the maximum height
+                width: '90%', // Sets the drawer's width to 100%
+                maxHeight: '85vh', // Optional: Restricts the maximum height
                 display: 'flex', // Use flex container
                 justifyContent: 'center', // Center horizontally
                 alignItems: 'center', // Center vertically
+                margin: 'auto',
                 }
             }}
             >
-            <Box sx={{ width: '70%' }}>
+            <Box sx={{ width: '60%' }}>
                 <Filter
                 filters={filters}
                 onFilterChange={handleFilterChange}
-                // ... other props
+                onprovinceChange={handleprovinceChange}
+                onIsCapitalChange={handleIsCapitalChange}
+                onTipoChange={handleTipoChange}
+                onSortChange={handleSortChange}
                 />
             </Box>
             </Drawer>
