@@ -218,11 +218,11 @@ const Trends = () => {
       provincesFromRegion.forEach(province => updatedProvinces.add(province));
     });
   
-    // Remove provinces of deselected regions
-    Object.entries(regionToProvincesMap).forEach(([region, provinces]) => {
-      if (!newSelectedRegions.includes(region)) {
-        provinces.forEach(province => updatedProvinces.delete(province));
-      }
+    const deselectedRegions = selectedRegion.filter(region => !newSelectedRegions.includes(region));
+  
+    deselectedRegions.forEach(region => {
+      const provincesFromRegion = regionToProvincesMap[region] || [];
+      provincesFromRegion.forEach(province => updatedProvinces.delete(province));
     });
   
     setSelectedprovinces(Array.from(updatedProvinces));
