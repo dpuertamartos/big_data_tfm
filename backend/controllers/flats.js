@@ -8,6 +8,7 @@ const getFlats = async (options) => {
         orderBy = 'id ASC',
         active = 1,
         province = null,
+        isCapital = null,
         type = null,
         minPrice = null,
         maxPrice = null,
@@ -25,6 +26,11 @@ const getFlats = async (options) => {
     if (province) {
         query += ` AND province = :province`
         replacements.province = province
+    }
+
+    if (isCapital) {
+        query += ` AND capital = :isCapital`
+        replacements.isCapital = isCapital
     }
 
     if (type) {
@@ -135,7 +141,7 @@ router.get('/province/:provinceName', async (req, res) => {
 
 router.get('/filtered', async (req, res) => {
     try {
-        const { province, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber } = req.query
+        const { province, isCapital, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber } = req.query
         let [minPrice, maxPrice] = price_euro ? price_euro.map(Number) : [0, null]
         let [minHabitaciones, maxHabitaciones] = habitaciones ? habitaciones.map(Number) : [null, null]
         let [minM2, maxM2] = m2 ? m2.map(Number) : [null, null]
@@ -146,6 +152,7 @@ router.get('/filtered', async (req, res) => {
 
         let options = {
             province,
+            isCapital,
             type,
             minPrice,
             maxPrice,
