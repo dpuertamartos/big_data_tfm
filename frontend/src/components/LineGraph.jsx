@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault }) => {
+const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, selectedRegions = [] }) => {
   const [selectedYAxisKeys, setSelectedYAxisKeys] = useState([yAxisDefault]);
 
   // Transform the data to the required format
@@ -50,6 +50,10 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
   // Calculate the width for each chart based on the number of selected yAxisKeys
   const chartWidth = selectedYAxisKeys.length === 1 ? '100%' : `${100 / selectedYAxisKeys.length}%`;
 
+  const selectedElements = selectedprovinces.filter(province => 
+    !selectedRegions.some(region => regionToProvincesMap[region].includes(province))
+  ).concat(selectedRegions);
+
   return (
     <div>
       <FormControl style={{ minWidth: 120, margin: '20px' }}>
@@ -79,7 +83,7 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
               <YAxis />
               <Tooltip />
               <Legend />
-              {selectedprovinces.map(province => (
+              {selectedElements.map(province => (
                 <Line 
                   key={province}
                   type="monotone" 

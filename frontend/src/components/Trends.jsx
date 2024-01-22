@@ -42,12 +42,12 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
     );
   };
 
-  const NumericalGraphContainer = ({ trendData, selectedprovinces }) => {
+  const NumericalGraphContainer = ({ aggData, selectedprovinces, selectedRegions, regionToProvincesMap }) => {
     return (
       <>
         <LineGraph
           selectedprovinces={selectedprovinces}
-          data={trendData}
+          data={aggData}
           activeDotSelector={'all'}
           yAxisOptions={[
             "price_euro_mean_excluding_outliers",
@@ -63,18 +63,24 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
             "price_per_wc"
           ]}
           yAxisDefault={"price_euro_mean_excluding_outliers"}
+          selectedRegions={selectedRegions}
+          regionToProvincesMap={regionToProvincesMap}
         />
       </>
     );
 };
 
-const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
+const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) => {
   const [selectedCategories, setSelectedCategories] = useState([]); // Added this state
 
   const filteredData = trendData
     .filter(flat => flat.updated_month_group === 'all')
     .filter(item => 
       selectedprovinces.includes(item.province_group) || selectedprovinces.includes("all"));
+  
+  const aggDataFiltered = aggData
+    .filter(flat => flat.updated_month_group === 'all')
+    .filter(item => selectedprovinces.includes(item.province_group) || selectedprovinces.includes("all"));
   
   // Move the color generation logic here
   const generateColorArray = (numColors) => {
@@ -108,7 +114,7 @@ const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
         <div style={{ flex: '1' }}>
           <CategoricalBarChart 
-            filteredData={filteredData} 
+            filteredData={aggDataFiltered} 
             selectedCategories={selectedCategories} 
             categoryColorMapping={categoryColorMapping} 
           />
@@ -147,11 +153,60 @@ const Trends = () => {
   };
 
   const getFilteredData = () => {
-      return trendData.filter(item => 
-        selectedprovinces.includes(item.province_group) 
-      );
+    return trendData.filter(item => 
+      selectedprovinces.includes(item.province_group) 
+    )
+  }
+
+  const getAggregatedData = (data) => {
+      const aggregateRegionData = (existingData, newItem) => {
+        const fieldsToAverage = [
+          "price_euro_mean_excluding_outliers",
+          // ... other numeric fields to average ...
+        ];
+      
+        let aggregatedData = { ...existingData, count: existingData.count + 1 };
+      
+        fieldsToAverage.forEach(field => {
+          aggregatedData[field] = ((aggregatedData[field] * (aggregatedData.count - 1)) + newItem[field]) / aggregatedData.count;
+        });
+      
+        return aggregatedData;
+      };
+      
+      const getRegionForProvince = (province) => {
+        for (const [region, provinces] of Object.entries(regionToProvincesMap)) {
+          if (provinces.includes(province)) {
+            return region;
+          }
+        }
+        return null;
+      };
+      let aggregatedData = {};
+      let nonAggregatedData = [];
+    
+      data.forEach(item => {
+        const region = getRegionForProvince(item.province_group);
+        const monthGroup = item.updated_month_group;
+        
+        // Check if the province's region is selected
+        if (region && selectedRegion.includes(region)) {
+          const key = `${region}_${monthGroup}`;
+    
+          if (!aggregatedData[key]) {
+            aggregatedData[key] = { ...item, count: 1, region: region, province_group: region };
+          } else {
+            aggregatedData[key] = aggregateRegionData(aggregatedData[key], item);
+          }
+        } else {
+          nonAggregatedData.push(item);
+        }
+      });
+    
+      // Combine aggregated and non-aggregated data
+      return [...Object.values(aggregatedData), ...nonAggregatedData];
   };
-  
+
   const handleRegionChange = (event) => {
     const newSelectedRegions = event.target.value;
     setSelectedRegion(newSelectedRegions);
@@ -175,6 +230,7 @@ const Trends = () => {
 
   const regionToProvincesMap = provinces.ccaa_to_provinces
   const filteredData = getFilteredData()
+  const aggregatedData = getAggregatedData(filteredData)
 
   return (
     <div>
@@ -213,8 +269,8 @@ const Trends = () => {
         label="activity"
         multiple={false}
         />
-        <NumericalGraphContainer selectedprovinces={selectedprovinces} trendData={filteredData}  />
-        <CategoricalGraphContainer selectedprovinces={selectedprovinces} trendData={filteredData}  />
+        <NumericalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} selectedRegions={selectedRegion} regionToProvincesMap={regionToProvincesMap} />
+        <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData}   />
       </ResponsiveContainer>
     </div>
   );
