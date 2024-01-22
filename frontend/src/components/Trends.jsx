@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import trendService from '../services/trends'; // Adjust path as needed
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import SelectFilter from './SelectFilter'
-import cities from '../../cities.json'
+import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
 import SpainMap from './Map';
 
@@ -14,28 +14,11 @@ import SpainMap from './Map';
 //MAP ALWAYS PRESENT IF TIME DIMENSION SHOW TIME = 'ALL' TYPE 'ALL', IF TYPE DIMENSION SHOW TIME 'ALL' province WHERE
 
 
-const CategoricalBarChart = ({ data, selectedCities }) => {
-    const [selectedCategories, setSelectedCategories] = useState([]);
+const CategoricalBarChart = ({ filteredData, selectedCategories, setSelectedCategories, categoryColorMapping }) => {
 
-    const generateColorArray = (numColors) => {
-        const colors = [];
-        const hueStep = 360 / numColors;
-      
-        for (let i = 0; i < numColors; i++) {
-          const hue = i * hueStep;
-          colors.push(`hsl(${hue}, 100%, 70%)`);
-        }
-      
-        return colors;
-      };
-    
+
     const formatYAxisTick = (value) => `${(value * 100).toFixed(0)}%`;
 
-    const colors = generateColorArray(selectedCategories.length);
-    // Filter data to include only selected cities
-    const filteredData = data.filter(item => 
-        selectedCities.includes(item.province_group) || selectedCities.includes("all")
-    );
 
     return (
       <ResponsiveContainer width="100%" height={300}>
@@ -63,15 +46,15 @@ const CategoricalBarChart = ({ data, selectedCities }) => {
           <YAxis tickFormatter={formatYAxisTick} />
           <Tooltip />
           <Legend />
-          {selectedCategories.map((category, index) => (
-            <Bar key={category} dataKey={category} fill={colors[index % colors.length]} />
+          {selectedCategories.map(category => (
+            <Bar key={category} dataKey={category} fill={categoryColorMapping[category]} />
           ))}
         </BarChart>
       </ResponsiveContainer>
     );
   };
 
-  const NumericalGraphContainer = ({ trendData, selectedCities }) => {
+  const NumericalGraphContainer = ({ trendData, selectedprovinces }) => {
     const [selectedDimension, setSelectedDimension] = useState(["location"])
 
 
@@ -86,7 +69,7 @@ const CategoricalBarChart = ({ data, selectedCities }) => {
         />
         </div>
         <LineGraph
-          selectedCities={selectedCities}
+          selectedprovinces={selectedprovinces}
           data={trendData}
           activeDotSelector={'all'}
           yAxisOptions={[
@@ -108,28 +91,62 @@ const CategoricalBarChart = ({ data, selectedCities }) => {
     );
 };
 
-const CategoricalGraphContainer = ({ selectedCities, trendData }) => {
-  const [selectedDimension, setSelectedDimension] = useState(["location"])
+const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
+  const [selectedDimension, setSelectedDimension] = useState(["location"]);
+  const [selectedCategories, setSelectedCategories] = useState([]); // Added this state
 
+  const filteredData = trendData
+    .filter(flat => flat.updated_month_group === 'all')
+    .filter(item => 
+      selectedprovinces.includes(item.province_group) || selectedprovinces.includes("all"));
+  
+  // Move the color generation logic here
+  const generateColorArray = (numColors) => {
+    const colors = [];
+    const hueStep = 360 / numColors;
+
+    for (let i = 0; i < numColors; i++) {
+      const hue = i * hueStep;
+      colors.push(`hsl(${hue}, 100%, 70%)`);
+    }
+
+    return colors;
+  };
+
+  const categoryColors = generateColorArray(selectedCategories.length);
+
+    // Create a mapping of categories to their respective colors
+    const categoryColorMapping = selectedCategories.reduce((acc, category, index) => {
+      acc[category] = categoryColors[index % categoryColors.length];
+      return acc;
+    }, {});
 
   return (
     <>
       <div>
-      <SelectFilter
-        selectedElements={selectedDimension}
-        handleChange={(event) => setSelectedDimension(event.target.value)}
-        elementToChoose={["location","time","type"]}
-        label="dimension"
-      />
+        <SelectFilter
+          selectedElements={selectedDimension}
+          handleChange={(event) => setSelectedDimension(event.target.value)}
+          elementToChoose={["location", "time", "type"]}
+          label="dimension"
+        />
       </div>
-      {/* <CategoricalBarChart data={trendData.filter(flat => flat.updated_month_group == 'all')} selectedCities={selectedCities}/> */}
-      
+
       <div style={{ display: 'flex' }}>
         <div style={{ flex: '1' }}>
-        <CategoricalBarChart data={trendData.filter(flat => flat.updated_month_group == 'all')} selectedCities={selectedCities}/>
+          <CategoricalBarChart 
+            filteredData={filteredData} 
+            selectedCategories={selectedCategories} 
+            setSelectedCategories={setSelectedCategories} 
+            categoryColorMapping={categoryColorMapping} // Pass the mapping
+          />
         </div>
         <div style={{ flex: '1' }}>
-          <SpainMap />
+          <SpainMap 
+            filteredData={filteredData} 
+            selectedCategories={selectedCategories} // Passing the selected categories
+            categoryColorMapping={categoryColorMapping} // Pass the mapping
+          />
         </div>
       </div>
     </>
@@ -138,7 +155,7 @@ const CategoricalGraphContainer = ({ selectedCities, trendData }) => {
 
 const Trends = () => {
   const [trendData, setTrendData] = useState([]);
-  const [selectedCities, setSelectedCities] = useState(["all"])
+  const [selectedprovinces, setSelectedprovinces] = useState(["all"])
   const [selectedType, setSelectedType] = useState("all");
   const [selectedActivity, setSelectedActivity] = useState("all");
   const [selectedIsCapital, setSelectedIsCapital] = useState("all");
@@ -161,7 +178,7 @@ const Trends = () => {
     // Filter data based on selected options
   const getFilteredData = () => {
       return trendData.filter(item => 
-        selectedCities.includes(item.province_group) 
+        selectedprovinces.includes(item.province_group) 
       );
   };
   
@@ -174,9 +191,9 @@ const Trends = () => {
       <ResponsiveContainer width="100%" height={300}>
         <span>filters</span>
         <SelectFilter
-        selectedElements={selectedCities}
-        handleChange={(event) => setSelectedCities(event.target.value)}
-        elementToChoose={cities.locations.concat('all')}
+        selectedElements={selectedprovinces}
+        handleChange={(event) => setSelectedprovinces(event.target.value)}
+        elementToChoose={provinces.locations.concat('all')}
         label="provinces"
         />
         <SelectFilter
@@ -201,9 +218,9 @@ const Trends = () => {
         multiple={false}
         />
         <div>numerical part of dashboard</div>
-        <NumericalGraphContainer selectedCities={selectedCities} trendData={filteredData}  />
+        <NumericalGraphContainer selectedprovinces={selectedprovinces} trendData={filteredData}  />
         <div>categorical part of dashboard</div>
-        <CategoricalGraphContainer selectedCities={selectedCities} trendData={filteredData}  />
+        <CategoricalGraphContainer selectedprovinces={selectedprovinces} trendData={filteredData}  />
       </ResponsiveContainer>
     </div>
   );
