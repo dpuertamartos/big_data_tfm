@@ -13,6 +13,7 @@ const Home = () => {
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
   const [trendData, setTrendData] = useState([])
   const [selectedIsCapital, setSelectedIsCapital] = useState("all");
+  const [smartMode, setSmartMode] = useState("No")
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -38,8 +39,9 @@ const Home = () => {
           try {
             const params = {
                 isCapital: selectedIsCapital !== 'all' ? selectedIsCapital: undefined,
-                orderBy: 'rating DESC', 
-                limitNumber: 10
+                orderBy: 'rating DESC',
+                limitNumber: 10,
+                rating: smartMode === 'Si' ? [-1, 0.33] : undefined
             }
     
             if (province !== 'all') {
@@ -61,7 +63,7 @@ const Home = () => {
     setTimeout(() => {
       setIsLoading(false);
     }, 2500); // Set loading to false
-  }, [selectedIsCapital]);
+  }, [selectedIsCapital, smartMode]);
 
 
   const handleChange = async (event, isCapitalChange = false) => {
@@ -83,7 +85,8 @@ const Home = () => {
               province: province !== 'all' ? province : undefined,
               orderBy: 'rating DESC', 
               limitNumber: 10,
-              isCapital: selectedIsCapital !== 'all' ? selectedIsCapital : undefined
+              isCapital: selectedIsCapital !== 'all' ? selectedIsCapital : undefined,
+              rating: smartMode === 'Si' ? [-1, 0.33] : undefined
             };
             const flats = await flatService.getFiltered(params);
             updatedFlats[province] = flats;
@@ -126,6 +129,14 @@ const Home = () => {
         multiple={false}
         disabled={isLoading}
         />
+      <SelectFilter
+        selectedElements={smartMode}
+        handleChange={(event) => setSmartMode(event.target.value)}
+        elementToChoose={["No", "Si"]}
+        label="Modo Inteligente"
+        multiple={false}
+        disabled={isLoading}
+      />
       <LineGraph selectedprovinces={selectedprovinces} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
       <Listing data={bestFlats} isCapital={selectedIsCapital} />
     </span>
