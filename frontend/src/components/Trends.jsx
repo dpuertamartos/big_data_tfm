@@ -55,19 +55,8 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, setSelectedCate
   };
 
   const NumericalGraphContainer = ({ trendData, selectedprovinces }) => {
-    const [selectedDimension, setSelectedDimension] = useState(["location"])
-
-
     return (
       <>
-        <div>
-        <SelectFilter
-          selectedElements={selectedDimension}
-          handleChange={(event) => setSelectedDimension(event.target.value)}
-          elementToChoose={["location","time","type"]}
-          label="dimension"
-        />
-        </div>
         <LineGraph
           selectedprovinces={selectedprovinces}
           data={trendData}
@@ -92,7 +81,6 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, setSelectedCate
 };
 
 const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
-  const [selectedDimension, setSelectedDimension] = useState(["location"]);
   const [selectedCategories, setSelectedCategories] = useState([]); // Added this state
 
   const filteredData = trendData
@@ -123,15 +111,6 @@ const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
 
   return (
     <>
-      <div>
-        <SelectFilter
-          selectedElements={selectedDimension}
-          handleChange={(event) => setSelectedDimension(event.target.value)}
-          elementToChoose={["location", "time", "type"]}
-          label="dimension"
-        />
-      </div>
-
       <div style={{ display: 'flex' }}>
         <div style={{ flex: '1' }}>
           <CategoricalBarChart 
@@ -183,7 +162,6 @@ const Trends = () => {
   };
   
   const filteredData = getFilteredData()
-  console.log('filtered', filteredData)
 
   return (
     <div>

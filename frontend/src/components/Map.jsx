@@ -42,7 +42,6 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
             return newMarkers;
         };
         const markers = calculateMarkerData()
-        console.log("MARKERS", markers)
         setMarkers(markers);
     }, [filteredData, selectedCategories, categoryColorMapping]);
 
