@@ -40,7 +40,7 @@ const Home = () => {
             const params = {
                 isCapital: selectedIsCapital !== 'all' ? selectedIsCapital: undefined,
                 orderBy: 'rating DESC',
-                limitNumber: 10,
+                limitNumber: 5,
                 rating: smartMode === 'Si' ? [-1, 0.33] : undefined
             }
     
@@ -84,7 +84,7 @@ const Home = () => {
             const params = {
               province: province !== 'all' ? province : undefined,
               orderBy: 'rating DESC', 
-              limitNumber: 10,
+              limitNumber: 5,
               isCapital: selectedIsCapital !== 'all' ? selectedIsCapital : undefined,
               rating: smartMode === 'Si' ? [-1, 0.33] : undefined
             };
