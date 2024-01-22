@@ -1,13 +1,13 @@
 // Filter.js
 import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
-import cities from '../../cities.json'; // Ensure this path is correct
+import provinces from '../../provinces.json'; // Ensure this path is correct
 
 const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value
 }
 
 const Filter = ({ filters, onFilterChange, onprovinceChange, onTipoChange, onSortChange }) => {
-    const provinceOptions = cities.locations
+    const provinceOptions = provinces.locations
 
     return (
         <Box>

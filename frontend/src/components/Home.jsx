@@ -4,13 +4,13 @@ import trendService from '../services/trends'
 import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import Listing from './Listing'
-import cities from '../../cities.json'
+import provinces from '../../provinces.json'
 
 
 
 const Home = () => {
   const [bestFlats, setBestFlats] = useState({})
-  const [selectedCities, setSelectedCities] = useState(["all"])
+  const [selectedprovinces, setSelectedprovinces] = useState(["all"])
   const [trendData, setTrendData] = useState([])
 
   useEffect(() => {
@@ -44,13 +44,13 @@ const Home = () => {
 
   console.log(trendData)
   const handleChange = async (event) => {
-    const newSelectedCities = event.target.value
-    setSelectedCities(newSelectedCities)
+    const newSelectedprovinces = event.target.value
+    setSelectedprovinces(newSelectedprovinces)
   
     let updatedFlats = { ...bestFlats }
   
-    // Fetch new flats for newly selected cities
-    for (const province of newSelectedCities) {
+    // Fetch new flats for newly selected provinces
+    for (const province of newSelectedprovinces) {
       if (!bestFlats[province]) {
         try {
           const params = {
@@ -66,9 +66,9 @@ const Home = () => {
       }
     }
   
-    // Remove flats for unselected cities
+    // Remove flats for unselected provinces
     for (const province in bestFlats) {
-      if (!newSelectedCities.includes(province)) {
+      if (!newSelectedprovinces.includes(province)) {
         delete updatedFlats[province]
       }
     }
@@ -79,8 +79,8 @@ const Home = () => {
 
   return (
     <span>
-      <SelectFilter selectedElements={selectedCities} handleChange={handleChange} elementToChoose={cities.locations} label="provinces"/>
-      <LineGraph selectedCities={selectedCities} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
+      <SelectFilter selectedElements={selectedprovinces} handleChange={handleChange} elementToChoose={provinces.locations} label="provinces"/>
+      <LineGraph selectedprovinces={selectedprovinces} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
       <Listing data={bestFlats} />
     </span>
   )

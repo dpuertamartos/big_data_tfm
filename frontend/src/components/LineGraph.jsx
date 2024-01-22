@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-const LineGraph = ({ selectedCities, data, activeDotSelector, yAxisOptions, yAxisDefault }) => {
+const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault }) => {
   const [selectedYAxisKeys, setSelectedYAxisKeys] = useState([yAxisDefault]);
 
   // Transform the data to the required format
@@ -79,7 +79,7 @@ const LineGraph = ({ selectedCities, data, activeDotSelector, yAxisOptions, yAxi
               <YAxis />
               <Tooltip />
               <Legend />
-              {selectedCities.map(province => (
+              {selectedprovinces.map(province => (
                 <Line 
                   key={province}
                   type="monotone" 
