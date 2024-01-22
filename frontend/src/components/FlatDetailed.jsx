@@ -5,6 +5,48 @@ import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import flatService from '../services/flats';
 
+const spanishLabels = {
+  exterior_summary: 'Exterior',
+  vidrios_dobles_summary: 'Vidrios Dobles',
+  adaptado_a_personas_con_movilidad_reducida_summary: 'Accesible',
+  puerta_blindada_summary: 'Puerta Blindada',
+  ascensor_summary: 'Ascensor',
+  balcon_summary: 'Balcón',
+  portero_automatico_summary: 'Portero Automático',
+  garaje_summary: 'Garaje',
+  comedor_summary: 'Comedor',
+  terraza_summary: 'Terraza',
+  jardin_summary: 'Jardín',
+  armarios_empotrados_summary: 'Armarios Empotrados',
+  aire_acondicionado_summary: 'Aire Acondicionado',
+  trastero_summary: 'Trastero',
+  piscina_summary: 'Piscina',
+  chimenea_summary: 'Chimenea',
+  lavadero_summary: 'Lavadero',
+  soleado_summary: 'Soleado',
+  gas_summary: 'Gas',
+  amueblado_summary: 'Amueblado',
+  cocina_equipada_summary: 'Cocina Equipada',
+  calefaccion_summary: 'Calefacción',
+};
+
+const spanishFields = {
+  heating: 'Calefacción',
+  conservacion: 'Conservación',
+  antiguedad: 'Antigüedad',
+  urbanizado_summary: 'Urbanizado',
+  calle_alumbrada_summary: 'Calle Alumbrada',
+  calle_asfaltada_summary: 'Calle Asfaltada',
+  interior_summary: 'Interior',
+  mascotas_summary: 'Mascotas',
+  carpinteria_exterior_cleaned: 'Carpintería Exterior',
+  tipo_suelo_summary: 'Tipo de Suelo',
+  cocina_summary: 'Cocina',
+  orientacion_summary: 'Orientación',
+  type: 'Tipo',
+  reference: 'Referencia'
+}
+
 const Flat = () => {
   const { id } = useParams();
   const [flat, setFlat] = useState(null);
@@ -36,12 +78,28 @@ const Flat = () => {
       <Typography variant="body1"><strong>{label}:</strong> {value}</Typography>
     ) : null;
   };
+  
+  const renderFields = () => {
+    return Object.entries(spanishFields).map(([key, label]) => {
+      
+      return flat[key] ? renderField(label, flat[key]) : null
+    });
+  }
+
+  const renderChips = () => {
+    return Object.entries(spanishLabels).map(([key, label]) => {
+      if (flat[key] === 'YES') {
+        return <Chip key={key} label={label} color="primary" variant="outlined" sx={{ mr: 1, mb: 1 }} />;
+      }
+      return null;
+    });
+  };
 
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
       <CardContent>
-        <Typography variant="h4" component="div">
-          {flat.title}
+        <Typography variant="h5" component="div">
+          {flat.title}. {flat.province}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           {flat.location}
@@ -50,14 +108,14 @@ const Flat = () => {
         <Grid container spacing={2}>
           <Grid item xs={6}>
             {renderField('Price', flat.price_euro)}
-            {renderField('Rating', Math.floor(flat.rating * 100) / 100)}
-            {renderField('Bedrooms', flat.habitaciones)}
-            {renderField('Bathrooms', flat.banos)}
-            {renderField('Floor', flat.planta)}
-            {renderField('Built Surface', `${flat.superficie_construida_m2} m²`)}
-            {renderField('Useful Surface', `${flat.superficie_util_m2} m²`)}
-            {renderField('Heating', flat.calefaccion)}
-            {renderField('Reference', flat.referencia)}
+            {renderField('Puntuación asignada', Math.floor(flat.rating * 100) / 100)}
+            {renderField('Habitaciones', flat.habitaciones)}
+            {renderField('Baños', flat.banos)}
+            {renderField('Planta', flat.planta)}
+            {renderField('Superficie construida', flat.superficie_construida_m2 ? `${flat.superficie_construida_m2} m²`: undefined)}
+            {renderField('Superficie útil', flat.superficie_util_m2 ? `${flat.superficie_util_m2} m²`: undefined)}
+            {renderFields()}
+
             {/* Add more fields as necessary */}
             </Grid>
           <Grid item xs={6}>
@@ -83,11 +141,8 @@ const Flat = () => {
           </Typography>
         )}
 
-        <Box sx={{ mt: 2 }}>
-          {flat.amueblado && <Chip label="Furnished" color="primary" variant="outlined" />}
-          {flat.armarios_empotrados && <Chip label="Fitted Wardrobes" color="primary" variant="outlined" />}
-          {flat.ascensor && <Chip label="Elevator" color="primary" variant="outlined" />}
-          {/* Add more chips for other boolean fields */}
+        <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap' }}>
+          {renderChips()}
         </Box>
       </CardContent>
     </Card>

@@ -26,7 +26,8 @@ const Flats = ({ errorMessage }) => {
               province: filters.provincia, 
               isCapital: filters.isCapital,
               type: filters.tipo,
-              orderBy: filters.orderBy
+              orderBy: filters.orderBy,
+              limitNumber: 15
           }
   
           // Only include price filter if not at default min or max
@@ -117,6 +118,7 @@ const Flats = ({ errorMessage }) => {
       }))
   }
 
+  console.log(filteredFlats)
     return (
         <Container>
             <Notification message={errorMessage} />
