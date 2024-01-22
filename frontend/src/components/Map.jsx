@@ -1,33 +1,75 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import provinceData from '../../provinces.json';
 
+const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) => {
+    const position = [40.416775, -3.703790]; // Center of Spain
+    const [markers, setMarkers] = useState([]);
 
-const SpainMap = () => {
-  // Spain's geographical center coordinates
-  const position = [40.416775, -3.703790];
+    useEffect(() => {
+        const calculateMarkerData = () => {
+            let newMarkers = [];
+            const offsetAmount = 0.25; // Separation amount
 
-  // Custom icon (optional)
-  const icon = new L.Icon({
-    iconUrl: 'path_to_marker_icon',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+            // Calculate offsets for each category
+            const categoryOffsets = selectedCategories.reduce((acc, category, index) => {
+                const angle = (index / selectedCategories.length) * Math.PI * 2;
+                acc[category] = { x: Math.cos(angle) * offsetAmount, y: Math.sin(angle) * offsetAmount };
+                return acc;
+            }, {});
 
-  return (
-    <div style={{ height: '500px', width: '500px', margin: '20px auto' }}>
-        <MapContainer center={position} zoom={6} style={{ height: '100%', width: '100%' }}>
-            {/* Using CartoDB's Positron (light) tiles for a minimalistic look */}
-            <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'
-            />
-        </MapContainer>
-    </div>
-  );
+            // Generate markers
+            filteredData.forEach(item => {
+                const provinceInfo = provinceData.locations_coordinates_capitals.find(p => p.name === item.province_group);
+                if (provinceInfo) {
+                    selectedCategories.forEach(category => {
+                        if (item.hasOwnProperty(category)) {
+                            const offset = categoryOffsets[category];
+                            newMarkers.push({
+                                coordinates: [provinceInfo.coordinates[1] + offset.y, provinceInfo.coordinates[0] + offset.x],
+                                radius: Math.max(item[category] * 20, 0.2),
+                                category,
+                                value: item[category],
+                                province: item.province_group,
+                                color: categoryColorMapping[category],
+                            });
+                        }
+                    });
+                }
+            });
+
+            return newMarkers;
+        };
+        const markers = calculateMarkerData()
+        console.log("MARKERS", markers)
+        setMarkers(markers);
+    }, [filteredData, selectedCategories, categoryColorMapping]);
+
+    return (
+        <div style={{ height: '500px', width: '500px', margin: '20px auto' }}>
+            <MapContainer center={position} zoom={6} style={{ height: '100%', width: '100%' }}>
+                <TileLayer
+                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'
+                />
+                {markers.map((marker) => (
+                    <CircleMarker
+                        key={`${marker.province}-${marker.category}-${marker.color}`} // Unique key for each marker
+                        center={marker.coordinates}
+                        radius={marker.radius}
+                        fillColor={marker.color}
+                        color={marker.color}
+                        weight={1}
+                        opacity={0.7}
+                        fillOpacity={0.7}
+                    >
+                        <Popup>{marker.category} ({(marker.value * 100).toFixed(2)}%): Radius {marker.radius}</Popup>
+                    </CircleMarker>
+                ))}
+            </MapContainer>
+        </div>
+    );
 };
 
 export default SpainMap;
