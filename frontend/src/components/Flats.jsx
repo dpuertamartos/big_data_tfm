@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react'
 import Notification from './Notification'
 import Listing from './Listing'
 import Filter from './Filter'
-import { Grid, Container, Box, useTheme, useMediaQuery } from '@mui/material'
-
+import { Grid, Container, Box, useTheme, useMediaQuery, Drawer } from '@mui/material'
 import flatService from '../services/flats'
 import debounce from 'lodash/debounce' // You might need to install lodash for this
 
-const Flats = ({ errorMessage }) => {
+const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
     const [allFlats, setAllFlats] = useState([]) // To store all flats fetched from backend
     const [filters, setFilters] = useState({
         provincia: '',
@@ -119,35 +118,64 @@ const Flats = ({ errorMessage }) => {
   }
 
 
+  
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
+
   return (
-      <Container fixed>
-          <Notification message={errorMessage} />
-          <Grid container spacing={2}>
-              <Grid item xs={12} md={4}>
-                  <Box sx={{
-                      position: isLargeScreen ? 'fixed' : 'relative', 
-                      width: '100%', 
-                      maxWidth: 360
-                  }}>
-                      <Filter
-                          filters={filters}
-                          onFilterChange={handleFilterChange}
-                          onprovinceChange={handleprovinceChange}
-                          onIsCapitalChange={handleIsCapitalChange}
-                          onTipoChange={handleTipoChange}
-                          onSortChange={handleSortChange}
-                      />
-                  </Box>
-              </Grid>
-              <Grid item xs={12} md={8} sx={{ ml: isLargeScreen ? '400px' : 0 }}>
-                  <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
-              </Grid>
-          </Grid>
-      </Container>
+    <Container fixed>
+      <Notification message={errorMessage} />
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={4}>
+            <Drawer
+            variant="temporary"
+            anchor="top"
+            open={drawerOpen}
+            onClose={handleDrawerToggle}
+            sx={{
+                display: { xs: 'block', md: 'none' },
+                '& .MuiDrawer-paper': {
+                width: '100%', // Sets the drawer's width to 100%
+                maxHeight: '100vh', // Optional: Restricts the maximum height
+                display: 'flex', // Use flex container
+                justifyContent: 'center', // Center horizontally
+                alignItems: 'center', // Center vertically
+                }
+            }}
+            >
+            <Box sx={{ width: '70%' }}>
+                <Filter
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                // ... other props
+                />
+            </Box>
+            </Drawer>
+          {isLargeScreen && (
+            <Box sx={{
+              position: 'fixed',
+              width: '100%',
+              maxWidth: 360
+            }}>
+              <Filter
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onprovinceChange={handleprovinceChange}
+                onIsCapitalChange={handleIsCapitalChange}
+                onTipoChange={handleTipoChange}
+                onSortChange={handleSortChange}
+              />
+            </Box>
+          )}
+        </Grid>
+        <Grid item xs={12} md={8} sx={{ ml: isLargeScreen ? '400px' : 0 }}>
+          <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
+        </Grid>
+      </Grid>
+    </Container>
   );
+
 }
 
 export default Flats
