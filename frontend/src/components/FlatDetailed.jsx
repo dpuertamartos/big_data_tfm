@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, Box, Chip } from '@mui/material';
+import Carousel from 'react-bootstrap/Carousel';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import flatService from '../services/flats';
 
 const Flat = () => {
@@ -11,7 +13,6 @@ const Flat = () => {
     const fetchFlat = async () => {
       try {
         const data = await flatService.get(id);
-        // Check if photos is a string and try to parse it
         if (data && typeof data.photos === 'string') {
           try {
             data.photos = JSON.parse(data.photos);
@@ -58,13 +59,21 @@ const Flat = () => {
             {renderField('Heating', flat.calefaccion)}
             {renderField('Reference', flat.referencia)}
             {/* Add more fields as necessary */}
-          </Grid>
+            </Grid>
           <Grid item xs={6}>
-            <Box>
-              {flat.photos && flat.photos.map((photo, index) => (
-                <img key={index} src={photo} alt={`Flat view ${index}`} style={{ width: '100%', marginBottom: 10 }} />
-              ))}
-            </Box>
+            {flat.photos && flat.photos.length > 0 && (
+              <Carousel>
+                {flat.photos.map((photo, index) => (
+                  <Carousel.Item key={index}>
+                    <img
+                      className="d-block w-100"
+                      src={photo}
+                      alt={`Flat view ${index}`}
+                    />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            )}
           </Grid>
         </Grid>
 
