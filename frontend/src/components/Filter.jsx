@@ -17,7 +17,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 options={provinceOptions}
                 getOptionLabel={(option) => option ? option : ''}
                 renderInput={(params) => (
-                    <TextField {...params} label="Ciudad" margin="normal" />
+                    <TextField {...params} label="Provincia" margin="normal" />
                 )}
                 fullWidth
                 freeSolo
@@ -31,6 +31,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     label="Capital"
                     onChange={onIsCapitalChange}
                 >
+                    <MenuItem value="">Todos</MenuItem>
                     <MenuItem value="1">En la capital</MenuItem>
                     <MenuItem value="0">Fuera de la capital</MenuItem>
                 </Select>
@@ -44,6 +45,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     label="Tipo"
                     onChange={onTipoChange}
                 >
+                    <MenuItem value="">Todos</MenuItem>
                     <MenuItem value="piso">Piso</MenuItem>
                     <MenuItem value="casa">Casa</MenuItem>
                     <MenuItem value="chalet">Chalet</MenuItem>
@@ -118,13 +120,13 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                             value={filters.orderBy || '' }
                             label="Ordenar por"
                             onChange={onSortChange}
-                        >
-                            <MenuItem value="rating ASC">Rating (Low to High)</MenuItem>
+                        >   
                             <MenuItem value="rating DESC">Rating (High to Low)</MenuItem>
-                            <MenuItem value="price_euro ASC">Precio (Low to High)</MenuItem>
+                            <MenuItem value="rating ASC">Rating (Low to High)</MenuItem>
                             <MenuItem value="price_euro DESC">Precio (High to Low)</MenuItem>
-                            <MenuItem value="superficie_util_m2 ASC">Superficie (Low to High)</MenuItem>
+                            <MenuItem value="price_euro ASC">Precio (Low to High)</MenuItem>
                             <MenuItem value="superficie_util_m2 DESC">Superficie (High to Low)</MenuItem>
+                            <MenuItem value="superficie_util_m2 ASC">Superficie (Low to High)</MenuItem>
                         </Select>
             </FormControl>
         </Box>
