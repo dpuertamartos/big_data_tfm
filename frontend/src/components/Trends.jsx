@@ -6,28 +6,16 @@ import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
 import SpainMap from './Map';
 
-//
-//TODO1: TOP FILTER INCLUDE TIME
-//TODO2 The numerical PART will have a graph and a numeric aggregator/map - 
-//TODO3: The categorical variables will have a graph and a map
-//TODO4: Each A and B can have dimension selected which will change the type of graph (time line graph, province map, type bar with drawings in X axis?)
-//MAP ALWAYS PRESENT IF TIME DIMENSION SHOW TIME = 'ALL' TYPE 'ALL', IF TYPE DIMENSION SHOW TIME 'ALL' province WHERE
 
 
-const CategoricalBarChart = ({ filteredData, selectedCategories, setSelectedCategories, categoryColorMapping }) => {
+const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMapping }) => {
 
 
     const formatYAxisTick = (value) => `${(value * 100).toFixed(0)}%`;
 
 
     return (
-      <ResponsiveContainer width="100%" height={300}>
-        <SelectFilter
-        selectedElements={selectedCategories}
-        handleChange={(event) => setSelectedCategories(event.target.value)}
-        elementToChoose={["exterior_summary_no_pct","exterior_summary_yes_pct","vidrios_dobles_summary_no_pct","vidrios_dobles_summary_yes_pct","adaptado_a_personas_con_movilidad_reducida_summary_no_pct","adaptado_a_personas_con_movilidad_reducida_summary_yes_pct","puerta_blindada_summary_no_pct","puerta_blindada_summary_yes_pct","ascensor_summary_no_pct","ascensor_summary_yes_pct","balcon_summary_no_pct","balcon_summary_yes_pct","portero_automatico_summary_no_pct","portero_automatico_summary_yes_pct","garaje_summary_no_pct","garaje_summary_yes_pct","comedor_summary_no_pct","comedor_summary_yes_pct","terraza_summary_no_pct","terraza_summary_yes_pct","jardin_summary_no_pct","jardin_summary_yes_pct","armarios_empotrados_summary_no_pct","armarios_empotrados_summary_yes_pct","aire_acondicionado_summary_yes_pct","aire_acondicionado_summary_no_pct","trastero_summary_no_pct","trastero_summary_yes_pct","piscina_summary_no_pct","piscina_summary_yes_pct","chimenea_summary_no_pct","chimenea_summary_yes_pct","lavadero_summary_no_pct","lavadero_summary_yes_pct","soleado_summary_no_pct","soleado_summary_yes_pct","gas_summary_no_pct","gas_summary_yes_pct  ","amueblado_summary_no_pct","amueblado_summary_yes_pct","cocina_equipada_summary_no_pct","cocina_equipada_summary_yes_pct","calefaccion_summary_no_pct","calefaccion_summary_gas_natural_pct","calefaccion_summary_gasoil_pct","calefaccion_summary_central_pct","calefaccion_summary_otros_pct","calefaccion_summary_electrica_pct","calefaccion_summary_gas_pct","conservacion_desconocido_pct","conservacion_reformado_pct","conservacion_en_buen_estado_pct","conservacion_a_reformar_pct","conservacion_a_estrenar_pct","antiguedad_desconocido_pct","antiguedad_mas_de_50_anos_pct","antiguedad_entre_20_y_30_anos_pct","antiguedad_entre_10_y_20_anos_pct","antiguedad_entre_30_y_50_anos_pct","antiguedad_menos_de_5_anos_pct","antiguedad_entre_5_y_10_anos_pct","carpinteria_exterior_cleaned_desconocido_pct","carpinteria_exterior_cleaned_aluminio_pct","carpinteria_exterior_cleaned_climalit_pct","carpinteria_exterior_cleaned_pvc_pct","carpinteria_exterior_cleaned_otros_pct","carpinteria_exterior_cleaned_madera_pct","tipo_suelo_summary_gres_pct","tipo_suelo_summary_tarima_flotante_pct","tipo_suelo_summary_desconocido_pct","tipo_suelo_summary_otros_pct","tipo_suelo_summary_terrazo_pct","tipo_suelo_summary_parquet_pct","tipo_suelo_summary_marmol_pct","tipo_suelo_summary_ceramica_pct","cocina_summary_desconocido_pct","cocina_summary_otros_pct","cocina_summary_independiente_pct","cocina_summary_individual_pct","cocina_summary_americana_pct","cocina_summary_amueblada_pct","orientacion_summary_desconocido_pct","orientacion_summary_noreste_pct","orientacion_summary_otros_pct","orientacion_summary_sur_pct","orientacion_summary_noroeste_pct","orientacion_summary_norte_pct","orientacion_summary_sureste_pct","orientacion_summary_oeste_pct"]}
-        label="category"
-        />
+      <ResponsiveContainer width="100%" height={425}>
         <BarChart
           data={filteredData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -111,20 +99,25 @@ const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <SelectFilter
+          selectedElements={selectedCategories}
+          handleChange={(event) => setSelectedCategories(event.target.value)}
+          elementToChoose={["exterior_summary_no_pct","exterior_summary_yes_pct","vidrios_dobles_summary_no_pct","vidrios_dobles_summary_yes_pct","adaptado_a_personas_con_movilidad_reducida_summary_no_pct","adaptado_a_personas_con_movilidad_reducida_summary_yes_pct","puerta_blindada_summary_no_pct","puerta_blindada_summary_yes_pct","ascensor_summary_no_pct","ascensor_summary_yes_pct","balcon_summary_no_pct","balcon_summary_yes_pct","portero_automatico_summary_no_pct","portero_automatico_summary_yes_pct","garaje_summary_no_pct","garaje_summary_yes_pct","comedor_summary_no_pct","comedor_summary_yes_pct","terraza_summary_no_pct","terraza_summary_yes_pct","jardin_summary_no_pct","jardin_summary_yes_pct","armarios_empotrados_summary_no_pct","armarios_empotrados_summary_yes_pct","aire_acondicionado_summary_yes_pct","aire_acondicionado_summary_no_pct","trastero_summary_no_pct","trastero_summary_yes_pct","piscina_summary_no_pct","piscina_summary_yes_pct","chimenea_summary_no_pct","chimenea_summary_yes_pct","lavadero_summary_no_pct","lavadero_summary_yes_pct","soleado_summary_no_pct","soleado_summary_yes_pct","gas_summary_no_pct","gas_summary_yes_pct  ","amueblado_summary_no_pct","amueblado_summary_yes_pct","cocina_equipada_summary_no_pct","cocina_equipada_summary_yes_pct","calefaccion_summary_no_pct","calefaccion_summary_gas_natural_pct","calefaccion_summary_gasoil_pct","calefaccion_summary_central_pct","calefaccion_summary_otros_pct","calefaccion_summary_electrica_pct","calefaccion_summary_gas_pct","conservacion_desconocido_pct","conservacion_reformado_pct","conservacion_en_buen_estado_pct","conservacion_a_reformar_pct","conservacion_a_estrenar_pct","antiguedad_desconocido_pct","antiguedad_mas_de_50_anos_pct","antiguedad_entre_20_y_30_anos_pct","antiguedad_entre_10_y_20_anos_pct","antiguedad_entre_30_y_50_anos_pct","antiguedad_menos_de_5_anos_pct","antiguedad_entre_5_y_10_anos_pct","carpinteria_exterior_cleaned_desconocido_pct","carpinteria_exterior_cleaned_aluminio_pct","carpinteria_exterior_cleaned_climalit_pct","carpinteria_exterior_cleaned_pvc_pct","carpinteria_exterior_cleaned_otros_pct","carpinteria_exterior_cleaned_madera_pct","tipo_suelo_summary_gres_pct","tipo_suelo_summary_tarima_flotante_pct","tipo_suelo_summary_desconocido_pct","tipo_suelo_summary_otros_pct","tipo_suelo_summary_terrazo_pct","tipo_suelo_summary_parquet_pct","tipo_suelo_summary_marmol_pct","tipo_suelo_summary_ceramica_pct","cocina_summary_desconocido_pct","cocina_summary_otros_pct","cocina_summary_independiente_pct","cocina_summary_individual_pct","cocina_summary_americana_pct","cocina_summary_amueblada_pct","orientacion_summary_desconocido_pct","orientacion_summary_noreste_pct","orientacion_summary_otros_pct","orientacion_summary_sur_pct","orientacion_summary_noroeste_pct","orientacion_summary_norte_pct","orientacion_summary_sureste_pct","orientacion_summary_oeste_pct"]}
+          label="category"
+          />
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
         <div style={{ flex: '1' }}>
           <CategoricalBarChart 
             filteredData={filteredData} 
             selectedCategories={selectedCategories} 
-            setSelectedCategories={setSelectedCategories} 
-            categoryColorMapping={categoryColorMapping} // Pass the mapping
+            categoryColorMapping={categoryColorMapping} 
           />
         </div>
         <div style={{ flex: '1' }}>
           <SpainMap 
             filteredData={filteredData} 
-            selectedCategories={selectedCategories} // Passing the selected categories
-            categoryColorMapping={categoryColorMapping} // Pass the mapping
+            selectedCategories={selectedCategories} 
+            categoryColorMapping={categoryColorMapping} 
           />
         </div>
       </div>
@@ -134,13 +127,13 @@ const CategoricalGraphContainer = ({ selectedprovinces, trendData }) => {
 
 const Trends = () => {
   const [trendData, setTrendData] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState([]);
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
   const [selectedType, setSelectedType] = useState("all");
   const [selectedActivity, setSelectedActivity] = useState("all");
   const [selectedIsCapital, setSelectedIsCapital] = useState("all");
 
   useEffect(() => {
-    // Fetch initial data
     fetchTrendData(selectedActivity, selectedType, selectedIsCapital);
   }, [selectedActivity, selectedType, selectedIsCapital]);
 
@@ -153,21 +146,46 @@ const Trends = () => {
     }
   };
 
-  // Function to transform data here if necessary
-    // Filter data based on selected options
   const getFilteredData = () => {
       return trendData.filter(item => 
         selectedprovinces.includes(item.province_group) 
       );
   };
   
+  const handleRegionChange = (event) => {
+    const newSelectedRegions = event.target.value;
+    setSelectedRegion(newSelectedRegions);
+  
+    let updatedProvinces = new Set(selectedprovinces);
+  
+    newSelectedRegions.forEach(region => {
+      const provincesFromRegion = regionToProvincesMap[region] || [];
+      provincesFromRegion.forEach(province => updatedProvinces.add(province));
+    });
+  
+    // Remove provinces of deselected regions
+    Object.entries(regionToProvincesMap).forEach(([region, provinces]) => {
+      if (!newSelectedRegions.includes(region)) {
+        provinces.forEach(province => updatedProvinces.delete(province));
+      }
+    });
+  
+    setSelectedprovinces(Array.from(updatedProvinces));
+  };
+
+  const regionToProvincesMap = provinces.ccaa_to_provinces
   const filteredData = getFilteredData()
 
   return (
     <div>
       <h2>Trends Dashboard</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <span>filters</span>
+        <SelectFilter
+          selectedElements={selectedRegion}
+          handleChange={handleRegionChange}
+          elementToChoose={Object.keys(regionToProvincesMap)}
+          label="regions"
+        />
         <SelectFilter
         selectedElements={selectedprovinces}
         handleChange={(event) => setSelectedprovinces(event.target.value)}
@@ -195,9 +213,7 @@ const Trends = () => {
         label="activity"
         multiple={false}
         />
-        <div>numerical part of dashboard</div>
         <NumericalGraphContainer selectedprovinces={selectedprovinces} trendData={filteredData}  />
-        <div>categorical part of dashboard</div>
         <CategoricalGraphContainer selectedprovinces={selectedprovinces} trendData={filteredData}  />
       </ResponsiveContainer>
     </div>

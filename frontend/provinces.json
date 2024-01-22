@@ -72,6 +72,27 @@
       {"name": "vizcaya_bizkaia", "coordinates": [-2.9267717424242417, 43.2785883939394], "capital": "Bilbao"}, 
       {"name": "zamora", "coordinates": [-6.00952622916667, 41.74748453472223], "capital": "Zamora"}, 
       {"name": "zaragoza", "coordinates": [-0.9486915952380955, 41.705808033333334], "capital": "Zaragoza"}
-      ]
+      ],
+  "ccaa_to_provinces":{
+    "Galicia": ["a_coruna", "lugo", "ourense", "pontevedra"],
+    "País Vasco": ["alava_araba", "guipuzcoa_gipuzkoa", "vizcaya_bizkaia"],
+    "Andalucía": ["almeria", "cadiz", "cordoba", "granada", "huelva", "jaen", "malaga", "sevilla"],
+    "Cataluña": ["barcelona", "girona", "lleida", "tarragona"],
+    "Madrid": ["madrid"],
+    "Comunidad Valenciana": ["alicante", "castellon_castello", "valencia"],
+    "Castilla y León": ["avila", "burgos", "leon", "palencia", "salamanca", "segovia", "soria", "valladolid", "zamora"],
+    "Canarias": ["las_palmas", "santa_cruz_de_tenerife"],
+    "Castilla-La Mancha": ["albacete", "ciudad_real", "cuenca", "guadalajara", "toledo"],
+    "Asturias": ["asturias"],
+    "Aragón": ["huesca", "teruel", "zaragoza"],
+    "Islas Baleares": ["islas_baleares_illes_balears"],
+    "Extremadura": ["badajoz", "caceres"],
+    "Murcia": ["murcia"],
+    "Cantabria": ["cantabria"],
+    "La Rioja": ["la_rioja"],
+    "Navarra": ["navarra_nafarroa"],
+    "Ceuta": ["ceuta"],
+    "Melilla": ["melilla"]
+}
 }
   
