@@ -46,10 +46,10 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
     }, [filteredData, selectedCategories, categoryColorMapping]);
 
     return (
-        <div style={{ height: '500px', width: '500px', margin: '20px auto' }}>
+        <div style={{ height: '450px', width: '500px' }}>
             <MapContainer center={position} zoom={6} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
-                  url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"
+                  url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'
                 />
                 
@@ -61,7 +61,7 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
                         fillColor={marker.color}
                         color={marker.color}
                         weight={1}
-                        opacity={0.7}
+                        opacity={1}
                         fillOpacity={0.7}
                     >
                         <Popup>{marker.province}: ({(marker.value * 100).toFixed(2)}%), {marker.category} </Popup>
