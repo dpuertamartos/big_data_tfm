@@ -1,7 +1,13 @@
-import { Card, CardContent, Typography, Grid, Box, Chip } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Box, Chip, Button, Collapse } from '@mui/material';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from "react-router-dom"
+import { useState } from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import LinkIcon from '@mui/icons-material/Link';
+import LocationOnIcon from '@mui/icons-material/LocationOn'; // Importing icon for location
+
+
 
 const spanishLabels = {
   exterior_summary: 'Exterior',
@@ -46,6 +52,10 @@ const spanishFields = {
 }
 
 const Flat = ({flat}) => {
+  const [openDescription, setOpenDescription] = useState(false);
+  const handleToggleDescription = () => {
+    setOpenDescription(!openDescription);
+  };
 
   if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>;
 
@@ -80,19 +90,48 @@ const Flat = ({flat}) => {
     });
   };
 
+  const formatProvince = (province) => {
+    return province
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // Capitalize first letter of each word
+  };
+
+  console.log(flat)
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
       <CardContent>
-        <Typography variant="h5" component="div">
-          {flat.title}. {flat.province}
+        <Typography 
+          variant="h5" 
+          component="div" 
+          sx={{ 
+            color: 'primary.main', // Assuming primary is a shade of blue
+            fontWeight: 'bold'
+          }}
+        >
+          {flat.title}
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {flat.location}
+
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <LocationOnIcon sx={{ color: 'primary.light', mr: 1 }} /> {/* Icon with color */}
+          <Typography color="text.secondary">
+            {flat.location}
+          </Typography>
+        </Box>
+
+        <Typography 
+          sx={{ 
+            color: 'primary.main', // Use secondary color or any other color that fits your theme
+            fontWeight: 'medium',
+            mb: 2 // Margin bottom for spacing
+          }}
+        >
+          {formatProvince(flat.province)}
         </Typography>
 
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            {renderField('Price', flat.price_euro)}
+            {renderField('Precio', flat.price_euro ? `${flat.price_euro} €`: undefined)}
             {renderField('Puntuación asignada', Math.floor(flat.rating * 100) / 100)}
             {renderField('Habitaciones', flat.habitaciones)}
             {renderField('Baños', flat.banos)}
@@ -100,8 +139,6 @@ const Flat = ({flat}) => {
             {renderField('Superficie construida', flat.superficie_construida_m2 ? `${flat.superficie_construida_m2} m²`: undefined)}
             {renderField('Superficie útil', flat.superficie_util_m2 ? `${flat.superficie_util_m2} m²`: undefined)}
             {renderFields()}
-
-            {/* Add more fields as necessary */}
             </Grid>
           <Grid item xs={6}>
             {flat.photos && flat.photos.length > 0 && (
@@ -119,12 +156,41 @@ const Flat = ({flat}) => {
             )}
           </Grid>
         </Grid>
+        
+        {flat.link && (
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<LinkIcon />}
+              href={flat.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ mt: 2, mr: 2 }}
+            >
+              Ver en pisos.com
+            </Button>
+          )}
 
         {flat.description && (
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            {flat.description}
-          </Typography>
+          <>
+            <Button
+              onClick={handleToggleDescription}
+              sx={{ mt: 2 }}
+              variant="contained"
+              size="small"
+              endIcon={openDescription ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            >
+              Descripción
+            </Button>
+            <Collapse in={openDescription}>
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                {flat.description}
+              </Typography>
+            </Collapse>
+          </>
         )}
+
+
 
         <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap' }}>
           {renderChips()}
