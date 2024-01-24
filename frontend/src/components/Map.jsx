@@ -46,8 +46,8 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
     }, [filteredData, selectedCategories, categoryColorMapping]);
 
     return (
-        <div style={{ height: '450px', width: '500px' }}>
-            <MapContainer center={position} zoom={6} style={{ height: '100%', width: '100%' }}>
+        <div style={{ height: '300px', width: '300px' }}>
+            <MapContainer center={position} zoom={5} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
                   url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://carto.com/attribution">CARTO</a>'

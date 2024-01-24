@@ -66,6 +66,7 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
           yAxisDefault={"price_euro_mean_excluding_outliers"}
           selectedRegions={selectedRegions}
           regionToProvincesMap={regionToProvincesMap}
+          height={300}
         />
       </Box>
     );
@@ -302,7 +303,6 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
 
   return (
     <Box sx={{ flexGrow: 1, py: 3 }}>
-      <h2>Trends Dashboard</h2>
       <Box width="100%" height={300}>
           <Drawer
                 variant="temporary"
