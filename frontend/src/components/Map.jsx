@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Box } from '@mui/material';
 import provinceData from '../../provinces.json';
 
 const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) => {
-    const position = [40.416775, -3.703790]; // Center of Spain
+    const position = [40.416775, -3.703790]; // Centro de España
     const [markers, setMarkers] = useState([]);
+
 
     useEffect(() => {
         const calculateMarkerData = () => {
@@ -46,7 +48,12 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
     }, [filteredData, selectedCategories, categoryColorMapping]);
 
     return (
-        <div style={{ height: '300px', width: '300px' }}>
+        <Box sx={{
+            height: 350, // Altura fija
+            width: '100%', // Ancho responsivo
+            maxWidth: 350, // Ancho máximo
+            margin: 'auto', // Centrar horizontalmente
+        }}>
             <MapContainer center={position} zoom={5} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
                   url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
@@ -68,7 +75,7 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
                     </CircleMarker>
                 ))}
             </MapContainer>
-        </div>
+        </Box>
     );
 };
 

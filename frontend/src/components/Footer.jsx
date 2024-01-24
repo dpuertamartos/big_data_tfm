@@ -9,10 +9,11 @@ const Footer = () => {
             color: 'text.secondary',
             p: 3,
             textAlign: 'center',
-            fontStyle: 'italic'
+            fontStyle: 'italic',
+            m: 8
         }}>
             <Typography variant="body2">
-                Flujo de datos para descubrimiento y análisis de oportunidades inmobiliarias, David Puerta - Universidad de Burgos, {currentYear}
+                Flujo de datos para análisis de oportunidades inmobiliarias, David Puerta - Universidad de Burgos, {currentYear}
             </Typography>
         </Box>
     );

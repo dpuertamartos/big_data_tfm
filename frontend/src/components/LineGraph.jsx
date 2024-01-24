@@ -54,11 +54,20 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
   const selectedElements = selectedprovinces.filter(province => 
     !selectedRegions.some(region => regionToProvincesMap[region].includes(province))
   ).concat(selectedRegions);
+  
+  const hasSelection = selectedYAxisKeys.length > 0 
 
   return (
     <div>
       <FormControl style={{ minWidth: 120, margin: '20px' }}>
-        <InputLabel id="y-axis-select-label">Medidas</InputLabel>
+        <InputLabel id="y-axis-select-label" sx={{
+          ...(hasSelection && {
+            color: 'primary.main', // Cambia a color primario si hay selección
+            fontSize: '1.3rem', // Aumenta el tamaño de la fuente
+            fontWeight: 'bold',
+            transform: 'translate(0, -20px) scale(0.85)'  // Hace la fuente en negrita
+          })
+        }}>Medidas</InputLabel>
         <Select
           labelId="y-axis-select-label"
           id="y-axis-select"

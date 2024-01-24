@@ -118,22 +118,23 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
             />
             </Grid>
       </Grid>
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-        <Box style={{ flex: '1' }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={7}>
           <CategoricalBarChart 
             filteredData={aggDataFiltered} 
             selectedCategories={selectedCategories} 
             categoryColorMapping={categoryColorMapping} 
           />
-        </Box>
-        <Box style={{ flex: '1' }}>
+        </Grid>
+        <Grid item xs={12} md={5}>
           <SpainMap 
             filteredData={filteredData} 
             selectedCategories={selectedCategories} 
             categoryColorMapping={categoryColorMapping} 
           />
-        </Box>
-      </div>
+        </Grid>
+
+      </Grid>
     </Box>
   );
 }
@@ -302,7 +303,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
 }
 
   return (
-    <Box sx={{ flexGrow: 1, py: 3 }}>
+    <Box sx={{ flexGrow: 1, pb: 90 }}>
       <Box width="100%" height={300}>
           <Drawer
                 variant="temporary"
@@ -325,7 +326,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
             </Drawer>
         {isLargeScreen && Filters()}
         <NumericalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} selectedRegions={selectedRegion} regionToProvincesMap={regionToProvincesMap} />
-        <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData}   />
+        <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData} />
       </Box>
     </Box>
   );
