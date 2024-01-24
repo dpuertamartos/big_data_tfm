@@ -138,7 +138,7 @@ const Home = () => {
         disabled={isLoading}
       />
       <LineGraph selectedprovinces={selectedprovinces} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
-      <Listing data={bestFlats} isCapital={selectedIsCapital} />
+      <Listing data={bestFlats} isCapital={selectedIsCapital} singleColumn={false}/>
     </span>
   )
 }
