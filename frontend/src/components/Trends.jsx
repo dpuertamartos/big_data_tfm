@@ -5,7 +5,8 @@ import SelectFilter from './SelectFilter'
 import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
 import SpainMap from './Map';
-import { useTheme, useMediaQuery, Drawer } from '@mui/material'
+import { useTheme, useMediaQuery, Drawer, Box, Grid } from '@mui/material'
+import { provincesOptions, capitalOptions, activityOptions, typesOptions, categoryOptions } from '../utils/selectors_options.js'
 
 
 const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMapping }) => {
@@ -33,7 +34,7 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
             />
           <YAxis tickFormatter={formatYAxisTick} />
           <Tooltip />
-          <Legend />
+          <Legend formatter={(value) => categoryOptions[value] || value} />
           {selectedCategories.map(category => (
             <Bar key={category} dataKey={category} fill={categoryColorMapping[category]} />
           ))}
@@ -44,7 +45,7 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
 
   const NumericalGraphContainer = ({ aggData, selectedprovinces, selectedRegions, regionToProvincesMap }) => {
     return (
-      <>
+      <Box>
         <LineGraph
           selectedprovinces={selectedprovinces}
           data={aggData}
@@ -66,7 +67,7 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
           selectedRegions={selectedRegions}
           regionToProvincesMap={regionToProvincesMap}
         />
-      </>
+      </Box>
     );
 };
 
@@ -104,30 +105,35 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
     }, {});
 
   return (
-    <>
-      <SelectFilter
-          selectedElements={selectedCategories}
-          handleChange={(event) => setSelectedCategories(event.target.value)}
-          elementToChoose={["exterior_summary_no_pct","exterior_summary_yes_pct","vidrios_dobles_summary_no_pct","vidrios_dobles_summary_yes_pct","adaptado_a_personas_con_movilidad_reducida_summary_no_pct","adaptado_a_personas_con_movilidad_reducida_summary_yes_pct","puerta_blindada_summary_no_pct","puerta_blindada_summary_yes_pct","ascensor_summary_no_pct","ascensor_summary_yes_pct","balcon_summary_no_pct","balcon_summary_yes_pct","portero_automatico_summary_no_pct","portero_automatico_summary_yes_pct","garaje_summary_no_pct","garaje_summary_yes_pct","comedor_summary_no_pct","comedor_summary_yes_pct","terraza_summary_no_pct","terraza_summary_yes_pct","jardin_summary_no_pct","jardin_summary_yes_pct","armarios_empotrados_summary_no_pct","armarios_empotrados_summary_yes_pct","aire_acondicionado_summary_yes_pct","aire_acondicionado_summary_no_pct","trastero_summary_no_pct","trastero_summary_yes_pct","piscina_summary_no_pct","piscina_summary_yes_pct","chimenea_summary_no_pct","chimenea_summary_yes_pct","lavadero_summary_no_pct","lavadero_summary_yes_pct","soleado_summary_no_pct","soleado_summary_yes_pct","gas_summary_no_pct","gas_summary_yes_pct  ","amueblado_summary_no_pct","amueblado_summary_yes_pct","cocina_equipada_summary_no_pct","cocina_equipada_summary_yes_pct","calefaccion_summary_no_pct","calefaccion_summary_gas_natural_pct","calefaccion_summary_gasoil_pct","calefaccion_summary_central_pct","calefaccion_summary_otros_pct","calefaccion_summary_electrica_pct","calefaccion_summary_gas_pct","conservacion_desconocido_pct","conservacion_reformado_pct","conservacion_en_buen_estado_pct","conservacion_a_reformar_pct","conservacion_a_estrenar_pct","antiguedad_desconocido_pct","antiguedad_mas_de_50_anos_pct","antiguedad_entre_20_y_30_anos_pct","antiguedad_entre_10_y_20_anos_pct","antiguedad_entre_30_y_50_anos_pct","antiguedad_menos_de_5_anos_pct","antiguedad_entre_5_y_10_anos_pct","carpinteria_exterior_cleaned_desconocido_pct","carpinteria_exterior_cleaned_aluminio_pct","carpinteria_exterior_cleaned_climalit_pct","carpinteria_exterior_cleaned_pvc_pct","carpinteria_exterior_cleaned_otros_pct","carpinteria_exterior_cleaned_madera_pct","tipo_suelo_summary_gres_pct","tipo_suelo_summary_tarima_flotante_pct","tipo_suelo_summary_desconocido_pct","tipo_suelo_summary_otros_pct","tipo_suelo_summary_terrazo_pct","tipo_suelo_summary_parquet_pct","tipo_suelo_summary_marmol_pct","tipo_suelo_summary_ceramica_pct","cocina_summary_desconocido_pct","cocina_summary_otros_pct","cocina_summary_independiente_pct","cocina_summary_individual_pct","cocina_summary_americana_pct","cocina_summary_amueblada_pct","orientacion_summary_desconocido_pct","orientacion_summary_noreste_pct","orientacion_summary_otros_pct","orientacion_summary_sur_pct","orientacion_summary_noroeste_pct","orientacion_summary_norte_pct","orientacion_summary_sureste_pct","orientacion_summary_oeste_pct"]}
-          label="category"
-          />
+    <Box>
+      <Grid container spacing={2}>
+        <Grid item xs={6} md={4}>
+        <SelectFilter
+            selectedElements={selectedCategories}
+            handleChange={(event) => setSelectedCategories(event.target.value)}
+            elementToChoose={Object.keys(categoryOptions)}
+            optionMap={categoryOptions}
+            label="Categoría a mostrar"
+            />
+            </Grid>
+      </Grid>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-        <div style={{ flex: '1' }}>
+        <Box style={{ flex: '1' }}>
           <CategoricalBarChart 
             filteredData={aggDataFiltered} 
             selectedCategories={selectedCategories} 
             categoryColorMapping={categoryColorMapping} 
           />
-        </div>
-        <div style={{ flex: '1' }}>
+        </Box>
+        <Box style={{ flex: '1' }}>
           <SpainMap 
             filteredData={filteredData} 
             selectedCategories={selectedCategories} 
             categoryColorMapping={categoryColorMapping} 
           />
-        </div>
+        </Box>
       </div>
-    </>
+    </Box>
   );
 }
 
@@ -235,10 +241,69 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
+
+  const Filters = () => {
+    return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'unset' }}>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                    <SelectFilter
+                        selectedElements={selectedRegion}
+                        handleChange={handleRegionChange}
+                        elementToChoose={Object.keys(regionToProvincesMap)}
+                        label="Comunidad Autónoma"
+                    />
+                </Grid>
+                <Grid item xs={12} md={8}>
+                    <SelectFilter
+                        selectedElements={selectedprovinces}
+                        handleChange={(event) => setSelectedprovinces(event.target.value)}
+                        elementToChoose={Object.keys({...provincesOptions, "all":"Media Total"})}
+                        optionMap = {{...provincesOptions, "all":"Media Total"}}
+                        label="Provincias"
+                    />
+                </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={2}>
+                    <SelectFilter
+                        selectedElements={selectedIsCapital}
+                        handleChange={(event) => setSelectedIsCapital(event.target.value)}
+                        elementToChoose={Object.keys(capitalOptions)}
+                        optionMap = {capitalOptions}
+                        label="Capital"
+                        multiple={false}
+                    />
+                </Grid>
+                <Grid item xs={12} md={2}>
+                    <SelectFilter
+                        selectedElements={selectedType}
+                        handleChange={(event) => setSelectedType(event.target.value)}
+                        elementToChoose={Object.keys(typesOptions)}
+                        optionMap={typesOptions}
+                        label="Tipo de inmueble"
+                        multiple={false}
+                    />
+                </Grid>
+                <Grid item xs={12} md={2}>
+                    <SelectFilter
+                        selectedElements={selectedActivity}
+                        handleChange={(event) => setSelectedActivity(event.target.value)}
+                        elementToChoose={Object.keys(activityOptions)}
+                        optionMap={activityOptions}
+                        label="Activo"
+                        multiple={false}
+                    />
+                </Grid>
+            </Grid>
+        </Box>
+    );
+}
+
   return (
-    <div>
+    <Box sx={{ flexGrow: 1, py: 3 }}>
       <h2>Trends Dashboard</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <Box width="100%" height={300}>
           <Drawer
                 variant="temporary"
                 anchor="top"
@@ -256,83 +321,13 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
                     }
                 }}
                 >
-              <>
-                  <SelectFilter
-                    selectedElements={selectedRegion}
-                    handleChange={handleRegionChange}
-                    elementToChoose={Object.keys(regionToProvincesMap)}
-                    label="regions"
-                  />
-                  <SelectFilter
-                  selectedElements={selectedprovinces}
-                  handleChange={(event) => setSelectedprovinces(event.target.value)}
-                  elementToChoose={provinces.locations.concat('all')}
-                  label="provinces"
-                  />
-                  <SelectFilter
-                  selectedElements={selectedIsCapital}
-                  handleChange={(event) => setSelectedIsCapital(event.target.value)}
-                  elementToChoose={["all","0","1"]}
-                  label="capital"
-                  multiple={false}
-                  />
-                  <SelectFilter
-                  selectedElements={selectedType}
-                  handleChange={(event) => setSelectedType(event.target.value)}
-                  elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
-                  label="type"
-                  multiple={false}
-                  />
-                  <SelectFilter
-                  selectedElements={selectedActivity}
-                  handleChange={(event) => setSelectedActivity(event.target.value)}
-                  elementToChoose={['all','0','1']}
-                  label="activity"
-                  multiple={false}
-                  />
-                </>
+                {Filters()}
             </Drawer>
-        {isLargeScreen && (
-                  <>
-                  <SelectFilter
-                    selectedElements={selectedRegion}
-                    handleChange={handleRegionChange}
-                    elementToChoose={Object.keys(regionToProvincesMap)}
-                    label="regions"
-                  />
-                  <SelectFilter
-                  selectedElements={selectedprovinces}
-                  handleChange={(event) => setSelectedprovinces(event.target.value)}
-                  elementToChoose={provinces.locations.concat('all')}
-                  label="provinces"
-                  />
-                  <SelectFilter
-                  selectedElements={selectedIsCapital}
-                  handleChange={(event) => setSelectedIsCapital(event.target.value)}
-                  elementToChoose={["all","0","1"]}
-                  label="capital"
-                  multiple={false}
-                  />
-                  <SelectFilter
-                  selectedElements={selectedType}
-                  handleChange={(event) => setSelectedType(event.target.value)}
-                  elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
-                  label="type"
-                  multiple={false}
-                  />
-                  <SelectFilter
-                  selectedElements={selectedActivity}
-                  handleChange={(event) => setSelectedActivity(event.target.value)}
-                  elementToChoose={['all','0','1']}
-                  label="activity"
-                  multiple={false}
-                  />
-                  </>
-        )}
+        {isLargeScreen && Filters()}
         <NumericalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} selectedRegions={selectedRegion} regionToProvincesMap={regionToProvincesMap} />
         <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData}   />
-      </ResponsiveContainer>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

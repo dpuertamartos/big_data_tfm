@@ -1,9 +1,25 @@
-import { FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Chip, Box } from '@mui/material';
 
-const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, multiple = true, disabled = false }) => {
+const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, optionMap = false, multiple = true, disabled = false }) => {
+  // Verifica si hay elementos seleccionados
+  const hasSelection = multiple ? selectedElements.length > 0 : selectedElements !== "";
+
+  console.log("optionMap", optionMap)
   return (
-    <FormControl style={{ minWidth: 120, marginTop: 40 }}>
-      <InputLabel id={`select-label-${label}`}>{label}</InputLabel>
+    <FormControl fullWidth margin="normal">
+      <InputLabel
+        id={`select-label-${label}`}
+        sx={{
+          ...(hasSelection && {
+            color: 'primary.main', // Cambia a color primario si hay selección
+            fontSize: '1.3rem', // Aumenta el tamaño de la fuente
+            fontWeight: 'bold',
+            transform: 'translate(0, -20px) scale(0.85)'  // Hace la fuente en negrita
+          }),
+        }}
+      >
+        {label}
+      </InputLabel>
       <Select
         labelId={`select-label-${label}`}
         id={`select-${label}`}
@@ -11,17 +27,17 @@ const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, 
         value={selectedElements}
         onChange={handleChange}
         renderValue={multiple ? (selected => (
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
             {selected.map(value => (
-              <Chip key={value} label={value} style={{ margin: 2 }} />
+              <Chip key={value} label={optionMap[value]?optionMap[value]:value} sx={{ m: 0.5 }} />
             ))}
-          </div>
+          </Box>
         )) : undefined}
-        disabled ={disabled}
+        disabled={disabled}
       >
         {elementToChoose.map(name => (
           <MenuItem key={name} value={name}>
-            {name}
+            {optionMap&&optionMap[name]?optionMap[name]:name}
           </MenuItem>
         ))}
       </Select>
@@ -30,5 +46,6 @@ const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, 
 };
 
 export default SelectFilter;
+
 
 

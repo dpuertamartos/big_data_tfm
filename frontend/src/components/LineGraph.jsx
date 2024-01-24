@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { factsOptions } from '../utils/selectors_options.js'
 
 const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, selectedRegions = [], height = 500 }) => {
   const [selectedYAxisKeys, setSelectedYAxisKeys] = useState([yAxisDefault]);
@@ -57,17 +58,17 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
   return (
     <div>
       <FormControl style={{ minWidth: 120, margin: '20px' }}>
-        <InputLabel id="y-axis-select-label">Y-Axis Keys</InputLabel>
+        <InputLabel id="y-axis-select-label">Medidas</InputLabel>
         <Select
           labelId="y-axis-select-label"
           id="y-axis-select"
           multiple
           value={selectedYAxisKeys}
           onChange={handleYAxisChange}
-          renderValue={(selected) => selected.join(', ')}
+          renderValue={(selected) => selected.map(key => factsOptions[key] || key).join(', ')}
         >
           {yAxisOptions.map((option) => (
-            <MenuItem key={option} value={option}>{option}</MenuItem>
+            <MenuItem key={option} value={option}>{factsOptions[option]}</MenuItem>
           ))}
         </Select>
       </FormControl>

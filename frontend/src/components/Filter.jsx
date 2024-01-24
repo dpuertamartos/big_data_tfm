@@ -1,21 +1,20 @@
 // Filter.js
 import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
-import provinces from '../../provinces.json'; // Ensure this path is correct
+import { provincesOptions } from '../utils/selectors_options.js'
 
 const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value
 }
 
 const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, onTipoChange, onSortChange }) => {
-    const provinceOptions = provinces.locations
 
     return (
         <Box>
             <Autocomplete
                 value={filters.ciudad}
                 onChange={onprovinceChange}
-                options={provinceOptions}
-                getOptionLabel={(option) => option ? option : ''}
+                options={Object.keys(provincesOptions)}
+                getOptionLabel={(option) => option ? provincesOptions[option] : ''}
                 renderInput={(params) => (
                     <TextField {...params} label="Provincia" margin="normal" />
                 )}
@@ -31,7 +30,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     label="Capital"
                     onChange={onIsCapitalChange}
                 >
-                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="">Indiferente</MenuItem>
                     <MenuItem value="1">En la capital</MenuItem>
                     <MenuItem value="0">Fuera de la capital</MenuItem>
                 </Select>
@@ -100,7 +99,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
             </FormControl>
             <FormControl fullWidth margin="normal">
                 <Typography gutterBottom>
-                    Rating
+                    Puntuación
                 </Typography>
                 <Slider
                     name="rating"
@@ -121,12 +120,12 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                             label="Ordenar por"
                             onChange={onSortChange}
                         >   
-                            <MenuItem value="rating DESC">Rating (High to Low)</MenuItem>
-                            <MenuItem value="rating ASC">Rating (Low to High)</MenuItem>
-                            <MenuItem value="price_euro DESC">Precio (High to Low)</MenuItem>
-                            <MenuItem value="price_euro ASC">Precio (Low to High)</MenuItem>
-                            <MenuItem value="superficie_util_m2 DESC">Superficie (High to Low)</MenuItem>
-                            <MenuItem value="superficie_util_m2 ASC">Superficie (Low to High)</MenuItem>
+                            <MenuItem value="rating DESC">Puntuación (Primero Altos)</MenuItem>
+                            <MenuItem value="rating ASC">Puntuación (Primero Bajos)</MenuItem>
+                            <MenuItem value="price_euro DESC">Precio (Primero Altos)</MenuItem>
+                            <MenuItem value="price_euro ASC">Precio (Primero Bajos)</MenuItem>
+                            <MenuItem value="superficie_util_m2 DESC">Superficie (Primero Altos)</MenuItem>
+                            <MenuItem value="superficie_util_m2 ASC">Superficie (Primero Bajos)</MenuItem>
                         </Select>
             </FormControl>
         </Box>
