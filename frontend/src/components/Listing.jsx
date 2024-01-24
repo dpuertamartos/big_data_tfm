@@ -43,7 +43,7 @@ const Listing = ({ data, isCapital, singleColumn = true }) => {
                     <ul>
                         {flats.map(flatData => (
                             <Grid container item xs={12} key={flatData.id}>
-                                <Flat flat={flatData} />
+                                <Flat key={flatData.id} flat={flatData} />
                             </Grid>
                         ))}
                     </ul>

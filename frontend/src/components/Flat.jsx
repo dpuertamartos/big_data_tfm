@@ -70,7 +70,7 @@ const Flat = ({flat}) => {
 
   const renderField = (label, value) => {
     return value ? (
-      <Typography variant="body1"><strong>{label}:</strong> {value}</Typography>
+      <Typography key={label} variant="body1"><strong>{label}:</strong> {value}</Typography>
     ) : null;
   };
   
