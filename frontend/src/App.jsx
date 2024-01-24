@@ -20,7 +20,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -44,6 +44,7 @@ const App = () => {
         </Toolbar>
       </AppBar>
       <Toolbar />
+      <Box component="main" sx={{ flexGrow: 1, py: 3 }}>
       <Container>
         <Routes>
           <Route path="/flats/:id" element={<FlatDetailed />} />
@@ -52,9 +53,10 @@ const App = () => {
           <Route path="/contact" element={<Contact drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
           <Route path="/" element={<Home drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
         </Routes>
-        <Footer />
       </Container>
-    </>
+      </Box>
+      <Footer />
+    </Box>
   );
 };
 
