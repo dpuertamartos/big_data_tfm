@@ -4,6 +4,7 @@ import Home from './components/Home';
 import FlatDetailed from './components/FlatDetailed';
 import Flats from './components/Flats';
 import Trends from './components/Trends';
+import Contact from  './components/Contact';
 import Footer from './components/Footer';
 import { AppBar, Toolbar, Button, CssBaseline, Container, IconButton, useTheme, useMediaQuery, Box } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Tune';
@@ -24,10 +25,10 @@ const App = () => {
       <AppBar position="fixed">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', flexGrow: 1 }}>
-            <Button color="inherit" component={Link} to="/">Home</Button>
-            <Button color="inherit" component={Link} to="/flats">Explore</Button>
-            <Button color="inherit" component={Link} to="/trends">Trends</Button>
-            <Button color="inherit" component={Link} to="/">Contact</Button>
+            <Button color="inherit" component={Link} to="/">Inicio</Button>
+            <Button color="inherit" component={Link} to="/flats">Explora</Button>
+            <Button color="inherit" component={Link} to="/trends">Visualiza</Button>
+            <Button color="inherit" component={Link} to="/contact">Info</Button>
           </Box>
           {!isLargeScreen && (
             <IconButton
@@ -48,6 +49,7 @@ const App = () => {
           <Route path="/flats/:id" element={<FlatDetailed />} />
           <Route path="/flats" element={<Flats errorMessage={errorMessage} drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
           <Route path="/trends" element={<Trends drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
+          <Route path="/contact" element={<Contact drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
           <Route path="/" element={<Home drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
         </Routes>
         <Footer />
