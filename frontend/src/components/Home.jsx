@@ -5,10 +5,9 @@ import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import Listing from './Listing'
 import provinces from '../../provinces.json'
-import Box from '@mui/material/Box';
+import {  Box, useTheme, useMediaQuery, Drawer } from '@mui/material'
 
-
-const Home = () => {
+const Home = ({ drawerOpen, handleDrawerToggle }) => {
   const [bestFlats, setBestFlats] = useState({})
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
   const [trendData, setTrendData] = useState([])
@@ -112,32 +111,93 @@ const Home = () => {
     }, 1000);
   };  
 
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
     <span>
-      <SelectFilter 
-        selectedElements={selectedprovinces} 
-        handleChange={(event) => handleChange(event, false)} 
-        elementToChoose={["all"].concat(provinces.locations)} 
-        label="provinces"
-        disabled={isLoading}
-        />
-      <SelectFilter
-        selectedElements={selectedIsCapital}
-        handleChange={(event) => handleChange(event, true)}
-        elementToChoose={["all","0","1"]}
-        label="capital"
-        multiple={false}
-        disabled={isLoading}
-        />
-      <SelectFilter
-        selectedElements={smartMode}
-        handleChange={(event) => setSmartMode(event.target.value)}
-        elementToChoose={["No", "Si"]}
-        label="Modo Inteligente"
-        multiple={false}
-        disabled={isLoading}
-      />
-      <LineGraph selectedprovinces={selectedprovinces} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
+      <Drawer
+            variant="temporary"
+            anchor="top"
+            open={drawerOpen}
+            onClose={handleDrawerToggle}
+            sx={{
+                display: { xs: 'block', md: 'none' },
+                '& .MuiDrawer-paper': {
+                width: '90%', // Sets the drawer's width to 100%
+                maxHeight: '85vh', // Optional: Restricts the maximum height
+                display: 'flex', // Use flex container
+                justifyContent: 'center', // Center horizontally
+                alignItems: 'center', // Center vertically
+                margin: 'auto',
+                }
+            }}
+            >
+              <Box>
+              <SelectFilter 
+                selectedElements={selectedprovinces} 
+                handleChange={(event) => handleChange(event, false)} 
+                elementToChoose={["all"].concat(provinces.locations)} 
+                label="provinces"
+                disabled={isLoading}
+                />
+              <SelectFilter
+                selectedElements={selectedIsCapital}
+                handleChange={(event) => handleChange(event, true)}
+                elementToChoose={["all","0","1"]}
+                label="capital"
+                multiple={false}
+                disabled={isLoading}
+                />
+              <SelectFilter
+                selectedElements={smartMode}
+                handleChange={(event) => setSmartMode(event.target.value)}
+                elementToChoose={["No", "Si"]}
+                label="Modo Inteligente"
+                multiple={false}
+                disabled={isLoading}
+              />
+              <LineGraph selectedprovinces={selectedprovinces} data={trendData} 
+              activeDotSelector={'all'} 
+              yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} 
+              yAxisDefault={"price_euro_mean_excluding_outliers"}
+              height={300}
+              />
+              </Box>
+      </Drawer>
+      {isLargeScreen && (
+              <Box>
+              <SelectFilter 
+                selectedElements={selectedprovinces} 
+                handleChange={(event) => handleChange(event, false)} 
+                elementToChoose={["all"].concat(provinces.locations)} 
+                label="provinces"
+                disabled={isLoading}
+                />
+              <SelectFilter
+                selectedElements={selectedIsCapital}
+                handleChange={(event) => handleChange(event, true)}
+                elementToChoose={["all","0","1"]}
+                label="capital"
+                multiple={false}
+                disabled={isLoading}
+                />
+              <SelectFilter
+                selectedElements={smartMode}
+                handleChange={(event) => setSmartMode(event.target.value)}
+                elementToChoose={["No", "Si"]}
+                label="Modo Inteligente"
+                multiple={false}
+                disabled={isLoading}
+              />
+              <LineGraph selectedprovinces={selectedprovinces} data={trendData} 
+              activeDotSelector={'all'} 
+              yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} 
+              yAxisDefault={"price_euro_mean_excluding_outliers"}
+              height={300}
+              />
+              </Box>
+          )}
       <Box mt={6}> 
         <Listing data={bestFlats} isCapital={selectedIsCapital} singleColumn={false}/>
       </Box>
