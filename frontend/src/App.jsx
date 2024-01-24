@@ -47,7 +47,7 @@ const App = () => {
         <Routes>
           <Route path="/flats/:id" element={<FlatDetailed />} />
           <Route path="/flats" element={<Flats errorMessage={errorMessage} drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
-          <Route path="/trends" element={<Trends />} />
+          <Route path="/trends" element={<Trends drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
           <Route path="/" element={<Home drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
         </Routes>
         <Footer />

@@ -5,7 +5,7 @@ import SelectFilter from './SelectFilter'
 import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
 import SpainMap from './Map';
-
+import { useTheme, useMediaQuery, Drawer } from '@mui/material'
 
 
 const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMapping }) => {
@@ -131,7 +131,7 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
   );
 }
 
-const Trends = () => {
+const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const [trendData, setTrendData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState([]);
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
@@ -232,43 +232,103 @@ const Trends = () => {
   const filteredData = getFilteredData()
   const aggregatedData = getAggregatedData(filteredData)
 
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
     <div>
       <h2>Trends Dashboard</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <SelectFilter
-          selectedElements={selectedRegion}
-          handleChange={handleRegionChange}
-          elementToChoose={Object.keys(regionToProvincesMap)}
-          label="regions"
-        />
-        <SelectFilter
-        selectedElements={selectedprovinces}
-        handleChange={(event) => setSelectedprovinces(event.target.value)}
-        elementToChoose={provinces.locations.concat('all')}
-        label="provinces"
-        />
-        <SelectFilter
-        selectedElements={selectedIsCapital}
-        handleChange={(event) => setSelectedIsCapital(event.target.value)}
-        elementToChoose={["all","0","1"]}
-        label="capital"
-        multiple={false}
-        />
-        <SelectFilter
-        selectedElements={selectedType}
-        handleChange={(event) => setSelectedType(event.target.value)}
-        elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
-        label="type"
-        multiple={false}
-        />
-        <SelectFilter
-        selectedElements={selectedActivity}
-        handleChange={(event) => setSelectedActivity(event.target.value)}
-        elementToChoose={['all','0','1']}
-        label="activity"
-        multiple={false}
-        />
+          <Drawer
+                variant="temporary"
+                anchor="top"
+                open={drawerOpen}
+                onClose={handleDrawerToggle}
+                sx={{
+                    display: { xs: 'block', md: 'none' },
+                    '& .MuiDrawer-paper': {
+                    width: '90%', // Sets the drawer's width to 100%
+                    maxHeight: '85vh', // Optional: Restricts the maximum height
+                    display: 'flex', // Use flex container
+                    justifyContent: 'center', // Center horizontally
+                    alignItems: 'center', // Center vertically
+                    margin: 'auto',
+                    }
+                }}
+                >
+              <>
+                  <SelectFilter
+                    selectedElements={selectedRegion}
+                    handleChange={handleRegionChange}
+                    elementToChoose={Object.keys(regionToProvincesMap)}
+                    label="regions"
+                  />
+                  <SelectFilter
+                  selectedElements={selectedprovinces}
+                  handleChange={(event) => setSelectedprovinces(event.target.value)}
+                  elementToChoose={provinces.locations.concat('all')}
+                  label="provinces"
+                  />
+                  <SelectFilter
+                  selectedElements={selectedIsCapital}
+                  handleChange={(event) => setSelectedIsCapital(event.target.value)}
+                  elementToChoose={["all","0","1"]}
+                  label="capital"
+                  multiple={false}
+                  />
+                  <SelectFilter
+                  selectedElements={selectedType}
+                  handleChange={(event) => setSelectedType(event.target.value)}
+                  elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
+                  label="type"
+                  multiple={false}
+                  />
+                  <SelectFilter
+                  selectedElements={selectedActivity}
+                  handleChange={(event) => setSelectedActivity(event.target.value)}
+                  elementToChoose={['all','0','1']}
+                  label="activity"
+                  multiple={false}
+                  />
+                </>
+            </Drawer>
+        {isLargeScreen && (
+                  <>
+                  <SelectFilter
+                    selectedElements={selectedRegion}
+                    handleChange={handleRegionChange}
+                    elementToChoose={Object.keys(regionToProvincesMap)}
+                    label="regions"
+                  />
+                  <SelectFilter
+                  selectedElements={selectedprovinces}
+                  handleChange={(event) => setSelectedprovinces(event.target.value)}
+                  elementToChoose={provinces.locations.concat('all')}
+                  label="provinces"
+                  />
+                  <SelectFilter
+                  selectedElements={selectedIsCapital}
+                  handleChange={(event) => setSelectedIsCapital(event.target.value)}
+                  elementToChoose={["all","0","1"]}
+                  label="capital"
+                  multiple={false}
+                  />
+                  <SelectFilter
+                  selectedElements={selectedType}
+                  handleChange={(event) => setSelectedType(event.target.value)}
+                  elementToChoose={["all","apartamento","atico","casa","chalet","duplex","estudio","finca","loft","piso"]}
+                  label="type"
+                  multiple={false}
+                  />
+                  <SelectFilter
+                  selectedElements={selectedActivity}
+                  handleChange={(event) => setSelectedActivity(event.target.value)}
+                  elementToChoose={['all','0','1']}
+                  label="activity"
+                  multiple={false}
+                  />
+                  </>
+        )}
         <NumericalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} selectedRegions={selectedRegion} regionToProvincesMap={regionToProvincesMap} />
         <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData}   />
       </ResponsiveContainer>
