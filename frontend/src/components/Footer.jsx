@@ -7,7 +7,7 @@ const Footer = () => {
     return (
       <div style={footerStyle}>
         <br />
-        <em>Real state opportunity discovery, TFM, University of Burgos 2023</em>
+        <em>Flujo de datos para descubrimiento y análisis de oportunidades inmobiliarias, Universidad de Burgos, 2024</em>
       </div>
     )
 }
