@@ -102,7 +102,7 @@ const Flat = ({flat}) => {
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
       <CardContent>
         <Typography 
-          variant="h5" 
+          variant="h6" 
           component="div" 
           sx={{ 
             color: 'primary.main', // Assuming primary is a shade of blue

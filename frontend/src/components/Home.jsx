@@ -5,7 +5,7 @@ import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import Listing from './Listing'
 import provinces from '../../provinces.json'
-
+import Box from '@mui/material/Box';
 
 
 const Home = () => {
@@ -138,7 +138,9 @@ const Home = () => {
         disabled={isLoading}
       />
       <LineGraph selectedprovinces={selectedprovinces} data={trendData} activeDotSelector={'all'} yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} yAxisDefault={"price_euro_mean_excluding_outliers"}/>
-      <Listing data={bestFlats} isCapital={selectedIsCapital} singleColumn={false}/>
+      <Box mt={6}> 
+        <Listing data={bestFlats} isCapital={selectedIsCapital} singleColumn={false}/>
+      </Box>
     </span>
   )
 }
