@@ -4,7 +4,6 @@ const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, 
   // Verifica si hay elementos seleccionados
   const hasSelection = multiple ? selectedElements.length > 0 : selectedElements !== "";
 
-  console.log("optionMap", optionMap)
   return (
     <FormControl fullWidth margin="normal">
       <InputLabel

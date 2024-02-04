@@ -97,7 +97,6 @@ const Flat = ({flat}) => {
       .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // Capitalize first letter of each word
   };
 
-  console.log(flat)
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
       <CardContent>
