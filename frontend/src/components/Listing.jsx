@@ -25,10 +25,12 @@ const Listing = ({ data, isCapital, singleColumn = true }) => {
     const gridSizeSm = getGridSizeSm();
 
     const formatProvince = (province) => {
+        if(province === 'all'){return 'Todas las Provincias'}
+        else{
         return province
             .replace(/_/g, ' ')
             .toLowerCase()
-            .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // Capitalize first letter of each word
+            .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}
     };
 
     return (
