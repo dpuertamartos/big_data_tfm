@@ -238,7 +238,6 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const regionToProvincesMap = provinces.ccaa_to_provinces
   const filteredData = getFilteredData()
   const aggregatedData = getAggregatedData(filteredData)
-  console.log("data",aggregatedData)
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
