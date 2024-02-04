@@ -57,6 +57,36 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
   
   const hasSelection = selectedYAxisKeys.length > 0 
 
+  // Función para extraer las unidades de factsOptions
+  const getUnitFromOption = (option) => {
+    const match = factsOptions[option].match(/\((.*?)\)/);
+    return match ? match[1] : '';
+  };
+
+  // Mapeo de los meses en español
+  const monthsMap = {
+    '01': 'Ene',
+    '02': 'Feb',
+    '03': 'Mar',
+    '04': 'Abr',
+    '05': 'May',
+    '06': 'Jun',
+    '07': 'Jul',
+    '08': 'Ago',
+    '09': 'Sept',
+    '10': 'Oct',
+    '11': 'Nov',
+    '12': 'Dic',
+  };
+
+  // Función para transformar el formato de la fecha
+  const formatXAxis = (tickItem) => {
+    // Dividir el valor de tickItem en año y mes
+    const [year, month] = tickItem.split('-');
+    // Convertir al formato español
+    return `${monthsMap[month]}/${year.substring(2)}`;
+  };
+
   return (
     <div>
       <FormControl style={{ minWidth: 120, margin: '20px' }}>
@@ -89,10 +119,10 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
               margin={{ top: 40, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" tickFormatter={formatXAxis} />
+              <YAxis label={{ value: getUnitFromOption(yAxisKey), angle: -45, position: 'insideLeft', offset: -14 }} />
               <Tooltip />
-              <Legend />
+              <Legend verticalAlign="top" height={36} payload={[{ value: factsOptions[yAxisKey] || yAxisKey, type: 'line' }]} />
               {selectedElements.map(province => (
                 <Line 
                   key={province}
