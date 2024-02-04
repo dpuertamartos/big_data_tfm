@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Customized } from 'recharts';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { factsOptions } from '../utils/selectors_options.js';
+import { factsOptions, provincesOptions2 } from '../utils/selectors_options.js';
 
 
 const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, isLargeScreen, selectedRegions = [], height = 500 }) => {
@@ -54,7 +54,8 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
 
   const selectedElements = selectedprovinces.filter(province => 
     !selectedRegions.some(region => regionToProvincesMap[region].includes(province))
-  ).concat(selectedRegions);
+  ).map(e => provincesOptions2[e]).concat(selectedRegions);
+
   
   const hasSelection = selectedYAxisKeys.length > 0 
 

@@ -4,9 +4,9 @@ import trendService from '../services/trends'
 import SelectFilter from './SelectFilter'
 import LineGraph from './LineGraph'
 import Listing from './Listing'
-import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip } from '@mui/material';
+import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip, Typography } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { capitalOptions, provincesOptions } from '../utils/selectors_options.js'
+import { capitalOptions, provincesOptions, provincesOptions2 } from '../utils/selectors_options.js'
 
 
 const Home = ({ drawerOpen, handleDrawerToggle }) => {
@@ -126,6 +126,11 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
     setOpenHelpDialog(false);
   };
 
+  const trendDataRenamed = trendData.map((e) => ({
+    ...e,
+    province_group: provincesOptions2[e.province_group]
+  }));
+
   const Filters = () => {
     return (
       <Box sx={{ width: '100%', p: 2 }}>
@@ -168,9 +173,9 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
           <DialogTitle>{"Modo Inteligente"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              <p>              El &apos;Modo Inteligente&apos; ajusta el filtro de puntuación a un máximo de 0.33. Esto equivale a inmuebles cuyo precio estimado por el algoritmo es un 33% superior a su precio REAL de venta. 
-</p>
-              <p>Se asigna un máximo de 0.33 de forma arbitraria. Se ha observado que inmuebles con una puntuación superior suele ser por errores en el listado de detalles (en el anuncio) y/o por omisión de detalles que bajan mucho su valor real.</p>
+              <Typography variant="body1" gutterBottom>El &apos;Modo Inteligente&apos; ajusta el filtro de puntuación a un máximo de 0.33. Esto equivale a inmuebles cuyo precio estimado por el algoritmo es un 33% superior a su precio REAL de venta. 
+</Typography>
+              <Typography variant="body1" gutterBottom>Se asigna un máximo de 0.33 de forma arbitraria. Se ha observado que inmuebles con una puntuación superior suele ser por errores en el listado de detalles (en el anuncio) y/o por omisión de detalles que bajan mucho su valor real.</Typography>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -179,7 +184,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
         </Dialog>
 
         </Box>
-        <LineGraph selectedprovinces={selectedprovinces} data={trendData} 
+        <LineGraph selectedprovinces={selectedprovinces} data={trendDataRenamed} 
         activeDotSelector={'all'} 
         yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} 
         yAxisDefault={"price_euro_mean_excluding_outliers"}

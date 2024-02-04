@@ -60,6 +60,8 @@ export const provincesOptions = {
     "zaragoza": "Zaragoza"
 }
 
+export const provincesOptions2 = {...provincesOptions, "all":"Media Total"}
+
 export const typesOptions = {
     "all":"Indiferente",
     "piso":"Piso",

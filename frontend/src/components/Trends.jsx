@@ -6,7 +6,7 @@ import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
 import SpainMap from './Map';
 import { useTheme, useMediaQuery, Drawer, Box, Grid } from '@mui/material'
-import { provincesOptions, capitalOptions, activityOptions, typesOptions, categoryOptions, factsOptions } from '../utils/selectors_options.js'
+import { provincesOptions2, capitalOptions, activityOptions, typesOptions, categoryOptions, factsOptions } from '../utils/selectors_options.js'
 
 
 const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMapping }) => {
@@ -83,7 +83,6 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
   
   const aggDataFiltered = aggData
     .filter(flat => flat.updated_month_group === 'all')
-    .filter(item => selectedprovinces.includes(item.province_group) || selectedprovinces.includes("all"));
   
   // Move the color generation logic here
   const generateColorArray = (numColors) => {
@@ -168,6 +167,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   }
 
   const getAggregatedData = (data) => {
+
       const aggregateRegionData = (existingData, newItem) => {
         const fieldsToAverage = Object.keys(categoryOptions).concat(Object.keys(factsOptions));
       
@@ -205,10 +205,11 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
             aggregatedData[key] = aggregateRegionData(aggregatedData[key], item);
           }
         } else {
-          nonAggregatedData.push(item);
+          nonAggregatedData.push({...item, province_group:provincesOptions2[item.province_group]});
         }
       });
-    
+      
+      
       // Combine aggregated and non-aggregated data
       return [...Object.values(aggregatedData), ...nonAggregatedData];
   };
@@ -237,7 +238,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const regionToProvincesMap = provinces.ccaa_to_provinces
   const filteredData = getFilteredData()
   const aggregatedData = getAggregatedData(filteredData)
-
+  console.log("data",aggregatedData)
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -258,8 +259,8 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
                     <SelectFilter
                         selectedElements={selectedprovinces}
                         handleChange={(event) => setSelectedprovinces(event.target.value)}
-                        elementToChoose={Object.keys({...provincesOptions, "all":"Media Total"})}
-                        optionMap = {{...provincesOptions, "all":"Media Total"}}
+                        elementToChoose={Object.keys(provincesOptions2)}
+                        optionMap = {provincesOptions2}
                         label="Provincias"
                     />
                 </Grid>
