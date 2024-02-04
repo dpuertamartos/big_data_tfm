@@ -301,7 +301,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
 }
 
   return (
-    <Box sx={{ flexGrow: 1, pb: 90 }}>
+    <Box sx={{ flexGrow: 1, pb: 120 }}>
       <Box width="100%" height={300}>
           <Drawer
                 variant="temporary"
