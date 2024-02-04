@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Grid, Box, Chip } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Box, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Tooltip } from '@mui/material';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import flatService from '../services/flats';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const spanishLabels = {
   exterior_summary: 'Exterior',
@@ -50,6 +51,8 @@ const spanishFields = {
 const Flat = () => {
   const { id } = useParams();
   const [flat, setFlat] = useState(null);
+  const [openRatingHelpDialog, setOpenRatingHelpDialog] = useState(false);
+
 
   useEffect(() => {
     const fetchFlat = async () => {
@@ -73,9 +76,19 @@ const Flat = () => {
 
   if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>;
 
+  const infobutton = () => {
+    return(
+      <Tooltip title="Más información sobre puntuación">
+            <IconButton onClick={handleOpenRatingHelpDialog} size="small" color="" sx={{pb:1 }}>
+              <HelpOutlineIcon />
+            </IconButton>
+      </Tooltip>
+    )
+  }
+
   const renderField = (label, value) => {
     return value ? (
-      <Typography variant="body1"><strong>{label}:</strong> {value}</Typography>
+      <Typography key={label} variant="body1"><strong>{label}{label==='Puntuación asignada'?infobutton():''}:</strong> {value} </Typography>
     ) : null;
   };
   
@@ -95,6 +108,10 @@ const Flat = () => {
     });
   };
 
+  // Funciones para manejar la apertura y cierre del diálogo de ayuda
+  const handleOpenRatingHelpDialog = () => setOpenRatingHelpDialog(true);
+  const handleCloseRatingHelpDialog = () => setOpenRatingHelpDialog(false);
+
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
       <CardContent>
@@ -106,8 +123,9 @@ const Flat = () => {
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item xs={6}>
-            {renderField('Price', flat.price_euro)}
+        <Grid item xs={6}>
+            {renderField('Precio de Venta', flat.price_euro ? `${flat.price_euro} €`: undefined)}
+            {renderField('Valor Estimado', flat.prediction ?`${Math.floor(flat.prediction)} €`:undefined )}
             {renderField('Puntuación asignada', Math.floor(flat.rating * 100) / 100)}
             {renderField('Habitaciones', flat.habitaciones)}
             {renderField('Baños', flat.banos)}
@@ -115,8 +133,6 @@ const Flat = () => {
             {renderField('Superficie construida', flat.superficie_construida_m2 ? `${flat.superficie_construida_m2} m²`: undefined)}
             {renderField('Superficie útil', flat.superficie_util_m2 ? `${flat.superficie_util_m2} m²`: undefined)}
             {renderFields()}
-
-            {/* Add more fields as necessary */}
             </Grid>
           <Grid item xs={6}>
             {flat.photos && flat.photos.length > 0 && (
@@ -145,6 +161,24 @@ const Flat = () => {
           {renderChips()}
         </Box>
       </CardContent>
+      <Dialog open={openRatingHelpDialog} onClose={handleCloseRatingHelpDialog}>
+        <DialogTitle>{"Puntuación Asignada"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography variant="body1" gutterBottom> En este caso, una puntuación de {Math.floor(flat.rating*1000)/1000} significa que el algoritmo le asigna un valor ({Math.floor(flat.prediction)}€)
+            un {Math.floor(flat.rating*1000)/10}% {flat.rating >= 0 ? 'superior' : 'inferior'} al precio de venta ({flat.price_euro}€)
+            </Typography>
+            <Typography variant="body1" gutterBottom> La puntuación se calcula de la siguiente forma: </Typography>
+            <Typography variant="body1" gutterBottom>( Precio Asignado por el Algoritmo - Precio ) / Precio.</Typography>
+
+            <Typography variant="body1" gutterBottom>Puntuaciones por encima de 0.33 suelen tratarse de falsos positivos. Esto se puede deber a que sean ejemplos extremos que el modelo tenga dificultad para clasificar. También es posible que falten detalles listados, o que su estado sea muy malo y de ahí su bajo precio.
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRatingHelpDialog}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };

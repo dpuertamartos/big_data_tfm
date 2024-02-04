@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Grid, Box, Chip, Button, Collapse } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Box, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Tooltip, Collapse } from '@mui/material';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
@@ -6,7 +6,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import LinkIcon from '@mui/icons-material/Link';
 import LocationOnIcon from '@mui/icons-material/LocationOn'; // Importing icon for location
-
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
 const spanishLabels = {
@@ -56,6 +56,7 @@ const Flat = ({flat}) => {
   const handleToggleDescription = () => {
     setOpenDescription(!openDescription);
   };
+  const [openRatingHelpDialog, setOpenRatingHelpDialog] = useState(false);
 
   if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>;
 
@@ -68,9 +69,19 @@ const Flat = ({flat}) => {
     }
   }
 
+  const infobutton = () => {
+    return(
+      <Tooltip title="Más información sobre puntuación">
+            <IconButton onClick={handleOpenRatingHelpDialog} size="small" color="" sx={{pb:1 }}>
+              <HelpOutlineIcon />
+            </IconButton>
+      </Tooltip>
+    )
+  }
+
   const renderField = (label, value) => {
     return value ? (
-      <Typography key={label} variant="body1"><strong>{label}:</strong> {value}</Typography>
+      <Typography key={label} variant="body1"><strong>{label}{label==='Puntuación asignada'?infobutton():''}:</strong> {value} </Typography>
     ) : null;
   };
   
@@ -96,6 +107,9 @@ const Flat = ({flat}) => {
       .toLowerCase()
       .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // Capitalize first letter of each word
   };
+
+  const handleOpenRatingHelpDialog = () => setOpenRatingHelpDialog(true);
+  const handleCloseRatingHelpDialog = () => setOpenRatingHelpDialog(false);
 
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
@@ -130,7 +144,8 @@ const Flat = ({flat}) => {
 
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            {renderField('Precio', flat.price_euro ? `${flat.price_euro} €`: undefined)}
+            {renderField('Precio de Venta', flat.price_euro ? `${flat.price_euro} €`: undefined)}
+            {renderField('Valor Estimado', flat.prediction ?`${Math.floor(flat.prediction)} €`:undefined )}
             {renderField('Puntuación asignada', Math.floor(flat.rating * 100) / 100)}
             {renderField('Habitaciones', flat.habitaciones)}
             {renderField('Baños', flat.banos)}
@@ -195,6 +210,24 @@ const Flat = ({flat}) => {
           {renderChips()}
         </Box>
       </CardContent>
+      <Dialog open={openRatingHelpDialog} onClose={handleCloseRatingHelpDialog}>
+        <DialogTitle>{"Puntuación Asignada"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography variant="body1" gutterBottom> En este caso, una puntuación de {Math.floor(flat.rating*1000)/1000} significa que el algoritmo le asigna un valor ({Math.floor(flat.prediction)}€)
+            un {Math.floor(flat.rating*1000)/10}% {flat.rating >= 0 ? 'superior' : 'inferior'} al precio de venta ({flat.price_euro}€)
+            </Typography>
+            <Typography variant="body1" gutterBottom> La puntuación se calcula de la siguiente forma: </Typography>
+            <Typography variant="body1" gutterBottom>( Precio Asignado por el Algoritmo - Precio ) / Precio.</Typography>
+
+            <Typography variant="body1" gutterBottom>Puntuaciones por encima de 0.33 suelen tratarse de falsos positivos. Esto se puede deber a que sean ejemplos extremos que el modelo tenga dificultad para clasificar. También es posible que falten detalles listados, o que su estado sea muy malo y de ahí su bajo precio.
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRatingHelpDialog}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
