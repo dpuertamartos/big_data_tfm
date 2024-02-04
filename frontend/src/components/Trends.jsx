@@ -244,7 +244,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
 
   const Filters = () => {
     return (
-        <Box sx={{ width: '70%', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'unset' }}>
+        <Box sx={{ width: isLargeScreen ? '100%':'70%', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'unset' }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                     <SelectFilter
