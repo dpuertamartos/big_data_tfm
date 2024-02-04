@@ -6,16 +6,62 @@ const formatSliderLabel = (value, max) => {
     return value === max ? `${max}+` : value;
 };
 
+const calculatePriceFromSlider = (sliderValue) => {
+    if (sliderValue <= 20) {
+        return sliderValue * 10000;
+    } else if (sliderValue <= 35) {
+        // Adjusted for 200,000 to 500,000 range with 20,000 steps
+        return 200000 + (sliderValue - 20) * 20000;
+    } else {
+        // Adjusted for 500,000 to 2M range with 250,000 steps
+        return 500000 + (sliderValue - 35) * 250000;
+    }
+};
+
+const calculateSliderFromPrice = (price) => {
+    if (price <= 200000) {
+        return price / 10000;
+    } else if (price <= 500000) {
+        // Adjusted for 200,000 to 500,000 range with 20,000 steps
+        return 20 + (price - 200000) / 20000;
+    } else {
+        // Adjusted for 500,000 to 2M range with 250,000 steps
+        return 35 + (price - 500000) / 250000;
+    }
+};
+
 const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, onTipoChange, onSortChange }) => {
     // Local states for sliders
-    const [localPrice, setLocalPrice] = useState(filters.precio);
+    const [localPrice, setLocalPrice] = useState(filters.precio.map(calculateSliderFromPrice));
     const [localHabitaciones, setLocalHabitaciones] = useState(filters.habitaciones);
     const [localM2Utiles, setLocalM2Utiles] = useState(filters.m2Utiles);
     const [localRating, setLocalRating] = useState(filters.rating);
 
+    const marks = [
+        {
+            value: calculateSliderFromPrice(0),
+            label: '0€',
+        },
+        {
+            value: calculateSliderFromPrice(100000),
+            label: '100k€',
+        },
+        {
+            value: calculateSliderFromPrice(200000),
+            label: '200k€',
+        },
+        {
+            value: calculateSliderFromPrice(500000),
+            label: '500k€',
+        },
+        {
+            value: calculateSliderFromPrice(2000000),
+            label: '2M€+',
+        },
+    ];
     // Sync local state with global state
     useEffect(() => {
-        setLocalPrice(filters.precio);
+        setLocalPrice(filters.precio.map(calculateSliderFromPrice));
         setLocalHabitaciones(filters.habitaciones);
         setLocalM2Utiles(filters.m2Utiles);
         setLocalRating(filters.rating);
@@ -41,7 +87,13 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
     };
 
     const handleSliderChangeCommitted = (name, newValue) => {
-        onFilterChange({ target: { name } }, newValue);
+        if (name === 'precio') {
+            const priceValue = newValue.map(calculatePriceFromSlider);
+            onFilterChange({ target: { name } }, priceValue);
+        }
+        else {
+            onFilterChange({ target: { name } }, newValue);
+        }
     };
 
     return (
@@ -96,12 +148,13 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 <Slider
                     name="precio"
                     value={localPrice}
+                    min={0}
+                    max={calculateSliderFromPrice(2000000)}
                     onChange={(event, newValue) => handleSliderChange('precio', newValue)}
                     onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('precio', newValue)}
                     valueLabelDisplay="auto"
-                    min={0}
-                    max={1000000}
-                    valueLabelFormat={(value) => formatSliderLabel(value, 1000000)}
+                    marks={marks}
+                    valueLabelFormat={(value) => `${calculatePriceFromSlider(value)}€`}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -114,6 +167,8 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     valueLabelDisplay="auto"
                     min={0}
                     max={10}
+                    marks={[{value:0,label:'No habs.'},{value:1},{value:2, label: '2'},{value:3},{value:4, label:'4'},{value:5},
+                    {value:6},{value:7},{value:8},{value:9},{value:10,label: '10+'}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 10)}
                 />
             </FormControl>
@@ -127,6 +182,9 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     valueLabelDisplay="auto"
                     min={0}
                     max={500}
+                    step={10}
+                    marks={[{value:0},{value:50,label:'50'},{value:100,label:'100'},{value:200,label:'200'},{value:300},
+                    {value:400},{value:500,label: '500+ m2'}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 500)}
                 />
             </FormControl>
@@ -139,9 +197,10 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('rating', newValue)}
                     valueLabelDisplay="auto"
                     min={-1}
-                    max={2}
+                    max={1}
                     step={0.1}
-                    valueLabelFormat={(value) => formatSliderLabel(value, 2)}
+                    marks={[{value:-1, label:'-1'},{value:-0.4, label:'-0.4'},{value:0,label:"0: Smart"},{value:0.4,label:"0.4: Max"},{value:1,label:"1+: Improbables"}]}
+                    valueLabelFormat={(value) => formatSliderLabel(value, 1)}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">

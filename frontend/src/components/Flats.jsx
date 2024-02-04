@@ -12,7 +12,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         provincia: '',
         isCapital: '',
         tipo: '',
-        precio: [0, 1000000],
+        precio: [0, 2000000],
         habitaciones: [0, 10],
         m2Utiles: [0, 500],
         rating: [-1, 2],
@@ -30,7 +30,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
           }
   
           // Only include price filter if not at default min or max
-          if (filters.precio[0] > 0 || filters.precio[1] < 1000000) {
+          if (filters.precio[0] > 0 || filters.precio[1] < 2000000) {
               params.price_euro = filters.precio
           }
   
@@ -67,7 +67,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         return allFlats.filter(flat => {
             return (
               flat.price_euro >= filters.precio[0] &&
-              (filters.precio[1] < 1000000 ? flat.price_euro <= filters.precio[1] : true) &&
+              (filters.precio[1] < 2000000 ? flat.price_euro <= filters.precio[1] : true) &&
               flat.habitaciones >= filters.habitaciones[0] &&
               (filters.habitaciones[1] < 10 ? flat.habitaciones <= filters.habitaciones[1] : true) &&
               flat.superficie_util_m2 >= filters.m2Utiles[0] &&
