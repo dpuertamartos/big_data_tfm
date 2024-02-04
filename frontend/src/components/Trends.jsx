@@ -6,7 +6,7 @@ import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
 import SpainMap from './Map';
 import { useTheme, useMediaQuery, Drawer, Box, Grid } from '@mui/material'
-import { provincesOptions, capitalOptions, activityOptions, typesOptions, categoryOptions } from '../utils/selectors_options.js'
+import { provincesOptions, capitalOptions, activityOptions, typesOptions, categoryOptions, factsOptions } from '../utils/selectors_options.js'
 
 
 const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMapping }) => {
@@ -104,7 +104,7 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
       acc[category] = categoryColors[index % categoryColors.length];
       return acc;
     }, {});
-
+  
   return (
     <Box>
       <Grid container spacing={2}>
@@ -168,10 +168,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
 
   const getAggregatedData = (data) => {
       const aggregateRegionData = (existingData, newItem) => {
-        const fieldsToAverage = [
-          "price_euro_mean_excluding_outliers",
-          // ... other numeric fields to average ...
-        ];
+        const fieldsToAverage = Object.keys(categoryOptions).concat(Object.keys(factsOptions));
       
         let aggregatedData = { ...existingData, count: existingData.count + 1 };
       
