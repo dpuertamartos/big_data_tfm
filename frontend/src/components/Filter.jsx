@@ -1,17 +1,53 @@
-// Filter.js
+import { useState, useEffect } from 'react';
 import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
-import { provincesOptions } from '../utils/selectors_options.js'
+import { provincesOptions } from '../utils/selectors_options.js';
 
 const formatSliderLabel = (value, max) => {
-    return value === max ? `${max}+` : value
-}
+    return value === max ? `${max}+` : value;
+};
 
 const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, onTipoChange, onSortChange }) => {
+    // Local states for sliders
+    const [localPrice, setLocalPrice] = useState(filters.precio);
+    const [localHabitaciones, setLocalHabitaciones] = useState(filters.habitaciones);
+    const [localM2Utiles, setLocalM2Utiles] = useState(filters.m2Utiles);
+    const [localRating, setLocalRating] = useState(filters.rating);
+
+    // Sync local state with global state
+    useEffect(() => {
+        setLocalPrice(filters.precio);
+        setLocalHabitaciones(filters.habitaciones);
+        setLocalM2Utiles(filters.m2Utiles);
+        setLocalRating(filters.rating);
+    }, [filters]);
+
+    const handleSliderChange = (name, newValue) => {
+        switch (name) {
+            case 'precio':
+                setLocalPrice(newValue);
+                break;
+            case 'habitaciones':
+                setLocalHabitaciones(newValue);
+                break;
+            case 'm2Utiles':
+                setLocalM2Utiles(newValue);
+                break;
+            case 'rating':
+                setLocalRating(newValue);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const handleSliderChangeCommitted = (name, newValue) => {
+        onFilterChange({ target: { name } }, newValue);
+    };
 
     return (
         <Box>
             <Autocomplete
-                value={filters.ciudad}
+                value={filters.provincia}
                 onChange={onprovinceChange}
                 options={Object.keys(provincesOptions)}
                 getOptionLabel={(option) => option ? provincesOptions[option] : ''}
@@ -56,13 +92,12 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 </Select>
             </FormControl>
             <FormControl fullWidth margin="normal">
-                <Typography gutterBottom>
-                    Precio
-                </Typography>
+                <Typography gutterBottom>Precio</Typography>
                 <Slider
                     name="precio"
-                    value={filters.precio}
-                    onChange={onFilterChange}
+                    value={localPrice}
+                    onChange={(event, newValue) => handleSliderChange('precio', newValue)}
+                    onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('precio', newValue)}
                     valueLabelDisplay="auto"
                     min={0}
                     max={1000000}
@@ -70,13 +105,12 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
-                <Typography gutterBottom>
-                    Habitaciones
-                </Typography>
+                <Typography gutterBottom>Habitaciones</Typography>
                 <Slider
                     name="habitaciones"
-                    value={filters.habitaciones}
-                    onChange={onFilterChange}
+                    value={localHabitaciones}
+                    onChange={(event, newValue) => handleSliderChange('habitaciones', newValue)}
+                    onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('habitaciones', newValue)}
                     valueLabelDisplay="auto"
                     min={0}
                     max={10}
@@ -84,13 +118,12 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
-                <Typography gutterBottom>
-                    M2 Útiles
-                </Typography>
+                <Typography gutterBottom>M2 Útiles</Typography>
                 <Slider
                     name="m2Utiles"
-                    value={filters.m2Utiles}
-                    onChange={onFilterChange}
+                    value={localM2Utiles}
+                    onChange={(event, newValue) => handleSliderChange('m2Utiles', newValue)}
+                    onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('m2Utiles', newValue)}
                     valueLabelDisplay="auto"
                     min={0}
                     max={500}
@@ -98,13 +131,12 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
-                <Typography gutterBottom>
-                    Puntuación
-                </Typography>
+                <Typography gutterBottom>Puntuación</Typography>
                 <Slider
                     name="rating"
-                    value={filters.rating}
-                    onChange={onFilterChange}
+                    value={localRating}
+                    onChange={(event, newValue) => handleSliderChange('rating', newValue)}
+                    onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('rating', newValue)}
                     valueLabelDisplay="auto"
                     min={-1}
                     max={2}
