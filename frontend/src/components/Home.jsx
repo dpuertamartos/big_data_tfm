@@ -118,7 +118,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
   const Filters = () => {
     return (
       <Box sx={{ width: '100%', p: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 6}}>
+        <Box sx={{ display: 'flex', flexDirection: isLargeScreen ? 'row' : 'column', gap: isLargeScreen ? 6 : 0}}>
           <SelectFilter 
             selectedElements={selectedprovinces} 
             handleChange={(event) => handleChange(event, false)} 
@@ -151,6 +151,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
         yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} 
         yAxisDefault={"price_euro_mean_excluding_outliers"}
         height={300}
+        isLargeScreen={isLargeScreen}
         />
       </Box>
     )
@@ -164,15 +165,18 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
             open={drawerOpen}
             onClose={handleDrawerToggle}
             sx={{
-                display: { xs: 'block', md: 'none' },
-                '& .MuiDrawer-paper': {
-                width: '90%', // Sets the drawer's width to 100%
-                maxHeight: '85vh', // Optional: Restricts the maximum height
-                display: 'flex', // Use flex container
-                justifyContent: 'center', // Center horizontally
-                alignItems: 'center', // Center vertically
+              display: { xs: 'block', md: 'none' },
+              '& .MuiDrawer-paper': {
+                width: '90%', // Ajusta el ancho del Drawer
+                maxHeight: '85vh', // Restringe la altura máxima
+                overflowY: 'auto', // Permite desplazamiento si el contenido excede el maxHeight
+                display: 'flex', 
+                flexDirection: 'column', // Alinea el contenido verticalmente
+                justifyContent: 'flex-start', // Alinea el contenido desde la parte superior
+                alignItems: 'center', // Centra el contenido horizontalmente
                 margin: 'auto',
-                }
+                paddingTop: theme.spacing(2), // Usa theme.spacing para un relleno superior consistente
+              }
             }}
             >
               {Filters()}

@@ -128,34 +128,37 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
       <Notification message={errorMessage} />
       <Grid container spacing={2}>
         <Grid item xs={12} md={4}>
-            <Drawer
+          <Drawer
             variant="temporary"
             anchor="top"
             open={drawerOpen}
             onClose={handleDrawerToggle}
             sx={{
-                display: { xs: 'block', md: 'none' },
-                '& .MuiDrawer-paper': {
-                width: '90%', // Sets the drawer's width to 100%
-                maxHeight: '85vh', // Optional: Restricts the maximum height
-                display: 'flex', // Use flex container
-                justifyContent: 'center', // Center horizontally
-                alignItems: 'center', // Center vertically
+              display: { xs: 'block', md: 'none' },
+              '& .MuiDrawer-paper': {
+                width: '90%', // Ajusta el ancho del Drawer
+                maxHeight: '85vh', // Restringe la altura máxima
+                overflowY: 'auto', // Permite desplazamiento si el contenido excede el maxHeight
+                display: 'flex', 
+                flexDirection: 'column', // Alinea el contenido verticalmente
+                justifyContent: 'flex-start', // Alinea el contenido desde la parte superior
+                alignItems: 'center', // Centra el contenido horizontalmente
                 margin: 'auto',
-                }
+                paddingTop: theme.spacing(2), // Usa theme.spacing para un relleno superior consistente
+              }
             }}
-            >
-            <Box sx={{ width: '60%' }}>
-                <Filter
+          >
+            <Box sx={{ width: '70%' }}> {/* Ajusta el ancho del Box para llenar el Drawer */}
+              <Filter
                 filters={filters}
                 onFilterChange={handleFilterChange}
                 onprovinceChange={handleprovinceChange}
                 onIsCapitalChange={handleIsCapitalChange}
                 onTipoChange={handleTipoChange}
                 onSortChange={handleSortChange}
-                />
+              />
             </Box>
-            </Drawer>
+          </Drawer>
           {isLargeScreen && (
             <Box sx={{
               position: 'fixed',
