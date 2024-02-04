@@ -15,7 +15,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         precio: [0, 2000000],
         habitaciones: [0, 10],
         m2Utiles: [0, 500],
-        rating: [-1, 2],
+        rating: [-1, 0.7],
         orderBy: undefined
     })
 
@@ -43,7 +43,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
               params.m2 = filters.m2Utiles
           }
   
-          if (filters.rating[0] > -0.75 || filters.rating[1] < 0.75) {
+          if (filters.rating[0] > -0.75 || filters.rating[1] < 0.7) {
               params.rating = filters.rating
           }
   
@@ -73,7 +73,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
               flat.superficie_util_m2 >= filters.m2Utiles[0] &&
               (filters.m2Utiles[1] < 500 ? flat.superficie_util_m2 <= filters.m2Utiles[1] : true) &&
               flat.rating >= filters.rating[0] &&
-              (filters.rating[1] < 0.75 ? flat.rating <= filters.rating[1] : true)
+              (filters.rating[1] < 0.7 ? flat.rating <= filters.rating[1] : true)
           )
         })
     }

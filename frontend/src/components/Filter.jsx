@@ -167,7 +167,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     valueLabelDisplay="auto"
                     min={0}
                     max={10}
-                    marks={[{value:0,label:'No habs.'},{value:1},{value:2, label: '2'},{value:3},{value:4, label:'4'},{value:5},
+                    marks={[{value:0,label:'0'},{value:1},{value:2},{value:3},{value:4},{value:5},
                     {value:6},{value:7},{value:8},{value:9},{value:10,label: '10+'}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 10)}
                 />
@@ -183,7 +183,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     min={0}
                     max={500}
                     step={10}
-                    marks={[{value:0},{value:50,label:'50'},{value:100,label:'100'},{value:200,label:'200'},{value:300},
+                    marks={[{value:0,label:'0'},{value:50,label:'50'},{value:100,label:'100'},{value:200,label:'200'},{value:300},
                     {value:400},{value:500,label: '500+ m2'}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 500)}
                 />
@@ -197,10 +197,10 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     onChangeCommitted={(event, newValue) => handleSliderChangeCommitted('rating', newValue)}
                     valueLabelDisplay="auto"
                     min={-1}
-                    max={1}
+                    max={0.7}
                     step={0.1}
-                    marks={[{value:-1, label:'-1'},{value:-0.4, label:'-0.4'},{value:0,label:"0: Smart"},{value:0.4,label:"0.4: Max"},{value:1,label:"1+: Improbables"}]}
-                    valueLabelFormat={(value) => formatSliderLabel(value, 1)}
+                    marks={[{value:-1, label:'-1'},{value:-0.4, label:'-0.4'},{value:0,label:"0"},{value:0.4,label:"0.4"},{value:0.7,label:"0.7+"}]}
+                    valueLabelFormat={(value) => formatSliderLabel(value, 0.7)}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
