@@ -51,10 +51,6 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
             label: '200k€',
         },
         {
-            value: calculateSliderFromPrice(500000),
-            label: '500k€',
-        },
-        {
             value: calculateSliderFromPrice(2000000),
             label: '2M€+',
         },
@@ -95,6 +91,23 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
             onFilterChange({ target: { name } }, newValue);
         }
     };
+
+        // Personalización de estilos para los Sliders
+        const sliderStyle = {
+            '& .MuiSlider-thumb': {
+                height: 24,
+                width: 24,
+                '& .MuiSlider-valueLabel': {
+                    fontSize: '0.75rem', // Hace las etiquetas más pequeñas
+                },
+            },
+            '& .MuiSlider-markLabel': {
+                fontSize: '0.75rem', // Hace las marcas más pequeñas
+            },
+            '& .MuiSlider-markLabel[data-index="0"]': {
+                transform: 'translateX(-50%)', // Ajusta la posición de la primera marca para evitar solapamientos
+            }
+        };
 
     return (
         <Box>
@@ -155,6 +168,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     valueLabelDisplay="auto"
                     marks={marks}
                     valueLabelFormat={(value) => `${calculatePriceFromSlider(value)}€`}
+                    sx={sliderStyle} // Aplica los estilos personalizados
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -170,6 +184,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     marks={[{value:0,label:'0'},{value:1},{value:2},{value:3},{value:4},{value:5},
                     {value:6},{value:7},{value:8},{value:9},{value:10,label: '10+'}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 10)}
+                    sx={sliderStyle}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -186,6 +201,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     marks={[{value:0,label:'0'},{value:50,label:'50'},{value:100,label:'100'},{value:200,label:'200'},{value:300},
                     {value:400},{value:500,label: '500+ m2'}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 500)}
+                    sx={sliderStyle}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
@@ -201,6 +217,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     step={0.1}
                     marks={[{value:-1, label:'-1'},{value:-0.4, label:'-0.4'},{value:0,label:"0"},{value:0.4,label:"0.4"},{value:0.7,label:"0.7+"}]}
                     valueLabelFormat={(value) => formatSliderLabel(value, 0.7)}
+                    sx={sliderStyle}
                 />
             </FormControl>
             <FormControl fullWidth margin="normal">
