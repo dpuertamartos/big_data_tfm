@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { factsOptions } from '../utils/selectors_options.js'
+import { factsOptions } from '../utils/selectors_options.js';
 
-const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, selectedRegions = [], height = 500 }) => {
+const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, isLargeScreen, selectedRegions = [], height = 500 }) => {
   const [selectedYAxisKeys, setSelectedYAxisKeys] = useState([yAxisDefault]);
 
   // Transform the data to the required format
@@ -87,6 +87,14 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
     return `${monthsMap[month]}/${year.substring(2)}`;
   };
 
+  // Adjust flexDirection based on isLargeScreen
+  const chartContainerStyle = {
+    display: 'flex',
+    flexDirection: isLargeScreen ? 'row' : 'column', // Dynamically adjust based on screen size
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  };
+
   return (
     <div>
       <FormControl style={{ minWidth: 120, margin: '20px' }}>
@@ -111,9 +119,9 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
           ))}
         </Select>
       </FormControl>
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+      <div style={chartContainerStyle}>
         {selectedYAxisKeys.map((yAxisKey, index) => (
-          <ResponsiveContainer key={index} width={chartWidth} height={height}>
+          <ResponsiveContainer key={index} width={isLargeScreen ? chartWidth : '100%'} height={height}>
             <LineChart
               data={transformData(data, yAxisKey)}
               margin={{ top: 40, right: 30, left: 20, bottom: 5 }}
@@ -122,6 +130,7 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
               <XAxis dataKey="name" tickFormatter={formatXAxis} />
               <YAxis label={{ value: getUnitFromOption(yAxisKey), angle: -45, position: 'insideLeft', offset: -14 }} />
               <Tooltip />
+              <Legend />
               <Legend verticalAlign="top" height={36} payload={[{ value: factsOptions[yAxisKey] || yAxisKey, type: 'line' }]} />
               {selectedElements.map(province => (
                 <Line 
