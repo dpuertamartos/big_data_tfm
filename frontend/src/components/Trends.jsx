@@ -324,7 +324,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
             }}
 
       >
-          <Box sx={{position:'relative', padding: "4%"}}>
+          <Box sx={{position:'relative', py: "2%", px:"10%"}}>
             <Drawer
                   variant="temporary"
                   anchor="top"

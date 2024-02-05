@@ -188,7 +188,6 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          textAlign: 'center',
           padding: "5%",
           ml: isLargeScreen ? '450px' : 0,
           mb: "15%"
