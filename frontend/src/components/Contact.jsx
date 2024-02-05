@@ -17,7 +17,24 @@ const Contact = () => {
     ];
 
     return (
-        <Box sx={{ flexGrow: 1, mt: 8, p: 3 }}>
+        <Box sx={
+            { 
+                flexGrow: 1, 
+                backgroundImage: 'url("4_medium.jpg")',
+                backgroundSize: 'cover', // Keeps the image covering the entire section
+                backgroundPosition: 'center', // Adjust this value to focus on a specific part of the image (e.g., 'top', 'center', 'bottom')
+                height: '100vh',
+                color: '#fff',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                pl: "4%",
+                pr: "4%"
+            }
+            
+            }>
             <Grid container spacing={3} justifyContent="center">
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{ p: 4, bgcolor: '#f7f7f7' }}>
