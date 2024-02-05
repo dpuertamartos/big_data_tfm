@@ -7,7 +7,7 @@ import Listing from './Listing'
 import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip, Typography } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { capitalOptions, provincesOptions, provincesOptions2 } from '../utils/selectors_options.js'
-
+import { Link } from "react-router-dom";
 
 const Home = ({ drawerOpen, handleDrawerToggle }) => {
   const [bestFlats, setBestFlats] = useState({})
@@ -196,7 +196,27 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
   }
 
   return (
-    <span>
+    <Box>
+        <Box sx={{
+        backgroundImage: 'url("/1_big.jpg")',
+        backgroundSize: 'cover', // Keeps the image covering the entire section
+        backgroundPosition: 'center', // Adjust this value to focus on a specific part of the image (e.g., 'top', 'center', 'bottom')
+        height: '100vh',
+        color: '#fff',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        mb: "10%",
+        pl: "4%",
+        pr: "4%"
+      }}>
+        <Typography variant="h2" gutterBottom>Encuentra tu hogar soñado</Typography>
+        <Typography variant="h5" sx={{ mb: 4 }}>Descubre inmuebles interesantes gracias a nuestro algoritmo de aprendizaje automático</Typography>
+        <Button variant="contained" color="primary" sx={{ m: 1 }} component={Link} to="/flats">Empieza tu búsqueda</Button>
+        <Button variant="outlined" sx={{ m: 1, borderColor: '#fff', color: '#fff' }} component={Link} to="/trends">Visualiza</Button>
+      </Box>
       <Drawer
             variant="temporary"
             anchor="top"
@@ -220,10 +240,22 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
               {Filters()}
       </Drawer>
       {isLargeScreen && Filters()}
-      <Box mt={6}> 
+      <Box sx={{
+        backgroundImage: 'url("3_small.jpg")',
+        backgroundSize: 'contain', // Keeps the image covering the entire section
+        backgroundPosition: 'center', // Adjust this value to focus on a specific part of the image (e.g., 'top', 'center', 'bottom')
+        color: '#fff',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        mt: "10%",
+        padding: "5%",
+      }}> 
         <Listing data={bestFlats} isCapital={selectedIsCapital} singleColumn={false}/>
       </Box>
-    </span>
+    </Box>
   )
 }
 

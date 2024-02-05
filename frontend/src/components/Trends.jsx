@@ -241,6 +241,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
+  
 
   const Filters = () => {
     return (
@@ -298,39 +299,61 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
             </Grid>
         </Box>
     );
-}
+  }
 
   return (
-    <Box sx={{ flexGrow: 1, pb: 120 }}>
-      <Box width="100%" height={300}>
-          <Drawer
-                variant="temporary"
-                anchor="top"
-                open={drawerOpen}
-                onClose={handleDrawerToggle}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
-                  '& .MuiDrawer-paper': {
-                    width: '90%', // Ajusta el ancho del Drawer
-                    maxHeight: '85vh', // Restringe la altura máxima
-                    overflowY: 'auto', // Permite desplazamiento si el contenido excede el maxHeight
-                    display: 'flex', 
-                    flexDirection: 'column', // Alinea el contenido verticalmente
-                    justifyContent: 'flex-start', // Alinea el contenido desde la parte superior
-                    alignItems: 'center', // Centra el contenido horizontalmente
-                    margin: 'auto',
-                    paddingTop: theme.spacing(2), // Usa theme.spacing para un relleno superior consistente
-                  }
-                }}
-                >
-                {Filters()}
-            </Drawer>
-        {isLargeScreen && Filters()}
-        <NumericalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} 
-        selectedRegions={selectedRegion} regionToProvincesMap={regionToProvincesMap} 
-        isLargeScreen={isLargeScreen}
-        />
-        <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData} />
+    <Box sx={
+      { flexGrow: 1 }}>
+      <Box width="100%"
+            sx={{
+              position:'relative',
+              '&:before':{
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                backgroundImage: 'url("3_small.jpg")',
+                backgroundSize: 'cover', // Keeps the image covering the entire section
+                backgroundPosition: 'bottom', // Adjust this value to focus on a specific part of the image (e.g., 'top', 'center', 'bottom')
+                color: '#fff',
+                opacity: 0.3
+            }
+            }}
+
+      >
+          <Box sx={{position:'relative', padding: "4%"}}>
+            <Drawer
+                  variant="temporary"
+                  anchor="top"
+                  open={drawerOpen}
+                  onClose={handleDrawerToggle}
+                  sx={{
+                    display: { xs: 'block', md: 'none' },
+                    '& .MuiDrawer-paper': {
+                      width: '90%', // Ajusta el ancho del Drawer
+                      maxHeight: '85vh', // Restringe la altura máxima
+                      overflowY: 'auto', // Permite desplazamiento si el contenido excede el maxHeight
+                      display: 'flex', 
+                      flexDirection: 'column', // Alinea el contenido verticalmente
+                      justifyContent: 'flex-start', // Alinea el contenido desde la parte superior
+                      alignItems: 'center', // Centra el contenido horizontalmente
+                      margin: 'auto',
+                      paddingTop: theme.spacing(2), // Usa theme.spacing para un relleno superior consistente
+                    }
+                  }}
+                  >
+                  {Filters()}
+              </Drawer>
+          {isLargeScreen && Filters()}
+          <NumericalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} 
+          selectedRegions={selectedRegion} regionToProvincesMap={regionToProvincesMap} 
+          isLargeScreen={isLargeScreen}
+          />
+          <CategoricalGraphContainer selectedprovinces={selectedprovinces} aggData={aggregatedData} trendData={filteredData} />
+        </Box>
       </Box>
     </Box>
   );
