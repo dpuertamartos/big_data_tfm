@@ -1,10 +1,10 @@
 // Contact.jsx
 import React from 'react';
-import { Box, Typography, Grid, Paper, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Button, Box, Typography, Grid, Paper, List, ListItem, ListItemText, Divider } from '@mui/material';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
 const Contact = () => {
     const faqs = [
-        { question: "¿Cómo puedo contactar?", answer: "Puedes enviar un e-mail a dpuerta@usal.es" },
         { question: "¿Cómo interpreto la puntuación positiva asignada por el algoritmo de Machine Learning?", answer: "Si tiene una puntuación superior a 0, indica que el precio que el algoritmo le asigna es superior al precio de venta. \
         Un rating de 0.25, indica que el algoritmo le asigna un precio un 25% superior al precio de venta, consinderándolo una interesante oportunidad." },
         { question: "¿Cómo interpreto la puntuación negativa asignada por el algoritmo de Machine Learning?", answer: "Si tiene una puntuación negativa o inferior a 0, indica que el precio que el algoritmo le asigna es inferior al precio de venta. \
@@ -17,31 +17,35 @@ const Contact = () => {
     ];
 
     return (
-        <Box sx={
-            { 
-                flexGrow: 1, 
-                backgroundImage: 'url("4_medium.jpg")',
-                backgroundSize: 'cover', // Keeps the image covering the entire section
-                backgroundPosition: 'center', // Adjust this value to focus on a specific part of the image (e.g., 'top', 'center', 'bottom')
-                height: '100vh',
-                color: '#fff',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                textAlign: 'center',
-                pl: "4%",
-                pr: "4%"
-            }
-            
-            }>
+        <Box sx={{
+            flexGrow: 1, 
+            backgroundImage: 'url("4_medium.jpg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '100vh',
+            color: 'text.primary', // Changed to use the primary text color for better contrast
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            pl: "4%",
+            pr: "4%" // Adjusted padding
+        }}>
             <Grid container spacing={3} justifyContent="center">
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 4, bgcolor: '#f7f7f7' }}>
+                    <Paper elevation={3} sx={{ p: 4, bgcolor: 'background.paper', opacity: 0.95 }}>
                         <Typography variant="h5" gutterBottom color="primary" sx={{ fontWeight: 'bold' }}>Información de contacto</Typography>
-                        <Typography variant="body1" sx={{ mb: 2, fontStyle: 'italic' }}>Email: dpuerta@usal.es</Typography>
+                        <Button 
+                        variant="outlined" 
+                        startIcon={<MailOutlineIcon />} 
+                        href="mailto:dpuerta@usal.es" 
+                        sx={{ my: 2, textTransform: 'none' }}
+                        >
+                        dpuerta@usal.es
+                        </Button>
                         <Divider sx={{ mb: 2 }} />
-                        <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bold' }}>Sobre la página web</Typography>
+                        <Typography variant="h6" gutterBottom color="text.primary" sx={{ fontWeight: 'bold' }}>Sobre la página web</Typography>
                         <Typography variant="body1" sx={{ mb: 2, textAlign: 'justify' }}>
                         Esta web está desarrollada como vía de interacción y visualización para con el flujo de datos creado desde el portal inmobiliario pisos.com. 
                         <br />
@@ -55,7 +59,7 @@ const Contact = () => {
                         Los datos son reales y actualizados diariamente.
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
-                        <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bold' }}>Sobre mí</Typography>
+                        <Typography variant="h6" gutterBottom color="text.primary" sx={{ fontWeight: 'bold' }}>Sobre mí</Typography>
                         <Typography variant="body1" sx={{ textAlign: 'justify' }}>
                         Mi nombre es David Puerta Martos.
                         <br />
@@ -65,14 +69,14 @@ const Contact = () => {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 4, bgcolor: '#f7f7f7' }}>
+                    <Paper elevation={3} sx={{ p: 4, bgcolor: 'background.paper', opacity: 0.95 }}> 
                         <Typography variant="h5" gutterBottom color="primary" sx={{ fontWeight: 'bold' }}>Preguntas Frecuentes</Typography>
                         <List>
                             {faqs.map((faq, index) => (
                                 <React.Fragment key={index}>
                                     <ListItem alignItems="flex-start">
                                         <ListItemText
-                                            primary={<Typography color="secondary" sx={{ fontWeight: 'bold' }}>{faq.question}</Typography>}
+                                            primary={<Typography color="text.primary" sx={{ fontWeight: 'bold' }}>{faq.question}</Typography>}
                                             secondary={faq.answer}
                                         />
                                     </ListItem>

@@ -1,19 +1,22 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
 const Footer = () => {
+    const theme = useTheme();
     const currentYear = new Date().getFullYear();
 
     return (
         <Box sx={{
-            bgcolor: 'background.paper',
+            bgcolor: 'background.default',  // You can use a shade of your theme's background color
             color: 'text.secondary',
-            p: 3,
+            px: 2,  // Horizontal padding
+            py: 3,  // Vertical padding
             textAlign: 'center',
+            borderTop: `1px solid ${theme.palette.divider}`,  // A top border for a subtle separation from the content
+            mt: 'auto',  // Push footer to the bottom of the layout
             fontStyle: 'italic',
-            m: 8
         }}>
             <Typography variant="body2">
-                Flujo de datos para análisis de oportunidades inmobiliarias, David Puerta - Universidad de Burgos, {currentYear}
+                Flujo de Datos para Descubrimiento de Oportunidades Inmobiliarias © {currentYear}
             </Typography>
         </Box>
     );
