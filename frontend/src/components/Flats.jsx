@@ -176,9 +176,27 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             </Box>
           )}
         </Grid>
-        <Grid item xs={12} md={8} sx={{ ml: isLargeScreen ? '400px' : 0 }}>
+        
+        <Grid item xs={12} md={8} 
+        
+        sx={{
+          backgroundImage: 'url("3_small.jpg")',
+          backgroundSize: 'contain', // Keeps the image covering the entire section
+          backgroundPosition: 'center', // Adjust this value to focus on a specific part of the image (e.g., 'top', 'center', 'bottom')
+          color: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: "5%",
+          ml: isLargeScreen ? '450px' : 0,
+          mb: "15%"
+          }}
+        >
           <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
         </Grid>
+        
       </Grid>
     </Container>
   );
