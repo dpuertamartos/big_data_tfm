@@ -44,8 +44,7 @@ const App = () => {
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Box component="main" sx={{ flexGrow: 1, py: 3 }}>
-      <Container>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <Routes>
           <Route path="/flats/:id" element={<FlatDetailed />} />
           <Route path="/flats" element={<Flats errorMessage={errorMessage} drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
@@ -53,7 +52,6 @@ const App = () => {
           <Route path="/contact" element={<Contact drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
           <Route path="/" element={<Home drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
         </Routes>
-      </Container>
       </Box>
       <Footer />
     </Box>
