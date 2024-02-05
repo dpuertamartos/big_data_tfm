@@ -2,17 +2,24 @@ import { useState, useEffect } from 'react'
 import flatService from '../services/flats'
 import trendService from '../services/trends'
 import SelectFilter from './SelectFilter'
-import LineGraph from './LineGraph'
 import Listing from './Listing'
-import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip, Typography, Grid, Container } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { capitalOptions, provincesOptions, provincesOptions2 } from '../utils/selectors_options.js'
+import { capitalOptions, provincesOptions} from '../utils/selectors_options.js'
 import { Link } from "react-router-dom";
+import { styled } from '@mui/system';
+
+
+const SectionDivider = styled(Box)(({ theme }) => ({
+  height: '2px',
+  width: '100%',
+  background: theme.palette.divider,
+  margin: theme.spacing(4, 0),
+}));
 
 const Home = ({ drawerOpen, handleDrawerToggle }) => {
   const [bestFlats, setBestFlats] = useState({})
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
-  const [trendData, setTrendData] = useState([])
   const [selectedIsCapital, setSelectedIsCapital] = useState("all");
   const [smartMode, setSmartMode] = useState("Si")
   const [isLoading, setIsLoading] = useState(false);
@@ -21,20 +28,6 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
   
   useEffect(() => {
     setIsLoading(true);
-
-    const fetchInitialTrends = async () => {
-      try {
-        const initialTrends = await trendService.get({
-          active: 'all',
-          type: 'all',
-          isCapital: selectedIsCapital
-        });
-        setTrendData(initialTrends);
-      } catch (error) {
-        console.error("Error fetching initial trends:", error);
-      }
-    };
-
     const fetchBestFlats = async () => {
       try {
         let updatedFlats = {}
@@ -61,7 +54,6 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
       } 
     }
 
-    fetchInitialTrends()
     fetchBestFlats()
     setTimeout(() => {
       setIsLoading(false);
@@ -126,14 +118,9 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
     setOpenHelpDialog(false);
   };
 
-  const trendDataRenamed = trendData.map((e) => ({
-    ...e,
-    province_group: provincesOptions2[e.province_group]
-  }));
-
   const Filters = () => {
     return (
-      <Box sx={{ width: '100%', p: 2 }}>
+      <Container sx={{ width: '100%', p: 2, mb: "5%" }}>
         <Box sx={{ display: 'flex', flexDirection: isLargeScreen ? 'row' : 'column', gap: isLargeScreen ? 4 : 0}}>
           <SelectFilter 
             selectedElements={selectedprovinces} 
@@ -182,16 +169,8 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
             <Button onClick={handleCloseHelpDialog}>Cerrar</Button>
           </DialogActions>
         </Dialog>
-
         </Box>
-        <LineGraph selectedprovinces={selectedprovinces} data={trendDataRenamed} 
-        activeDotSelector={'all'} 
-        yAxisOptions={["price_euro_mean_excluding_outliers","count","price_per_m2","price_per_hab"]} 
-        yAxisDefault={"price_euro_mean_excluding_outliers"}
-        height={300}
-        isLargeScreen={isLargeScreen}
-        />
-      </Box>
+      </Container>
     )
   }
 
@@ -212,11 +191,35 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
         pl: "4%",
         pr: "4%"
       }}>
-        <Typography variant="h2" gutterBottom>Encuentra tu hogar soñado</Typography>
+        <Typography variant="h2" sx={{ mb: 4 }} gutterBottom>Encuentra tu hogar soñado</Typography>
         <Typography variant="h5" sx={{ mb: 4 }}>Descubre inmuebles interesantes gracias a nuestro algoritmo de aprendizaje automático</Typography>
-        <Button variant="contained" color="primary" sx={{ m: 1 }} component={Link} to="/flats">Empieza tu búsqueda</Button>
-        <Button variant="outlined" sx={{ m: 1, borderColor: '#fff', color: '#fff' }} component={Link} to="/trends">Visualiza</Button>
+        <Button size="large" variant="contained" color="primary" sx={{ m: 1 }} component={Link} to="/flats">Empieza tu búsqueda</Button>
+        <Button size="large" variant="outlined"  sx={{ m: 2, borderColor: '#fff', color: '#fff' }} component={Link} to="/trends">Visualiza</Button>
       </Box>
+      <Container>
+      <Box sx={{ flexGrow: 1, py: isLargeScreen?0:"4%", px: isLargeScreen ? 8 : 4, mb:"10%", backgroundColor: 'background.default' }}>
+        <Grid container spacing={isLargeScreen ? 10 : 2} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Typography variant="h4" component="div" color="primary.main" gutterBottom>
+              Flujo de datos actualizado
+            </Typography>
+            <Typography variant="h6" color="text.primary" textAlign="justify">
+              Hemos desarrollado un flujo de datos desde uno de los mayores portales inmobiliarios de España, lo que permite ofrecer una perspectiva innovadora en tendencias de inmuebles, precios y oportunidades de compra.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h4" component="div" color="primary.main" gutterBottom>
+              Aprendizaje Automático
+            </Typography>
+            <Typography variant="h6" color="text.primary" textAlign="justify">
+              Los datos permiten el entrenamiento de nuestros modelos de aprendizaje automático, que enriquecen el descubrimiento de tu próximo hogar mediante la asignación de un valor y puntuación a cada inmueble.
+            </Typography>
+          </Grid>
+        </Grid>
+      </Box>
+      </Container>
+
+      <SectionDivider />
       <Drawer
             variant="temporary"
             anchor="top"
@@ -239,7 +242,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
             >
               {Filters()}
       </Drawer>
-      {isLargeScreen && Filters()}
+      
       <Box sx={{
         backgroundImage: 'url("3_small.jpg")',
         backgroundSize: 'contain', // Keeps the image covering the entire section
@@ -249,10 +252,12 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        textAlign: 'center',
-        mt: "10%",
+        mt: "3%",
         padding: "5%",
+        maxWidth: "90%",
+        ml: "5%"
       }}> 
+        {isLargeScreen && Filters()}
         <Listing data={bestFlats} isCapital={selectedIsCapital} singleColumn={false}/>
       </Box>
     </Box>
