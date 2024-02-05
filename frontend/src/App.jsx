@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Home from './components/Home';
 import FlatDetailed from './components/FlatDetailed';
 import Flats from './components/Flats';
 import Trends from './components/Trends';
 import Contact from  './components/Contact';
 import Footer from './components/Footer';
-import { AppBar, Toolbar, Button, CssBaseline, Container, IconButton, useTheme, useMediaQuery, Box } from '@mui/material';
+import { AppBar, Toolbar, Button, CssBaseline, IconButton, useTheme, useMediaQuery, Box } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Tune';
 
 const App = () => {
@@ -19,32 +19,39 @@ const App = () => {
     setDrawerOpen(!drawerOpen);
   };
 
+  const appBarStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Semi-transparent white
+    color: theme.palette.text.primary,
+    boxShadow: 'none', // Removes the shadow
+    backdropFilter: 'blur(10px)', // Ensures text is legible on the transparent background
+  };
+
+  const location = useLocation();
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <CssBaseline />
-      <AppBar position="fixed">
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', flexGrow: 1 }}>
-            <Button color="inherit" component={Link} to="/">Inicio</Button>
-            <Button color="inherit" component={Link} to="/flats">Explora</Button>
-            <Button color="inherit" component={Link} to="/trends">Visualiza</Button>
-            <Button color="inherit" component={Link} to="/contact">Info</Button>
-          </Box>
+      <AppBar position="fixed" sx={appBarStyle}>
+        <Toolbar sx={{ justifyContent: 'flex-end', gap: 2 }}>
+          <Button color={location.pathname === '/' ? 'primary' : 'inherit'} component={Link} to="/" sx={{ fontWeight: 700 }}>INICIO</Button>
+          <Button color={location.pathname.startsWith('/flats') ? 'primary' : 'inherit'} component={Link} to="/flats" sx={{ fontWeight: 700 }}>EXPLORA</Button>
+          <Button color={location.pathname === '/trends' ? 'primary' : 'inherit'} component={Link} to="/trends" sx={{ fontWeight: 700 }}>VISUALIZA</Button>
+          <Button color={location.pathname === '/contact' ? 'primary' : 'inherit'} component={Link} to="/contact" sx={{ fontWeight: 700 }}>INFO</Button>
           {!isLargeScreen && (
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="end"
               onClick={handleDrawerToggle}
-              sx={{ fontSize: '1.5rem' }} // Larger icon size
             >
-              <SettingsIcon /> 
+              <SettingsIcon />
             </IconButton>
           )}
         </Toolbar>
       </AppBar>
       <Toolbar />
       <Box component="main" sx={{ flexGrow: 1 }}>
+
         <Routes>
           <Route path="/flats/:id" element={<FlatDetailed />} />
           <Route path="/flats" element={<Flats errorMessage={errorMessage} drawerOpen={drawerOpen} handleDrawerToggle={handleDrawerToggle} />} />
