@@ -229,6 +229,12 @@ AÑADIR INSTRUCCIONES
 
 2. `docker run --rm -v big_data_tfm_mongodb-data:/data -v /path/where/backup/is/stored:/backup ubuntu tar xzvf /backup/mongodb-volume-backup.tar.gz -C /data`
 
+### 8.4 Automatize https certificate renewal
+
+1. Modify `/path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh` to adjust to your paths
+2. run `chmod +x /path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh`
+3. Create a cron job that executes `/path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh` each 12 hours
+
 
 ## arquitecture 
 
