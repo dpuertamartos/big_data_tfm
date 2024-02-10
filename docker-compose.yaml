@@ -130,6 +130,18 @@ services:
     networks:
       - web-network
     restart: always
+  
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - nginx
+    entrypoint: /bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'
+    networks:
+      - web-network
+    restart: always
 
 volumes:
   mongodb-data:
@@ -138,6 +150,8 @@ volumes:
   ml-models:
   airflow-logs:
   airflow-data:
+  certbot-etc:
+  certbot-var:
 
 networks:
   custom-network:
