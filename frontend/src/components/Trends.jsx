@@ -16,7 +16,7 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
 
 
     return (
-      <ResponsiveContainer width="100%" height={425}>
+      <ResponsiveContainer width="100%" height={325}>
         <BarChart
           data={filteredData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -63,10 +63,10 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
             "price_per_hab",
             "price_per_wc"
           ]}
-          yAxisDefault={"price_euro_mean_excluding_outliers"}
+          yAxisDefault={["price_euro_mean_excluding_outliers", "price_per_m2"]}
           selectedRegions={selectedRegions}
           regionToProvincesMap={regionToProvincesMap}
-          height={300}
+          height={isLargeScreen?300:200}
           isLargeScreen={isLargeScreen}
         />
       </Box>
@@ -104,6 +104,9 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
       acc[category] = categoryColors[index % categoryColors.length];
       return acc;
     }, {});
+
+  
+  
   
   return (
     <Box>
@@ -240,14 +243,14 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const aggregatedData = getAggregatedData(filteredData)
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
-  
 
   const Filters = () => {
     return (
         <Box sx={{ width: isLargeScreen ? '100%':'70%', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'unset' }}>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={2}>
                     <SelectFilter
                         selectedElements={selectedRegion}
                         handleChange={handleRegionChange}
@@ -255,7 +258,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
                         label="Comunidad Autónoma"
                     />
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={4}>
                     <SelectFilter
                         selectedElements={selectedprovinces}
                         handleChange={(event) => setSelectedprovinces(event.target.value)}
@@ -264,8 +267,6 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
                         label="Provincias"
                     />
                 </Grid>
-            </Grid>
-            <Grid container spacing={2}>
                 <Grid item xs={12} md={2}>
                     <SelectFilter
                         selectedElements={selectedIsCapital}
@@ -302,8 +303,12 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   }
 
   return (
-    <Box sx={
-      { flexGrow: 1 }}>
+    <Box sx={{
+      flexGrow: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      height: isMediumScreen ? '100vh' : 'auto', // Full viewport height on medium screens
+    }}>
       <Box width="100%"
             sx={{
               position:'relative',

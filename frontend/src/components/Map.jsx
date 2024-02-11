@@ -49,9 +49,9 @@ const SpainMap = ({ filteredData, selectedCategories, categoryColorMapping }) =>
 
     return (
         <Box sx={{
-            height: 350, // Altura fija
+            height: 250, // Altura fija
             width: '100%', // Ancho responsivo
-            maxWidth: 350, // Ancho máximo
+            maxWidth: 300, // Ancho máximo
             margin: 'auto', // Centrar horizontalmente
         }}>
             <MapContainer center={position} zoom={5} style={{ height: '100%', width: '100%' }}>

@@ -5,7 +5,7 @@ import { factsOptions, provincesOptions2 } from '../utils/selectors_options.js';
 
 
 const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, isLargeScreen, selectedRegions = [], height = 500 }) => {
-  const [selectedYAxisKeys, setSelectedYAxisKeys] = useState([yAxisDefault]);
+  const [selectedYAxisKeys, setSelectedYAxisKeys] = useState(yAxisDefault);
 
   // Transform the data to the required format
   const transformData = (rawData, yAxisKey) => {
