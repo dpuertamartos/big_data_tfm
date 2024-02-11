@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Notification from './Notification'
 import Listing from './Listing'
 import Filter from './Filter'
-import { Grid, Container, Box, useTheme, useMediaQuery, Drawer } from '@mui/material'
+import { Grid, Container, Box, useTheme, useMediaQuery, Drawer, Typography, CircularProgress } from '@mui/material'
 import flatService from '../services/flats'
 import debounce from 'lodash/debounce' // You might need to install lodash for this
 
@@ -18,15 +18,19 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         rating: [-1, 0.7],
         orderBy: undefined
     })
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const fetchFilteredFlats = async () => {
+    const fetchFilteredFlats = async (type='updatedFilters') => {
+      setIsLoading(true);
       try {
           const params = { 
               province: filters.provincia, 
               isCapital: filters.isCapital,
               type: filters.tipo,
               orderBy: filters.orderBy,
-              limitNumber: 15
+              limitNumber: 15,
+              page: currentPage, // Add this line
           }
   
           // Only include price filter if not at default min or max
@@ -48,11 +52,22 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
           }
   
           const filteredFlats = await flatService.getFiltered(params)
-          setAllFlats(filteredFlats)
+          if (type==='updatedFilters'){
+            setAllFlats(filteredFlats)
+          }
+          else{
+            setAllFlats(prevFlats => [...prevFlats, ...filteredFlats]);
+          }
+          
+          setIsLoading(false);
       } catch (error) {
           console.error("Error fetching filtered flats:", error)
+          setIsLoading(false);
       }
   }
+
+    useEffect(() => { window.scrollTo(0, 0)}, [filters]);
+
 
     const debouncedFetch = debounce(fetchFilteredFlats, 500)
 
@@ -78,6 +93,26 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         })
     }
 
+    useEffect(() => {
+      const observer = new IntersectionObserver(entries => {
+          if (entries.some(entry => entry.isIntersecting)) {
+              setCurrentPage(prevPage => prevPage + 1);
+          }
+      }, {
+          rootMargin: '100px', // Trigger the event 100px before reaching the bottom
+      });
+  
+      // Assuming you have a footer or an element at the bottom of your list
+      const sentinel = document.getElementById('scroll-sentinel');
+      if (sentinel) observer.observe(sentinel);
+  
+      return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+      if (currentPage > 1) fetchFilteredFlats('nextPage');
+    }, [currentPage]);
+
     const filteredFlats = applyFilters()
 
     const handleFilterChange = (event, newValue) => {
@@ -87,6 +122,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             ...prevFilters,
             [name]: value
         }))
+        setCurrentPage(1)
     }
 
     const handleprovinceChange = (event, newValue) => {
@@ -94,6 +130,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             ...prevFilters,
             provincia: newValue
         }))
+        setCurrentPage(1)
     }
 
     const handleIsCapitalChange = (event) => {
@@ -101,6 +138,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             ...prevFilters,
             isCapital: event.target.value
         }))
+        setCurrentPage(1)
     }
 
     const handleTipoChange = (event) => {
@@ -108,6 +146,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             ...prevFilters,
             tipo: event.target.value
         }))
+        setCurrentPage(1)
     }
 
     const handleSortChange = (event) => {
@@ -115,6 +154,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
           ...prevFilters,
           orderBy: event.target.value
       }))
+        setCurrentPage(1)
   }
 
 
@@ -198,6 +238,10 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
           }}
         >
           <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
+          {isLoading && <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <CircularProgress />
+        </Box>}
+          <div id="scroll-sentinel" />
         </Grid>
         
       </Grid>
