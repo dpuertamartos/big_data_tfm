@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import trendService from '../services/trends'; // Adjust path as needed
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useState, useEffect } from 'react'
+import trendService from '../services/trends' // Adjust path as needed
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import SelectFilter from './SelectFilter'
 import provinces from '../../provinces.json'
 import LineGraph from './LineGraph'
-import SpainMap from './Map';
+import SpainMap from './Map'
 import { useTheme, useMediaQuery, Drawer, Box, Grid } from '@mui/material'
 import { provincesOptions2, capitalOptions, activityOptions, typesOptions, categoryOptions, factsOptions } from '../utils/selectors_options.js'
 
@@ -12,7 +12,7 @@ import { provincesOptions2, capitalOptions, activityOptions, typesOptions, categ
 const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMapping }) => {
 
 
-    const formatYAxisTick = (value) => `${(value * 100).toFixed(0)}%`;
+    const formatYAxisTick = (value) => `${(value * 100).toFixed(0)}%`
 
 
     return (
@@ -40,8 +40,8 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
           ))}
         </BarChart>
       </ResponsiveContainer>
-    );
-  };
+    )
+  }
 
   const NumericalGraphContainer = ({ aggData, selectedprovinces, selectedRegions, regionToProvincesMap, isLargeScreen }) => {
     return (
@@ -70,40 +70,40 @@ const CategoricalBarChart = ({ filteredData, selectedCategories, categoryColorMa
           isLargeScreen={isLargeScreen}
         />
       </Box>
-    );
-};
+    )
+}
 
 const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) => {
-  const [selectedCategories, setSelectedCategories] = useState([]); // Added this state
+  const [selectedCategories, setSelectedCategories] = useState([]) // Added this state
 
   const filteredData = trendData
     .filter(flat => flat.updated_month_group === 'all')
     .filter(item => 
-      selectedprovinces.includes(item.province_group) || selectedprovinces.includes("all"));
+      selectedprovinces.includes(item.province_group) || selectedprovinces.includes("all"))
   
   const aggDataFiltered = aggData
     .filter(flat => flat.updated_month_group === 'all')
   
   // Move the color generation logic here
   const generateColorArray = (numColors) => {
-    const colors = [];
-    const hueStep = 360 / numColors;
+    const colors = []
+    const hueStep = 360 / numColors
 
-    for (let i = 0; i < numColors; i++) {
-      const hue = i * hueStep;
-      colors.push(`hsl(${hue}, 100%, 70%)`);
+    for (let i = 0 ; i < numColors ; i++) {
+      const hue = i * hueStep
+      colors.push(`hsl(${hue}, 100%, 70%)`)
     }
 
-    return colors;
-  };
+    return colors
+  }
 
-  const categoryColors = generateColorArray(selectedCategories.length);
+  const categoryColors = generateColorArray(selectedCategories.length)
 
     // Create a mapping of categories to their respective colors
     const categoryColorMapping = selectedCategories.reduce((acc, category, index) => {
-      acc[category] = categoryColors[index % categoryColors.length];
-      return acc;
-    }, {});
+      acc[category] = categoryColors[index % categoryColors.length]
+      return acc
+    }, {})
 
   
   
@@ -139,29 +139,29 @@ const CategoricalGraphContainer = ({ selectedprovinces, aggData, trendData }) =>
 
       </Grid>
     </Box>
-  );
+  )
 }
 
 const Trends = ({ drawerOpen, handleDrawerToggle }) => {
-  const [trendData, setTrendData] = useState([]);
-  const [selectedRegion, setSelectedRegion] = useState([]);
+  const [trendData, setTrendData] = useState([])
+  const [selectedRegion, setSelectedRegion] = useState([])
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
-  const [selectedType, setSelectedType] = useState("all");
-  const [selectedActivity, setSelectedActivity] = useState("all");
-  const [selectedIsCapital, setSelectedIsCapital] = useState("all");
+  const [selectedType, setSelectedType] = useState("all")
+  const [selectedActivity, setSelectedActivity] = useState("all")
+  const [selectedIsCapital, setSelectedIsCapital] = useState("all")
 
   useEffect(() => {
-    fetchTrendData(selectedActivity, selectedType, selectedIsCapital);
-  }, [selectedActivity, selectedType, selectedIsCapital]);
+    fetchTrendData(selectedActivity, selectedType, selectedIsCapital)
+  }, [selectedActivity, selectedType, selectedIsCapital])
 
   const fetchTrendData = async (activity, type, isCapital) => {
     try {
-      const data = await trendService.get({ active: activity, type: type, isCapital: isCapital });
-      setTrendData(data);
+      const data = await trendService.get({ active: activity, type: type, isCapital: isCapital })
+      setTrendData(data)
     } catch (error) {
-      console.error("Error fetching trends:", error);
+      console.error("Error fetching trends:", error)
     }
-  };
+  }
 
   const getFilteredData = () => {
     return trendData.filter(item => 
@@ -172,78 +172,78 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
   const getAggregatedData = (data) => {
 
       const aggregateRegionData = (existingData, newItem) => {
-        const fieldsToAverage = Object.keys(categoryOptions).concat(Object.keys(factsOptions));
+        const fieldsToAverage = Object.keys(categoryOptions).concat(Object.keys(factsOptions))
       
-        let aggregatedData = { ...existingData, count: existingData.count + 1 };
+        let aggregatedData = { ...existingData, count: existingData.count + 1 }
       
         fieldsToAverage.forEach(field => {
-          aggregatedData[field] = ((aggregatedData[field] * (aggregatedData.count - 1)) + newItem[field]) / aggregatedData.count;
-        });
+          aggregatedData[field] = ((aggregatedData[field] * (aggregatedData.count - 1)) + newItem[field]) / aggregatedData.count
+        })
       
-        return aggregatedData;
-      };
+        return aggregatedData
+      }
       
       const getRegionForProvince = (province) => {
         for (const [region, provinces] of Object.entries(regionToProvincesMap)) {
           if (provinces.includes(province)) {
-            return region;
+            return region
           }
         }
-        return null;
-      };
-      let aggregatedData = {};
-      let nonAggregatedData = [];
+        return null
+      }
+      let aggregatedData = {}
+      let nonAggregatedData = []
     
       data.forEach(item => {
-        const region = getRegionForProvince(item.province_group);
-        const monthGroup = item.updated_month_group;
+        const region = getRegionForProvince(item.province_group)
+        const monthGroup = item.updated_month_group
         
         // Check if the province's region is selected
         if (region && selectedRegion.includes(region)) {
-          const key = `${region}_${monthGroup}`;
+          const key = `${region}_${monthGroup}`
     
           if (!aggregatedData[key]) {
-            aggregatedData[key] = { ...item, count: 1, region: region, province_group: region };
+            aggregatedData[key] = { ...item, count: 1, region: region, province_group: region }
           } else {
-            aggregatedData[key] = aggregateRegionData(aggregatedData[key], item);
+            aggregatedData[key] = aggregateRegionData(aggregatedData[key], item)
           }
         } else {
-          nonAggregatedData.push({...item, province_group:provincesOptions2[item.province_group]});
+          nonAggregatedData.push({...item, province_group:provincesOptions2[item.province_group]})
         }
-      });
+      })
       
       
       // Combine aggregated and non-aggregated data
-      return [...Object.values(aggregatedData), ...nonAggregatedData];
-  };
+      return [...Object.values(aggregatedData), ...nonAggregatedData]
+  }
 
   const handleRegionChange = (event) => {
-    const newSelectedRegions = event.target.value;
-    setSelectedRegion(newSelectedRegions);
+    const newSelectedRegions = event.target.value
+    setSelectedRegion(newSelectedRegions)
   
-    let updatedProvinces = new Set(selectedprovinces);
+    let updatedProvinces = new Set(selectedprovinces)
   
     newSelectedRegions.forEach(region => {
-      const provincesFromRegion = regionToProvincesMap[region] || [];
-      provincesFromRegion.forEach(province => updatedProvinces.add(province));
-    });
+      const provincesFromRegion = regionToProvincesMap[region] || []
+      provincesFromRegion.forEach(province => updatedProvinces.add(province))
+    })
   
-    const deselectedRegions = selectedRegion.filter(region => !newSelectedRegions.includes(region));
+    const deselectedRegions = selectedRegion.filter(region => !newSelectedRegions.includes(region))
   
     deselectedRegions.forEach(region => {
-      const provincesFromRegion = regionToProvincesMap[region] || [];
-      provincesFromRegion.forEach(province => updatedProvinces.delete(province));
-    });
+      const provincesFromRegion = regionToProvincesMap[region] || []
+      provincesFromRegion.forEach(province => updatedProvinces.delete(province))
+    })
   
-    setSelectedprovinces(Array.from(updatedProvinces));
-  };
+    setSelectedprovinces(Array.from(updatedProvinces))
+  }
 
   const regionToProvincesMap = provinces.ccaa_to_provinces
   const filteredData = getFilteredData()
   const aggregatedData = getAggregatedData(filteredData)
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'))
 
 
   const Filters = () => {
@@ -299,7 +299,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
                 </Grid>
             </Grid>
         </Box>
-    );
+    )
   }
 
   return (
@@ -361,7 +361,7 @@ const Trends = ({ drawerOpen, handleDrawerToggle }) => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Trends;
+export default Trends
