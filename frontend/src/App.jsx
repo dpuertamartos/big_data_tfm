@@ -1,32 +1,36 @@
-import { useState } from 'react';
-import { Routes, Route, Link, useLocation } from "react-router-dom";
-import Home from './components/Home';
-import FlatDetailed from './components/FlatDetailed';
-import Flats from './components/Flats';
-import Trends from './components/Trends';
-import Contact from  './components/Contact';
-import Footer from './components/Footer';
-import { AppBar, Toolbar, Button, CssBaseline, IconButton, useTheme, useMediaQuery, Box } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Tune';
+import { useState, useEffect } from 'react'
+import { Routes, Route, Link, useLocation } from "react-router-dom"
+import Home from './components/Home'
+import FlatDetailed from './components/FlatDetailed'
+import Flats from './components/Flats'
+import Trends from './components/Trends'
+import Contact from  './components/Contact'
+import Footer from './components/Footer'
+import { AppBar, Toolbar, Button, CssBaseline, IconButton, useTheme, useMediaQuery, Box } from '@mui/material'
+import SettingsIcon from '@mui/icons-material/Tune'
 
 const App = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
-  };
+    setDrawerOpen(!drawerOpen)
+  }
 
   const appBarStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.7)', // Semi-transparent white
     color: theme.palette.text.primary,
     boxShadow: 'none', // Removes the shadow
     backdropFilter: 'blur(10px)', // Ensures text is legible on the transparent background
-  };
+  }
 
-  const location = useLocation();
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0) // Scroll to the top of the window when the location changes
+  }, [location])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -62,7 +66,7 @@ const App = () => {
       </Box>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default App;
+export default App
