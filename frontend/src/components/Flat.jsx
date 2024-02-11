@@ -220,7 +220,7 @@ const Flat = ({flat}) => {
             <Typography variant="body1" gutterBottom> La puntuación se calcula de la siguiente forma: </Typography>
             <Typography variant="body1" gutterBottom>( Precio Asignado por el Algoritmo - Precio ) / Precio.</Typography>
 
-            <Typography variant="body1" gutterBottom>Puntuaciones por encima de 0.33 suelen tratarse de falsos positivos. Esto se puede deber a que sean ejemplos extremos que el modelo tenga dificultad para clasificar. También es posible que falten detalles listados, o que su estado sea muy malo y de ahí su bajo precio.
+            <Typography variant="body1" gutterBottom>Puntuaciones por encima de 0.4 suelen tratarse de falsos positivos. Esto se puede deber a que sean ejemplos extremos que el modelo tenga dificultad para clasificar. También es posible que falten detalles listados, o que su estado sea muy malo y de ahí su bajo precio.
             </Typography>
           </DialogContentText>
         </DialogContent>

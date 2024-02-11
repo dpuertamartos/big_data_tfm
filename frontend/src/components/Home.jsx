@@ -35,7 +35,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
                 isCapital: selectedIsCapital !== 'all' ? selectedIsCapital: undefined,
                 orderBy: 'rating DESC',
                 limitNumber: 5,
-                rating: smartMode === 'Si' ? [-1, 0.33] : undefined
+                rating: smartMode === 'Si' ? [-1, 0.4] : undefined
             }
     
             if (province !== 'all') {
@@ -79,7 +79,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
               orderBy: 'rating DESC', 
               limitNumber: 5,
               isCapital: selectedIsCapital !== 'all' ? selectedIsCapital : undefined,
-              rating: smartMode === 'Si' ? [-1, 0.33] : undefined
+              rating: smartMode === 'Si' ? [-1, 0.4] : undefined
             }
             const flats = await flatService.getFiltered(params)
             updatedFlats[province] = flats

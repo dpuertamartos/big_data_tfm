@@ -48,9 +48,9 @@ const HomeFilters = ({ isLargeScreen, selectedprovinces, handleChange, isLoading
             <DialogTitle>{"Modo Inteligente"}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                <Typography variant="body1" gutterBottom>El &aposModo Inteligente&apos ajusta el filtro de puntuación a un máximo de 0.33. Esto equivale a inmuebles cuyo precio estimado por el algoritmo es un 33% superior a su precio REAL de venta. 
+                <Typography variant="body1" gutterBottom>El &aposModo Inteligente&apos ajusta el filtro de puntuación a un máximo de 0.4. Esto equivale a inmuebles cuyo precio estimado por el algoritmo es un 33% superior a su precio REAL de venta. 
     </Typography>
-                <Typography variant="body1" gutterBottom>Se asigna un máximo de 0.33 de forma arbitraria. Se ha observado que inmuebles con una puntuación superior suele ser por errores en el listado de detalles (en el anuncio) y/o por omisión de detalles que bajan mucho su valor real.</Typography>
+                <Typography variant="body1" gutterBottom>Se asigna un máximo de 0.4 de forma arbitraria. Se ha observado que inmuebles con una puntuación superior suele ser por errores en el listado de detalles (en el anuncio) y/o por omisión de detalles que bajan mucho su valor real.</Typography>
               </DialogContentText>
             </DialogContent>
             <DialogActions>
