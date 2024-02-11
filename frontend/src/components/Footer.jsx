@@ -1,8 +1,8 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material'
 
 const Footer = () => {
-    const theme = useTheme();
-    const currentYear = new Date().getFullYear();
+    const theme = useTheme()
+    const currentYear = new Date().getFullYear()
 
     return (
         <Box sx={{
@@ -19,7 +19,7 @@ const Footer = () => {
                 Flujo de Datos para Descubrimiento de Oportunidades Inmobiliarias © {currentYear}
             </Typography>
         </Box>
-    );
+    )
 }
 
-export default Footer;
+export default Footer

@@ -1,28 +1,28 @@
-import Flat from './Flat';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import Flat from './Flat'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 const Listing = ({ data, isCapital, singleColumn = true }) => {
-    const provinceCount = Object.keys(data).length;
+    const provinceCount = Object.keys(data).length
 
     const getGridSize = () => {
         if (singleColumn || provinceCount === 1) {
-            return 12; // Full width for single column or one province
+            return 12 // Full width for single column or one province
         } else if (provinceCount === 2) {
-            return 6; // Half width for two provinces
+            return 6 // Half width for two provinces
         }
-        return 4; // Default for more than two provinces
-    };
+        return 4 // Default for more than two provinces
+    }
 
     const getGridSizeSm = () => {
         if (singleColumn || provinceCount <= 2) {
-            return 12; // Full width for single column or up to two provinces
+            return 12 // Full width for single column or up to two provinces
         }
-        return 6; // Half width for more than two provinces
-    };
+        return 6 // Half width for more than two provinces
+    }
 
-    const gridSize = getGridSize();
-    const gridSizeSm = getGridSizeSm();
+    const gridSize = getGridSize()
+    const gridSizeSm = getGridSizeSm()
 
     const formatProvince = (province) => {
         if(province === 'all'){return 'Todas las Provincias'}
@@ -31,7 +31,7 @@ const Listing = ({ data, isCapital, singleColumn = true }) => {
             .replace(/_/g, ' ')
             .toLowerCase()
             .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}
-    };
+    }
 
     return (
         <Grid container spacing={2}>
@@ -52,8 +52,8 @@ const Listing = ({ data, isCapital, singleColumn = true }) => {
                 </Grid>
             ))}
         </Grid>
-    );
+    )
 }
 
-export default Listing;
+export default Listing
 

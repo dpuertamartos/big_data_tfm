@@ -1,10 +1,10 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Grid, Box, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Tooltip } from '@mui/material';
-import Carousel from 'react-bootstrap/Carousel';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import flatService from '../services/flats';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { useParams } from "react-router-dom"
+import { useState, useEffect } from 'react'
+import { Card, CardContent, Typography, Grid, Box, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Tooltip } from '@mui/material'
+import Carousel from 'react-bootstrap/Carousel'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import flatService from '../services/flats'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 const spanishLabels = {
   exterior_summary: 'Exterior',
@@ -29,7 +29,7 @@ const spanishLabels = {
   amueblado_summary: 'Amueblado',
   cocina_equipada_summary: 'Cocina Equipada',
   calefaccion_summary: 'Calefacción',
-};
+}
 
 const spanishFields = {
   heating: 'Calefacción',
@@ -49,32 +49,32 @@ const spanishFields = {
 }
 
 const Flat = () => {
-  const { id } = useParams();
-  const [flat, setFlat] = useState(null);
-  const [openRatingHelpDialog, setOpenRatingHelpDialog] = useState(false);
+  const { id } = useParams()
+  const [flat, setFlat] = useState(null)
+  const [openRatingHelpDialog, setOpenRatingHelpDialog] = useState(false)
 
 
   useEffect(() => {
     const fetchFlat = async () => {
       try {
-        const data = await flatService.get(id);
+        const data = await flatService.get(id)
         if (data && typeof data.photos === 'string') {
           try {
-            data.photos = JSON.parse(data.photos);
+            data.photos = JSON.parse(data.photos)
           } catch (e) {
-            console.error("Error parsing photos:", e);
-            data.photos = [];
+            console.error("Error parsing photos:", e)
+            data.photos = []
           }
         }
-        setFlat(data);
+        setFlat(data)
       } catch (error) {
-        console.error("Error fetching flat:", error);
+        console.error("Error fetching flat:", error)
       }
-    };
-    fetchFlat();
-  }, [id]);
+    }
+    fetchFlat()
+  }, [id])
 
-  if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>;
+  if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>
 
   const infobutton = () => {
     return(
@@ -89,28 +89,28 @@ const Flat = () => {
   const renderField = (label, value) => {
     return value ? (
       <Typography key={label} variant="body1"><strong>{label}{label==='Puntuación asignada'?infobutton():''}:</strong> {value} </Typography>
-    ) : null;
-  };
+    ) : null
+  }
   
   const renderFields = () => {
     return Object.entries(spanishFields).map(([key, label]) => {
       
       return flat[key] ? renderField(label, flat[key]) : null
-    });
+    })
   }
 
   const renderChips = () => {
     return Object.entries(spanishLabels).map(([key, label]) => {
       if (flat[key] === 'YES') {
-        return <Chip key={key} label={label} color="primary" variant="outlined" sx={{ mr: 1, mb: 1 }} />;
+        return <Chip key={key} label={label} color="primary" variant="outlined" sx={{ mr: 1, mb: 1 }} />
       }
-      return null;
-    });
-  };
+      return null
+    })
+  }
 
   // Funciones para manejar la apertura y cierre del diálogo de ayuda
-  const handleOpenRatingHelpDialog = () => setOpenRatingHelpDialog(true);
-  const handleCloseRatingHelpDialog = () => setOpenRatingHelpDialog(false);
+  const handleOpenRatingHelpDialog = () => setOpenRatingHelpDialog(true)
+  const handleCloseRatingHelpDialog = () => setOpenRatingHelpDialog(false)
 
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
@@ -180,8 +180,8 @@ const Flat = () => {
         </DialogActions>
       </Dialog>
     </Card>
-  );
-};
+  )
+}
 
-export default Flat;
+export default Flat
 

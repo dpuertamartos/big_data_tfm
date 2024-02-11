@@ -1,7 +1,7 @@
 // Contact.jsx
-import React from 'react';
-import { Button, Box, Typography, Grid, Paper, List, ListItem, ListItemText, Divider, useTheme, useMediaQuery } from '@mui/material';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import React from 'react'
+import { Button, Box, Typography, Grid, Paper, List, ListItem, ListItemText, Divider, useTheme, useMediaQuery } from '@mui/material'
+import MailOutlineIcon from '@mui/icons-material/MailOutline'
 
 const Contact = () => {
     const faqs = [
@@ -14,10 +14,10 @@ const Contact = () => {
         { question: "¿Esta web tiene afiliación con alguna empresa?", answer: "Esta web no tiene ningún tipo de afiliación, ni ánimo de lucro actualmente, se ha desarrollado en el marco de un Trabajo de Fin de Máster" },
         { question: "¿Cada cuanto se actualizan los datos?", answer: "Actualmente dos veces al día. Aproximadamente al mediodía y a la medianoche, hora española." },
 
-    ];
+    ]
 
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const theme = useTheme()
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
         <Box sx={{
@@ -101,10 +101,10 @@ const Contact = () => {
                 </Grid>
             </Grid>
         </Box>
-    );
-};
+    )
+}
 
-export default Contact;
+export default Contact
 
 
 

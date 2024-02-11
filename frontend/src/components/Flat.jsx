@@ -1,12 +1,12 @@
-import { Card, CardContent, Typography, Grid, Box, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Tooltip, Collapse } from '@mui/material';
-import Carousel from 'react-bootstrap/Carousel';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import LinkIcon from '@mui/icons-material/Link';
-import LocationOnIcon from '@mui/icons-material/LocationOn'; // Importing icon for location
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Card, CardContent, Typography, Grid, Box, Chip, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Tooltip, Collapse } from '@mui/material'
+import Carousel from 'react-bootstrap/Carousel'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { useState } from 'react'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import LinkIcon from '@mui/icons-material/Link'
+import LocationOnIcon from '@mui/icons-material/LocationOn' // Importing icon for location
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 
 const spanishLabels = {
@@ -32,7 +32,7 @@ const spanishLabels = {
   amueblado_summary: 'Amueblado',
   cocina_equipada_summary: 'Cocina Equipada',
   calefaccion_summary: 'Calefacción',
-};
+}
 
 const spanishFields = {
   heating: 'Calefacción',
@@ -52,20 +52,20 @@ const spanishFields = {
 }
 
 const Flat = ({flat}) => {
-  const [openDescription, setOpenDescription] = useState(false);
+  const [openDescription, setOpenDescription] = useState(false)
   const handleToggleDescription = () => {
-    setOpenDescription(!openDescription);
-  };
-  const [openRatingHelpDialog, setOpenRatingHelpDialog] = useState(false);
+    setOpenDescription(!openDescription)
+  }
+  const [openRatingHelpDialog, setOpenRatingHelpDialog] = useState(false)
 
-  if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>;
+  if (!flat) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Typography>Loading...</Typography></Box>
 
   if (flat && typeof flat.photos === 'string') {
     try {
-      flat.photos = JSON.parse(flat.photos);
+      flat.photos = JSON.parse(flat.photos)
     } catch (e) {
-      console.error("Error parsing photos:", e);
-      flat.photos = [];
+      console.error("Error parsing photos:", e)
+      flat.photos = []
     }
   }
 
@@ -82,34 +82,34 @@ const Flat = ({flat}) => {
   const renderField = (label, value) => {
     return value ? (
       <Typography key={label} variant="body1"><strong>{label}{label==='Puntuación asignada'?infobutton():''}:</strong> {value} </Typography>
-    ) : null;
-  };
+    ) : null
+  }
   
   const renderFields = () => {
     return Object.entries(spanishFields).map(([key, label]) => {
       
       return flat[key] ? renderField(label, flat[key]) : null
-    });
+    })
   }
 
   const renderChips = () => {
     return Object.entries(spanishLabels).map(([key, label]) => {
       if (flat[key] === 'YES') {
-        return <Chip key={key} label={label} color="primary" variant="outlined" sx={{ mr: 1, mb: 1 }} />;
+        return <Chip key={key} label={label} color="primary" variant="outlined" sx={{ mr: 1, mb: 1 }} />
       }
-      return null;
-    });
-  };
+      return null
+    })
+  }
 
   const formatProvince = (province) => {
     return province
       .replace(/_/g, ' ')
       .toLowerCase()
-      .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()); // Capitalize first letter of each word
-  };
+      .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) // Capitalize first letter of each word
+  }
 
-  const handleOpenRatingHelpDialog = () => setOpenRatingHelpDialog(true);
-  const handleCloseRatingHelpDialog = () => setOpenRatingHelpDialog(false);
+  const handleOpenRatingHelpDialog = () => setOpenRatingHelpDialog(true)
+  const handleCloseRatingHelpDialog = () => setOpenRatingHelpDialog(false)
 
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
@@ -229,7 +229,7 @@ const Flat = ({flat}) => {
         </DialogActions>
       </Dialog>
     </Card>
-  );
-};
+  )
+}
 
-export default Flat;
+export default Flat

@@ -3,11 +3,11 @@ import flatService from '../services/flats'
 import trendService from '../services/trends'
 import SelectFilter from './SelectFilter'
 import Listing from './Listing'
-import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip, Typography, Grid, Container } from '@mui/material';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Box, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, useTheme, useMediaQuery, Drawer, Tooltip, Typography, Grid, Container } from '@mui/material'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import { capitalOptions, provincesOptions} from '../utils/selectors_options.js'
-import { Link } from "react-router-dom";
-import { styled } from '@mui/system';
+import { Link } from "react-router-dom"
+import { styled } from '@mui/system'
 
 
 const SectionDivider = styled(Box)(({ theme }) => ({
@@ -15,19 +15,19 @@ const SectionDivider = styled(Box)(({ theme }) => ({
   width: '100%',
   background: theme.palette.divider,
   margin: theme.spacing(4, 0),
-}));
+}))
 
 const Home = ({ drawerOpen, handleDrawerToggle }) => {
   const [bestFlats, setBestFlats] = useState({})
   const [selectedprovinces, setSelectedprovinces] = useState(["all"])
-  const [selectedIsCapital, setSelectedIsCapital] = useState("all");
+  const [selectedIsCapital, setSelectedIsCapital] = useState("all")
   const [smartMode, setSmartMode] = useState("Si")
-  const [isLoading, setIsLoading] = useState(false);
-  const [openHelpDialog, setOpenHelpDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [openHelpDialog, setOpenHelpDialog] = useState(false)
 
   
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true)
     const fetchBestFlats = async () => {
       try {
         let updatedFlats = {}
@@ -56,21 +56,21 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
 
     fetchBestFlats()
     setTimeout(() => {
-      setIsLoading(false);
-    }, 2500); // Set loading to false
-  }, [selectedIsCapital, smartMode]);
+      setIsLoading(false)
+    }, 2500) // Set loading to false
+  }, [selectedIsCapital, smartMode])
 
 
   const handleChange = async (event, isCapitalChange = false) => {
-    setIsLoading(true); // Set loading to true immediately
+    setIsLoading(true) // Set loading to true immediately
   
     if (isCapitalChange) {
-      setSelectedIsCapital(event.target.value);
+      setSelectedIsCapital(event.target.value)
     } else {
-      const newSelectedprovinces = event.target.value;
-      setSelectedprovinces(newSelectedprovinces);
+      const newSelectedprovinces = event.target.value
+      setSelectedprovinces(newSelectedprovinces)
   
-      let updatedFlats = { ...bestFlats };
+      let updatedFlats = { ...bestFlats }
   
       // Fetch new flats for newly selected provinces
       for (const province of newSelectedprovinces) {
@@ -82,11 +82,11 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
               limitNumber: 5,
               isCapital: selectedIsCapital !== 'all' ? selectedIsCapital : undefined,
               rating: smartMode === 'Si' ? [-1, 0.33] : undefined
-            };
-            const flats = await flatService.getFiltered(params);
-            updatedFlats[province] = flats;
+            }
+            const flats = await flatService.getFiltered(params)
+            updatedFlats[province] = flats
           } catch (error) {
-            console.error(`Error fetching flats for ${province}:`, error);
+            console.error(`Error fetching flats for ${province}:`, error)
           }
         }
       }
@@ -94,29 +94,29 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
       // Remove flats for unselected provinces
       for (const province in bestFlats) {
         if (!newSelectedprovinces.includes(province)) {
-          delete updatedFlats[province];
+          delete updatedFlats[province]
         }
       }
   
-      setBestFlats(updatedFlats);
+      setBestFlats(updatedFlats)
     }
   
     // Delay setting isLoading to false
     setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };  
+      setIsLoading(false)
+    }, 1000)
+  }  
 
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const theme = useTheme()
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
   const handleOpenHelpDialog = () => {
-    setOpenHelpDialog(true);
-  };
+    setOpenHelpDialog(true)
+  }
 
   const handleCloseHelpDialog = () => {
-    setOpenHelpDialog(false);
-  };
+    setOpenHelpDialog(false)
+  }
 
   const Filters = () => {
     return (
@@ -160,7 +160,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
           <DialogTitle>{"Modo Inteligente"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              <Typography variant="body1" gutterBottom>El &apos;Modo Inteligente&apos; ajusta el filtro de puntuación a un máximo de 0.33. Esto equivale a inmuebles cuyo precio estimado por el algoritmo es un 33% superior a su precio REAL de venta. 
+              <Typography variant="body1" gutterBottom>El &aposModo Inteligente&apos ajusta el filtro de puntuación a un máximo de 0.33. Esto equivale a inmuebles cuyo precio estimado por el algoritmo es un 33% superior a su precio REAL de venta. 
 </Typography>
               <Typography variant="body1" gutterBottom>Se asigna un máximo de 0.33 de forma arbitraria. Se ha observado que inmuebles con una puntuación superior suele ser por errores en el listado de detalles (en el anuncio) y/o por omisión de detalles que bajan mucho su valor real.</Typography>
             </DialogContentText>
@@ -264,7 +264,7 @@ const Home = ({ drawerOpen, handleDrawerToggle }) => {
   )
 }
 
-export default Home;
+export default Home
 
 
 

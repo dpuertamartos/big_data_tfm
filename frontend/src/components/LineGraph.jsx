@@ -1,69 +1,69 @@
-import { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Customized } from 'recharts';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { factsOptions, provincesOptions2 } from '../utils/selectors_options.js';
+import { useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Customized } from 'recharts'
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { factsOptions, provincesOptions2 } from '../utils/selectors_options.js'
 
 
 const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, yAxisDefault, regionToProvincesMap, isLargeScreen, selectedRegions = [], height = 500 }) => {
-  const [selectedYAxisKeys, setSelectedYAxisKeys] = useState(yAxisDefault);
+  const [selectedYAxisKeys, setSelectedYAxisKeys] = useState(yAxisDefault)
 
   // Transform the data to the required format
   const transformData = (rawData, yAxisKey) => {
-    const monthMap = {};
+    const monthMap = {}
 
     rawData.forEach(item => {
-      const month = item.updated_month_group;
-      if (month === 'all') return;
+      const month = item.updated_month_group
+      if (month === 'all') return
 
       if (!monthMap[month]) {
-        monthMap[month] = { name: month };
+        monthMap[month] = { name: month }
       }
-      monthMap[month][item.province_group] = item[yAxisKey];
-    });
+      monthMap[month][item.province_group] = item[yAxisKey]
+    })
 
-    return Object.values(monthMap);
-  };
+    return Object.values(monthMap)
+  }
 
   // Function to generate a unique stroke color for each line
   const getStrokeColor = (province) => {
     const hashStringToColor = (str) => {
-      let hash = 0;
+      let hash = 0
       for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
+        hash = hash & hash
       }
-      let color = '#';
+      let color = '#'
       for (let i = 0; i < 3; i++) {
-        const value = (hash >> (i * 8)) & 255;
-        color += ('00' + value.toString(16)).substr(-2);
+        const value = (hash >> (i * 8)) & 255
+        color += ('00' + value.toString(16)).substr(-2)
       }
-      return color;
-    };
-    return hashStringToColor(province);
-  };
+      return color
+    }
+    return hashStringToColor(province)
+  }
 
   const handleYAxisChange = (event) => {
-    const newKeys = event.target.value;
+    const newKeys = event.target.value
     if (newKeys.length <= 3) { // Limit to a maximum of 3 yAxisKeys
-      setSelectedYAxisKeys(newKeys);
+      setSelectedYAxisKeys(newKeys)
     }
-  };
+  }
 
   // Calculate the width for each chart based on the number of selected yAxisKeys
-  const chartWidth = selectedYAxisKeys.length === 1 ? '100%' : `${100 / selectedYAxisKeys.length}%`;
+  const chartWidth = selectedYAxisKeys.length === 1 ? '100%' : `${100 / selectedYAxisKeys.length}%`
 
   const selectedElements = selectedprovinces.filter(province => 
     !selectedRegions.some(region => regionToProvincesMap[region].includes(province))
-  ).map(e => provincesOptions2[e]).concat(selectedRegions);
+  ).map(e => provincesOptions2[e]).concat(selectedRegions)
 
   
   const hasSelection = selectedYAxisKeys.length > 0 
 
   // Función para extraer las unidades de factsOptions
   const getUnitFromOption = (option) => {
-    const match = factsOptions[option].match(/\((.*?)\)/);
-    return match ? match[1] : '';
-  };
+    const match = factsOptions[option].match(/\((.*?)\)/)
+    return match ? match[1] : ''
+  }
 
   // Mapeo de los meses en español
   const monthsMap = {
@@ -79,15 +79,15 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
     '10': 'Oct',
     '11': 'Nov',
     '12': 'Dic',
-  };
+  }
 
   // Función para transformar el formato de la fecha
   const formatXAxis = (tickItem) => {
     // Dividir el valor de tickItem en año y mes
-    const [year, month] = tickItem.split('-');
+    const [year, month] = tickItem.split('-')
     // Convertir al formato español
-    return `${monthsMap[month]}/${year.substring(2)}`;
-  };
+    return `${monthsMap[month]}/${year.substring(2)}`
+  }
 
   // Adjust flexDirection based on isLargeScreen
   const chartContainerStyle = {
@@ -95,7 +95,7 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
     flexDirection: isLargeScreen ? 'row' : 'column', // Dynamically adjust based on screen size
     justifyContent: 'space-around',
     alignItems: 'center'
-  };
+  }
 
   
 
@@ -153,7 +153,7 @@ const LineGraph = ({ selectedprovinces, data, activeDotSelector, yAxisOptions, y
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LineGraph;
+export default LineGraph

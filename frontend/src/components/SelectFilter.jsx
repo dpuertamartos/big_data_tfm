@@ -1,8 +1,8 @@
-import { FormControl, InputLabel, Select, MenuItem, Chip, Box } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Chip, Box } from '@mui/material'
 
 const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, optionMap = false, multiple = true, disabled = false }) => {
   // Verifica si hay elementos seleccionados
-  const hasSelection = multiple ? selectedElements.length > 0 : selectedElements !== "";
+  const hasSelection = multiple ? selectedElements.length > 0 : selectedElements !== ""
 
   return (
     <FormControl fullWidth margin="normal">
@@ -41,10 +41,10 @@ const SelectFilter = ({ selectedElements, handleChange, elementToChoose, label, 
         ))}
       </Select>
     </FormControl>
-  );
-};
+  )
+}
 
-export default SelectFilter;
+export default SelectFilter
 
 
 
