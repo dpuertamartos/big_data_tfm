@@ -17,11 +17,13 @@ const getFlats = async (options) => {
         minM2 = null,
         maxM2 = null,
         minRating = null,
-        maxRating = null
+        maxRating = null,
+        page = null
     } = options
 
     let query = `SELECT ${columns} FROM pisos WHERE active = :active`
     let replacements = { active }
+
 
     if (province) {
         query += ` AND province = :province`
@@ -79,12 +81,19 @@ const getFlats = async (options) => {
         replacements.maxRating = maxRating
     }
 
+
     query += ` ORDER BY ${orderBy}`
 
     // Only add LIMIT clause and replacement if noLimit is not true
     if (!options.noLimit) {
         query += ` LIMIT :limitNumber`
         replacements.limitNumber = limitNumber
+    }
+
+    if(page !== null && page > 1){
+        const offset = (page - 1) * limitNumber
+        query += ` OFFSET :offset`
+        replacements.offset = offset
     }
 
     return await sequelize.query(query, {
@@ -141,7 +150,7 @@ router.get('/province/:provinceName', async (req, res) => {
 
 router.get('/filtered', async (req, res) => {
     try {
-        const { province, isCapital, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber, columns } = req.query
+        const { province, isCapital, type, price_euro, habitaciones, m2, rating, orderBy, minRating, limitNumber, columns, page } = req.query
         let [minPrice, maxPrice] = price_euro ? price_euro.map(Number) : [0, null]
         let [minHabitaciones, maxHabitaciones] = habitaciones ? habitaciones.map(Number) : [null, null]
         let [minM2, maxM2] = m2 ? m2.map(Number) : [null, null]
@@ -164,7 +173,8 @@ router.get('/filtered', async (req, res) => {
             maxRating: maxRatingValue,
             orderBy: sort,
             columns: columns,
-            limitNumber
+            limitNumber,
+            page: parseInt(page, 10)
         }
 
         const flats = await getFlats(options)
