@@ -163,7 +163,11 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             <Box sx={{
               position: 'fixed',
               width: '100%',
-              maxWidth: 360
+              maxWidth: 400,
+              overflowY: 'auto',
+              height: '100%',
+              pb: '5%',
+              px: '2%'
             }}>
               <Filter
                 filters={filters}
