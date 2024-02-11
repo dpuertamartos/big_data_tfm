@@ -15,9 +15,10 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         precio: [0, 2000000],
         habitaciones: [0, 10],
         m2Utiles: [0, 500],
-        rating: [-1, 0.7],
-        orderBy: undefined
+        rating: [-1, 0.4],
+        orderBy: 'rating DESC'
     })
+    
     const [currentPage, setCurrentPage] = useState(1)
     const [isLoading, setIsLoading] = useState(false)
     const [observerActive, setObserverActive] = useState(false) // State to control observer activation
