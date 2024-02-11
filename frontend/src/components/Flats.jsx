@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Notification from './Notification'
 import Listing from './Listing'
 import Filter from './Filter'
-import { Grid, Container, Box, useTheme, useMediaQuery, Drawer, Typography, CircularProgress } from '@mui/material'
+import { Grid, Container, Box, useTheme, useMediaQuery, Drawer, CircularProgress } from '@mui/material'
 import flatService from '../services/flats'
 import debounce from 'lodash/debounce' // You might need to install lodash for this
 
 const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
-    const [allFlats, setAllFlats] = useState([]) // To store all flats fetched from backend
+    const [allFlats, setAllFlats] = useState([])
     const [filters, setFilters] = useState({
         provincia: '',
         isCapital: '',
@@ -18,102 +18,104 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         rating: [-1, 0.7],
         orderBy: undefined
     })
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
+    const [observerActive, setObserverActive] = useState(false) // State to control observer activation
+    const theme = useTheme()
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+    const initialLoad = useRef(true) // To track the first load
 
-    const fetchFilteredFlats = async (type='updatedFilters') => {
-      setIsLoading(true);
-      try {
-          const params = { 
-              province: filters.provincia, 
-              isCapital: filters.isCapital,
-              type: filters.tipo,
-              orderBy: filters.orderBy,
-              limitNumber: 15,
-              page: currentPage, // Add this line
-          }
-  
-          // Only include price filter if not at default min or max
+    const fetchFilteredFlats = async (type = 'updatedFilters') => {
+        setIsLoading(true)
+        try {
+            const params = {
+                province: filters.provincia,
+                isCapital: filters.isCapital,
+                type: filters.tipo,
+                orderBy: filters.orderBy,
+                limitNumber: 15,
+                page: currentPage,
+            }
+
+            
           if (filters.precio[0] > 0 || filters.precio[1] < 2000000) {
               params.price_euro = filters.precio
           }
-  
-          // Similar logic for other filters
+
           if (filters.habitaciones[0] > 0 || filters.habitaciones[1] < 10) {
               params.habitaciones = filters.habitaciones
           }
-  
+
           if (filters.m2Utiles[0] > 0 || filters.m2Utiles[1] < 500) {
               params.m2 = filters.m2Utiles
           }
-  
+
           if (filters.rating[0] > -0.75 || filters.rating[1] < 0.7) {
               params.rating = filters.rating
           }
-  
-          const filteredFlats = await flatService.getFiltered(params)
-          if (type==='updatedFilters'){
-            setAllFlats(filteredFlats)
-          }
-          else{
-            setAllFlats(prevFlats => [...prevFlats, ...filteredFlats]);
-          }
-          
-          setIsLoading(false);
-      } catch (error) {
-          console.error("Error fetching filtered flats:", error)
-          setIsLoading(false);
-      }
-  }
+            const filteredFlats = await flatService.getFiltered(params)
+            if (type === 'updatedFilters') {
+                setAllFlats(filteredFlats)
+            } else {
+                setAllFlats(prevFlats => [...prevFlats, ...filteredFlats])
+            }
 
-    useEffect(() => { window.scrollTo(0, 0)}, [filters]);
-
-
-    const debouncedFetch = debounce(fetchFilteredFlats, 500)
-
-    useEffect(() => {
-        debouncedFetch()
-        // Cancel the debounce on useEffect cleanup.
-        return debouncedFetch.cancel
-    }, [filters]) // Add other major filters if needed
-
-    // Apply minor filters on the frontend
-    const applyFilters = () => {
-        return allFlats.filter(flat => {
-            return (
-              flat.price_euro >= filters.precio[0] &&
-              (filters.precio[1] < 2000000 ? flat.price_euro <= filters.precio[1] : true) &&
-              flat.habitaciones >= filters.habitaciones[0] &&
-              (filters.habitaciones[1] < 10 ? flat.habitaciones <= filters.habitaciones[1] : true) &&
-              flat.superficie_util_m2 >= filters.m2Utiles[0] &&
-              (filters.m2Utiles[1] < 500 ? flat.superficie_util_m2 <= filters.m2Utiles[1] : true) &&
-              flat.rating >= filters.rating[0] &&
-              (filters.rating[1] < 0.7 ? flat.rating <= filters.rating[1] : true)
-          )
-        })
+            setIsLoading(false)
+        } catch (error) {
+            console.error("Error fetching filtered flats:", error)
+            setIsLoading(false)
+        } finally {
+            if (initialLoad.current) {
+                initialLoad.current = false // Mark initial load as complete
+                setObserverActive(true) // Activate observer after initial load
+            }
+        }
     }
 
-    useEffect(() => {
-      const observer = new IntersectionObserver(entries => {
-          if (entries.some(entry => entry.isIntersecting)) {
-              setCurrentPage(prevPage => prevPage + 1);
-          }
-      }, {
-          rootMargin: '100px', // Trigger the event 100px before reaching the bottom
-      });
-  
-      // Assuming you have a footer or an element at the bottom of your list
-      const sentinel = document.getElementById('scroll-sentinel');
-      if (sentinel) observer.observe(sentinel);
-  
-      return () => observer.disconnect();
-    }, []);
+    useEffect(() => { window.scrollTo(0, 0)}, [filters])
 
     useEffect(() => {
-      if (currentPage > 1) fetchFilteredFlats('nextPage');
-    }, [currentPage]);
+        fetchFilteredFlats()
+    }, []) // Fetch data on initial mount only
 
-    const filteredFlats = applyFilters()
+  // Debounced fetch for filter changes
+    const debouncedFetch = debounce(() => {
+        if (!initialLoad.current) { // Only debounce fetch if initial load is complete
+            fetchFilteredFlats('updatedFilters')
+        }
+    }, 500)
+
+    useEffect(() => {
+        if (!initialLoad.current) { // If not the first load
+            debouncedFetch()
+            return () => debouncedFetch.cancel()
+        }
+    }, [filters]) // Execute when filters change
+
+    useEffect(() => {
+        if (observerActive) { // Only setup observer if active
+            const observer = new IntersectionObserver(entries => {
+                if (entries.some(entry => entry.isIntersecting)) {
+                    setCurrentPage(prevPage => prevPage + 1)
+                }
+            }, {
+                rootMargin: '100px',
+            })
+
+            const sentinel = document.getElementById('scroll-sentinel')
+            if (sentinel) observer.observe(sentinel)
+
+            return () => observer.disconnect()
+        }
+    }, [observerActive])
+
+    useEffect(() => {
+        if (currentPage > 1 && !initialLoad.current) {
+            fetchFilteredFlats('nextPage')
+        }
+    }, [currentPage])
+
+
 
     const handleFilterChange = (event, newValue) => {
         const name = event.target.name || event.target.getAttribute('name')
@@ -125,7 +127,9 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         setCurrentPage(1)
     }
 
-    const handleprovinceChange = (event, newValue) => {
+    const handle
+
+    const handleprovinceChange = (newValue) => {
         setFilters(prevFilters => ({
             ...prevFilters,
             provincia: newValue
@@ -158,9 +162,6 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
   }
 
 
-  
-  const theme = useTheme();
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
 
 
   return (
@@ -237,7 +238,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
           mb: "15%"
           }}
         >
-          <Listing data={{ [filters.provincia || 'all']: filteredFlats }} />
+          <Listing data={{ [filters.provincia || 'all']: allFlats }} />
           {isLoading && <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <CircularProgress />
         </Box>}
@@ -246,7 +247,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         
       </Grid>
     </Container>
-  );
+  )
 
 }
 
