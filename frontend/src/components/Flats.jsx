@@ -117,7 +117,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
 
 
 
-    const handleFilterChange = (event, newValue) => {
+    const handleSliderChange = (event, newValue) => {
         const name = event.target.name || event.target.getAttribute('name')
         const value = newValue !== undefined ? newValue : event.target.value
         setFilters(prevFilters => ({
@@ -127,9 +127,7 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         setCurrentPage(1)
     }
 
-    const handle
-
-    const handleprovinceChange = (newValue) => {
+    const handleprovinceChange = (event, newValue) => {
         setFilters(prevFilters => ({
             ...prevFilters,
             provincia: newValue
@@ -137,31 +135,13 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
         setCurrentPage(1)
     }
 
-    const handleIsCapitalChange = (event) => {
+    const handleSelectorChange = (event) => {
         setFilters(prevFilters => ({
             ...prevFilters,
-            isCapital: event.target.value
+            [event.target.name]: event.target.value
         }))
         setCurrentPage(1)
     }
-
-    const handleTipoChange = (event) => {
-        setFilters(prevFilters => ({
-            ...prevFilters,
-            tipo: event.target.value
-        }))
-        setCurrentPage(1)
-    }
-
-    const handleSortChange = (event) => {
-        setFilters(prevFilters => ({
-          ...prevFilters,
-          orderBy: event.target.value
-      }))
-        setCurrentPage(1)
-  }
-
-
 
 
   return (
@@ -192,11 +172,9 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             <Box sx={{ width: '70%' }}> {/* Ajusta el ancho del Box para llenar el Drawer */}
               <Filter
                 filters={filters}
-                onFilterChange={handleFilterChange}
+                onFilterChange={handleSliderChange}
                 onprovinceChange={handleprovinceChange}
-                onIsCapitalChange={handleIsCapitalChange}
-                onTipoChange={handleTipoChange}
-                onSortChange={handleSortChange}
+                onSelectorChange={handleSelectorChange}
               />
             </Box>
           </Drawer>
@@ -212,11 +190,9 @@ const Flats = ({ errorMessage, drawerOpen, handleDrawerToggle }) => {
             }}>
               <Filter
                 filters={filters}
-                onFilterChange={handleFilterChange}
+                onFilterChange={handleSliderChange}
                 onprovinceChange={handleprovinceChange}
-                onIsCapitalChange={handleIsCapitalChange}
-                onTipoChange={handleTipoChange}
-                onSortChange={handleSortChange}
+                onSelectorChange={handleSelectorChange}
               />
             </Box>
           )}

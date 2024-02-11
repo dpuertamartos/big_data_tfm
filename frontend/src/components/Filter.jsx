@@ -1,41 +1,41 @@
-import { useState, useEffect } from 'react';
-import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material';
-import { provincesOptions } from '../utils/selectors_options.js';
+import { useState, useEffect } from 'react'
+import { TextField, Slider, Box, Typography, FormControl, Autocomplete, InputLabel, Select, MenuItem } from '@mui/material'
+import { provincesOptions } from '../utils/selectors_options.js'
 
 const formatSliderLabel = (value, max) => {
-    return value === max ? `${max}+` : value;
-};
+    return value === max ? `${max}+` : value
+}
 
 const calculatePriceFromSlider = (sliderValue) => {
     if (sliderValue <= 20) {
-        return sliderValue * 10000;
+        return sliderValue * 10000
     } else if (sliderValue <= 35) {
         // Adjusted for 200,000 to 500,000 range with 20,000 steps
-        return 200000 + (sliderValue - 20) * 20000;
+        return 200000 + (sliderValue - 20) * 20000
     } else {
         // Adjusted for 500,000 to 2M range with 250,000 steps
-        return 500000 + (sliderValue - 35) * 250000;
+        return 500000 + (sliderValue - 35) * 250000
     }
-};
+}
 
 const calculateSliderFromPrice = (price) => {
     if (price <= 200000) {
-        return price / 10000;
+        return price / 10000
     } else if (price <= 500000) {
         // Adjusted for 200,000 to 500,000 range with 20,000 steps
-        return 20 + (price - 200000) / 20000;
+        return 20 + (price - 200000) / 20000
     } else {
         // Adjusted for 500,000 to 2M range with 250,000 steps
-        return 35 + (price - 500000) / 250000;
+        return 35 + (price - 500000) / 250000
     }
-};
+}
 
-const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, onTipoChange, onSortChange }) => {
+const Filter = ({ filters, onFilterChange, onprovinceChange, onSelectorChange}) => {
     // Local states for sliders
-    const [localPrice, setLocalPrice] = useState(filters.precio.map(calculateSliderFromPrice));
-    const [localHabitaciones, setLocalHabitaciones] = useState(filters.habitaciones);
-    const [localM2Utiles, setLocalM2Utiles] = useState(filters.m2Utiles);
-    const [localRating, setLocalRating] = useState(filters.rating);
+    const [localPrice, setLocalPrice] = useState(filters.precio.map(calculateSliderFromPrice))
+    const [localHabitaciones, setLocalHabitaciones] = useState(filters.habitaciones)
+    const [localM2Utiles, setLocalM2Utiles] = useState(filters.m2Utiles)
+    const [localRating, setLocalRating] = useState(filters.rating)
 
     const marks = [
         {
@@ -54,43 +54,43 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
             value: calculateSliderFromPrice(2000000),
             label: '2M€+',
         },
-    ];
+    ]
     // Sync local state with global state
     useEffect(() => {
-        setLocalPrice(filters.precio.map(calculateSliderFromPrice));
-        setLocalHabitaciones(filters.habitaciones);
-        setLocalM2Utiles(filters.m2Utiles);
-        setLocalRating(filters.rating);
-    }, [filters]);
+        setLocalPrice(filters.precio.map(calculateSliderFromPrice))
+        setLocalHabitaciones(filters.habitaciones)
+        setLocalM2Utiles(filters.m2Utiles)
+        setLocalRating(filters.rating)
+    }, [filters])
 
     const handleSliderChange = (name, newValue) => {
         switch (name) {
             case 'precio':
-                setLocalPrice(newValue);
-                break;
+                setLocalPrice(newValue)
+                break
             case 'habitaciones':
-                setLocalHabitaciones(newValue);
-                break;
+                setLocalHabitaciones(newValue)
+                break
             case 'm2Utiles':
-                setLocalM2Utiles(newValue);
-                break;
+                setLocalM2Utiles(newValue)
+                break
             case 'rating':
-                setLocalRating(newValue);
-                break;
+                setLocalRating(newValue)
+                break
             default:
-                break;
+                break
         }
-    };
+    }
 
     const handleSliderChangeCommitted = (name, newValue) => {
         if (name === 'precio') {
-            const priceValue = newValue.map(calculatePriceFromSlider);
-            onFilterChange({ target: { name } }, priceValue);
+            const priceValue = newValue.map(calculatePriceFromSlider)
+            onFilterChange({ target: { name } }, priceValue)
         }
         else {
-            onFilterChange({ target: { name } }, newValue);
+            onFilterChange({ target: { name } }, newValue)
         }
-    };
+    }
 
         // Personalización de estilos para los Sliders
         const sliderStyle = {
@@ -107,7 +107,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
             '& .MuiSlider-markLabel[data-index="0"]': {
                 transform: 'translateX(-50%)', // Ajusta la posición de la primera marca para evitar solapamientos
             }
-        };
+        }
 
     return (
         <Box>
@@ -126,10 +126,10 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                 <InputLabel id="capital-label">Capital</InputLabel>
                 <Select
                     labelId="capital-label"
-                    name="capital"
+                    name="isCapital"
                     value={filters.isCapital || ''} // Ensure the value is not undefined
                     label="Capital"
-                    onChange={onIsCapitalChange}
+                    onChange={onSelectorChange}
                 >
                     <MenuItem value="">Indiferente</MenuItem>
                     <MenuItem value="1">En la capital</MenuItem>
@@ -143,7 +143,7 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                     name="tipo"
                     value={filters.tipo || ''} // Ensure the value is not undefined
                     label="Tipo"
-                    onChange={onTipoChange}
+                    onChange={onSelectorChange}
                 >
                     <MenuItem value="">Todos</MenuItem>
                     <MenuItem value="piso">Piso</MenuItem>
@@ -226,7 +226,8 @@ const Filter = ({ filters, onFilterChange, onprovinceChange, onIsCapitalChange, 
                             labelId="sort-order-label"
                             value={filters.orderBy || '' }
                             label="Ordenar por"
-                            onChange={onSortChange}
+                            name='orderBy'
+                            onChange={onSelectorChange}
                         >   
                             <MenuItem value="rating DESC">Puntuación (Primero Altos)</MenuItem>
                             <MenuItem value="rating ASC">Puntuación (Primero Bajos)</MenuItem>
