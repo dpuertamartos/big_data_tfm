@@ -236,8 +236,9 @@ AÑADIR INSTRUCCIONES
 3. Create a cron job that executes `/path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh` each 12 hours
 
 
-## arquitecture 
+## architecture 
 
-![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/a4a6c333-3fe6-4846-8ec7-ade61d227462)
+![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/d25621b9-929e-4c7d-a023-d9c8fea0e74e)
+
 
 
