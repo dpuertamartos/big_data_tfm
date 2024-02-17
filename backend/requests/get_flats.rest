@@ -1,1 +1,0 @@
-GET http://localhost:3001/api/flats/rating?city=madrid&limitNumber=5&sorting=DESC
