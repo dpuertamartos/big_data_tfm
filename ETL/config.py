@@ -19,26 +19,22 @@ categorical_to_fill_DESCONOCIDO = ['province', 'capital', 'location', 'conservac
 categorical = categorical_to_fill_NO + categorical_to_fill_DESCONOCIDO
 
 province_to_capital = {
+    'andorra':'Andorra La Vella',
     'islas_baleares_illes_balears': 'Palma de Mallorca',
-    'asturias': 'Oviedo', 'a_coruna': 'A Coruna',
-    'girona': 'Girona', 'las_palmas': 'Las Palmas de Gran Canaria',
-    'santa_cruz_de_tenerife': 'Santa Cruz de Tenerife', 'cantabria': 'Santander', 'malaga': 'Malaga',
-    'almeria': 'Almeria', 'murcia': 'Murcia', 'albacete': 'Albacete', 'avila': 'Avila',
-    'alava_araba': 'Vitoria - Gasteiz', 'badajoz': 'Badajoz', 'alicante': 'Alicante', 'ourense': 'Ourense',
-    'barcelona': 'Barcelona', 'burgos': 'Burgos', 'caceres': 'Caceres', 'cadiz': 'Cadiz',
+    'asturias': 'Oviedo', 
+    'las_palmas': 'Las Palmas de Gran Canaria',
+    'cantabria': 'Santander', 
+    'alava_araba': 'Vitoria - Gasteiz',  
+    'alicante': 'Alicante - Alacant', 
     'castellon_castello': 'Castello de la Plana',
-    'ciudad_real': 'Ciudad Real', 'jaen': 'Jaen', 'cordoba': 'Cordoba', 'cuenca': 'Cuenca', 'granada': 'Granada',
-    'guadalajara': 'Guadalajara',
-    'guipuzcoa_gipuzkoa': 'San Sebastian', 'huelva': 'Huelva', 'huesca': 'Huesca', 'leon': 'Leon', 'lleida': 'Lleida',
-    'la_rioja': 'Logrono', 'soria': 'Soria', 'navarra_nafarroa': 'Pamplona', 'ceuta': 'Ceuta', 'lugo': 'Lugo',
-    'madrid': 'Madrid', 'palencia': 'Palencia', 'pontevedra': 'Vigo', 'salamanca': 'Salamanca', 'segovia': 'Segovia',
-    'sevilla': 'Sevilla', 'toledo': 'Toledo', 'tarragona': 'Tarragona', 'teruel': 'Teruel',
-    'valencia': 'Valencia', 'valladolid': 'Valladolid',
-    'vizcaya_bizkaia': 'Bilbao', 'zamora': 'Zamora',
-    'zaragoza': 'Zaragoza', 'melilla': 'Melilla'
+    'guipuzcoa_gipuzkoa': 'San Sebastian - Donostia', 
+    'la_rioja': 'Logrono', 
+    'navarra_nafarroa': 'Pamplona - Iruña', 
+    'ceuta': 'Ceuta',
+    'pontevedra': 'Vigo', 
+    'vizcaya_bizkaia': 'Bilbao',
+    'melilla': 'Melilla'
 }
 
-
-#db_path = '/home/ubuntu/Desktop/pisos.db'
 
 mongo_uri = 'mongodb://mongodb-container:27017/'

@@ -7,11 +7,17 @@ from config import province_to_capital
 
 def check_capital(location, province):
     # Get the capital city of the province from the dictionary
-    capital_city = province_to_capital.get(province, "").lower()
+    capital_denomination = province_to_capital.get(province, "capital").lower()
 
     clean_location = remove_spanish_accentuation(location).lower()
+
+    # Extract the portion of the string inside parentheses if present
+    match = re.search(r'\((.*?)\)', clean_location)
+    if match:
+        clean_location = match.group(1)
+
     # Check if the capital city is in the location or if 'capital' is in the location
-    if capital_city in clean_location or "capital" in clean_location:
+    if capital_denomination in clean_location:
         return 1
     else:
         return 0
