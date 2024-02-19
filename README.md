@@ -95,10 +95,6 @@ Debido a la flexibilidad del scrapper se puede ejecutar con la frecuencia que se
 
 Debido al hardcap de 3000 inmuebles / ciudad, se recomienda ejecutarlo al menos una vez a la semana. Para evitar perdida de datos de ciudades que tengan +200 anuncios nuevos por día.
 
-### mongo-db backup outside of docker volumes
-
-1. `chmod +x /path/to/project/ingestion_scrapper/mongodb/mongo_backup_script.sh`
-2. `crontab -e` add `0 7 */3 * * /path/to/project/ingestion_scrapper/mongo_backup_script.sh`
 
 ## 2. ETL
 
@@ -185,8 +181,13 @@ Si no queremos instalar nada en local (tendremos que actualizar package.json cua
 
 ### Hacer copia de seguridad cada 3 días.
 
-AÑADIR INSTRUCCIONES
+Activate the DAG `mongo_backup_dag` in Airflow WebServer either manually or activate it to schedule every 3 days.
 
+This will generate a compressed file `.tar.gz` with current date in the volume `{project}_mongodb-backups`.
+
+That file can be moved out of the volume following step 8.2.
+
+The compressed file must decompress obtaining the foler `mongo_backup`. This folder can be used to follow the previous steps to restore the backup.
 
 ## 7. SQLite
 
@@ -215,7 +216,9 @@ AÑADIR INSTRUCCIONES
 
 2. `docker cp temp-container:/data /path/to/local/destination && docker stop temp-container`
 
-### 8.3 Exporting the mongodb volume (or any) to another machine
+### 8.3 Exporting a volume to another machine
+
+Important! This is not recommended to make/restore mongodb backup. For that we recommend to follow the approach in step 6. of this readme.
 
 8.3.A Exporting
 
