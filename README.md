@@ -1,12 +1,18 @@
 # big_data_tfm
 
-## architecture 
+## Architecture 
 
 ![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/d25621b9-929e-4c7d-a023-d9c8fea0e74e)
 
-## info
+## Info
 
+Este repositorio y el proyecto asociado forma parte del Trabajo de Fin de Máster del Máster en Inteligencia de Negocio y Big Data en Entornos Seguros.
 
+**Autor**: Dr. David Puerta Martos
+
+**Tutor**: Dr. Álvar Arnaiz-González 
+
+**Co-tutor**: Dr. José Antonio Barbero Aparicio
 
 ## Prerequisitos
 
