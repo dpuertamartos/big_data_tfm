@@ -1,6 +1,12 @@
 # big_data_tfm
 
-overleaf link to memory https://www.overleaf.com/read/vjjqftkqphwy
+## architecture 
+
+![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/d25621b9-929e-4c7d-a023-d9c8fea0e74e)
+
+## info
+
+
 
 ## Prerequisitos
 
@@ -64,7 +70,7 @@ Para que la web esté completamente funcional se necesita haber completado el pu
 
 ## 1. Ingestion
 
-###Primera ejecución
+### Primera ejecución
 
 `docker-compose run --rm -e SCRIPT_NAME=ingestion_script.sh -e UPDATE_MODE=False scraper`
 
@@ -74,7 +80,7 @@ Guardará la fecha del más reciente scrappeado por localización
 
 TIEMPO ESTIMADO: 10 inmuebles / s
 
-###Sucesivas ejuciones del scrapper o si 
+### Sucesivas ejuciones del scrapper o si 
 
 `docker-compose run --rm -e SCRIPT_NAME=ingestion_script.sh scraper`
 
@@ -85,7 +91,7 @@ Buscará inmuebles hasta encontrar alguno más antiguo que esa fecha, tras lo cu
 Por ejemplo si la fecha es 08/08/2023 para "Jaen", al encontrar alguno de 07/08/2023 o más antiguo, parará 
 el scrapping para "Jaén", tomando ventaja de su orden por fecha.
 
-###Checkeo de si los pisos de la database siguen activos
+### Checkeo de si los pisos de la database siguen activos
 
 `docker-compose run --rm -e SCRIPT_NAME=ad_up_checking_script.sh scraper`
 
@@ -237,11 +243,6 @@ Important! This is not recommended to make/restore mongodb backup. For that we r
 1. Modify `/path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh` to adjust to your paths
 2. run `chmod +x /path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh`
 3. Create a cron job that executes `/path_to_big_data_tfm/big_data_tfm/dev_utils/certificate_renew.sh` each 12 hours
-
-
-## architecture 
-
-![image](https://github.com/dpuertamartos/big_data_tfm/assets/92330952/d25621b9-929e-4c7d-a023-d9c8fea0e74e)
 
 
 
