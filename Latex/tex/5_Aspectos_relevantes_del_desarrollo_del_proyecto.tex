@@ -1,33 +1,116 @@
 \capitulo{5}{Aspectos relevantes del desarrollo del proyecto}
 
+Este capítulo aborda los aspectos más críticos en el desarrollo del proyecto. Se han explicado aquellos aspectos del proyecto que han supuesto un gran impacto en diseño, han alterado el curso del mismo o han supuesto una gran inversión de tiempo o recursos.
+
 \section{Diseño inicial}
 
-Desde el comienzo del proyecto, se esbozó una visión general de su desarrollo. Esta visión implicaba la ingestión de datos inmobiliarios para posteriormente transformarlos, limpiarlos y aplicar modelos de aprendizaje automático, con el objetivo de brindar valor al usuario final, quien sería el consumidor de estos datos.
+Desde el comienzo del proyecto, se esbozó una visión general de su desarrollo. Esta visión implicaba la ingestión de datos inmobiliarios para posteriormente transformarlos, limpiarlos y aplicar modelos de Aprendizaje Automático, con el objetivo de brindar valor al usuario final, quien sería el consumidor de estos datos.
 
-Inicialmente, la ingestión de datos se contemplaba a través de dos vías posibles: mediante una API o mediante técnicas de scrapping. Se consideró utilizar Apache Spark como herramienta principal para las tareas de Extracción, Transformación y Carga (ETL) de datos. Sin embargo, tras un análisis cuidadoso, esta opción fue desestimada por considerarse innecesaria. Dentro del diseño, se identificó la necesidad de contar con una base de datos primaria y otra secundaria. Asimismo, se exploraron diversas librerías de aprendizaje automático, como ML/MLlib de Spark y Scikit-Learn, evaluando su potencial y adecuación al proyecto.
+Inicialmente, la ingestión de datos se contemplaba a través de dos vías posibles: mediante una API o mediante técnicas de \textit{scraping}. Se consideró utilizar Apache Spark como herramienta principal para las tareas de Extracción, Transformación y Carga (ETL) de datos. Sin embargo, tras un análisis cuidadoso, esta opción fue desestimada por considerarse innecesaria. Dentro del diseño, se identificó la necesidad de contar con una base de datos primaria (datos sin procesar, menos estructurados) y otra secundaria (datos procesados y tabulares). Asimismo, se exploraron diversas librerías de Aprendizaje Automático, como ML/MLlib de Spark y Scikit-Learn, evaluando su potencial y adecuación al proyecto.
 
-En cuanto a la visualización de datos y resultados derivados del análisis, se contempló inicialmente la creación de una aplicación móvil, la cual permitiría a los usuarios acceder fácilmente a los hallazgos y insights generados tras la implementación de los modelos de aprendizaje automático seleccionados.
+En cuanto a la visualización de datos y resultados derivados del análisis, se contempló inicialmente la creación de una aplicación móvil, la cual permitiría a los usuarios acceder fácilmente a los hallazgos y \textit{insights} generados tras la implementación de los modelos de Aprendizaje Automático seleccionados. En partes posteriores del proyecto, se descartó la aplicación móvil y se optó por una web que también estuviese adaptada a dispositivos móviles.
 
 
 \section{Elección de la fuente de datos}
 
-En una fase inicial, se consideró \url{https://www.idealista.com} como la fuente principal de datos, dado que este portal es el más grande en el sector inmobiliario de España.
+En una fase inicial, se consideró \url{www.idealista.com} como la fuente principal de datos, dado que este portal es el más grande en el sector inmobiliario de España.
 
-Idealista ofrece una sección donde los usuarios pueden solicitar acceso a su API. Aunque nuestro se recibió la autorización, el acceso estaba notablemente limitado a 100 llamadas API mensuales. Dicha restricción resultaba claramente insuficiente para un proyecto como este. Pese a que se intentó negociar un incremento en el límite de llamadas, no se recibió respuesta alguna por parte de Idealista. Adicionalmente, la plataforma de Idealista posee robustas medidas anti-scrapping, y está claramente limitado como se indica en su archivo "robots.txt". Aún así y tras diversas pruebas, observamos que las técnicas de scrapping fueron efectivamente identificadas y bloqueadas por su sistema.
+Idealista ofrece una sección donde los usuarios pueden solicitar acceso a su API. Aunque se recibieron credenciales y autorización para el uso de la API por parte de idealista, el acceso estaba notablemente limitado a 100 llamadas API mensuales. Dicha restricción resultaba claramente insuficiente para un proyecto como este. Pese a que se intentó negociar un incremento en el límite de llamadas, no se recibió respuesta alguna por parte de Idealista. Adicionalmente, la plataforma de Idealista posee robustas medidas anti-\textit{scraping}, y está claramente limitado como se indica en su archivo ``robots.txt''. Aún así y tras diversas pruebas, observamos que las técnicas de \textit{scraping} fueron efectivamente identificadas y bloqueadas por su sistema.
 
-En consecuencia, se hizo necesario explorar alternativas. Tras una búsqueda, se descubrió que \url{https://www.pisos.com}, otro importante portal inmobiliario en España, permitía técnicas de scrapping sin restricciones significativas. Dada esta flexibilidad, pisos.com se identificó como la fuente ideal de datos para nuestro proyecto, y fue desde este portal de donde, finalmente, se extrajeron los datos necesarios.
+En consecuencia, se hizo necesario explorar alternativas. El portal \url{pisos.com} se identificó como la fuente ideal de datos para nuestro proyecto, y fue desde este portal de donde, finalmente, se extrajeron los datos necesarios.
 
+\clearpage
+\section{Selección de Tecnología ETL}\label{sec:seleccion_tec_etl}
 
-\section{Selección de Tecnología ETL}
+En la sección de diseño inicial, se discutió la posibilidad de emplear Apache Spark como tecnología principal para el proceso de Extracción, Transformación y Carga (ETL) de datos. No obstante, tras un análisis más cuidadoso, se determinó que no había necesidad de recurrir a una herramienta de la envergadura de Spark. A pesar de que los datos incorporaban una considerable cantidad de propiedades en venta en España, estos no alcanzaban un volumen masivo, sumando aproximadamente 500 MB generados cada varios meses. En este contexto, la computación en paralelo no solo resultaba innecesaria, sino que podía llegar a ser contraproducente. Vale la pena mencionar que, utilizando la librería Pandas de Python, el proceso ETL completo de la base de datos apenas tardaba segundos.
 
-En la sección de diseño inicial, se discutió la posibilidad de emplear Apache Spark como tecnología principal para el proceso de Extracción, Transformación y Carga (ETL) de datos. No obstante, tras un análisis más detenido, se determinó que no había necesidad de recurrir a una herramienta de la envergadura de Spark. A pesar de que los datos incorporaban una considerable cantidad de propiedades en venta en España, estos no alcanzaban un volumen masivo, sumando aproximadamente 500 MB generados cada varios meses. En este contexto, la computación en paralelo no solo resultaba innecesaria, sino que podía llegar a ser contraproducente. Vale la pena mencionar que, utilizando la librería Pandas de Python, el proceso ETL completo de la base de datos apenas tardaba segundos.
+Adicionalmente, otro factor crucial en la decisión de descartar Spark fue el consumo de recursos. El proyecto opera en una Máquina Virtual gratuita proporcionada por Oracle de 4 núcleos y 24GB de RAM, la cual sirve como servidor para múltiples servicios. Dada esta infraestructura, se concluyó que no resultaba eficiente mantener procesos de Spark activos: Se recomiendan al menos 8GB (por nodo/máquina del cluster) para ejecutar Spark~\cite{spark_resources}, nosotros contábamos solo con un nodo/máquina de 24GB, en la que había que incluir: servicio de \textit{scraping}, base de datos primaria (mongodb), servicio de ETL, base de datos secundaria (SQLite), servicio de entrenamiento y predicción utilizando Aprendizaje Automático y servidor web con posibilidad de múltiples usuarios concurrentes. Teniendo en cuenta que nos encontrábamos ante volúmenes de datos fácilmente almacenables en memoria sin uso de computación distribuida, no se observó necesidad de usar Spark.
 
-Adicionalmente, otro factor crucial en la decisión de descartar Spark fue el consumo de recursos. El proyecto opera en una Máquina Virtual gratuita proporcionada por Oracle, la cual sirve como servidor para múltiples servicios, entre ellos: scrapping, ETL, bases de datos primaria y secundaria, entrenamiento de modelos y la aplicación web. Dada esta infraestructura, se concluyó que no resultaba coste-eficiente mantener procesos de Spark activos.
+Por estos motivos, se optó por realizar todo el proceso ETL utilizando Python, con el soporte de librerías eficientes y confiables como Pandas, sin usar computación distribuida.
 
-Por estos motivos, se optó por realizar todo el proceso ETL utilizando Python, con el soporte de librerías eficientes y confiables como Pandas.
+\clearpage
+\section{Optimización del Sistema de Orquestación}\label{sec:implementacion_airflow}
 
-\section{Optimización del Sistema de Orquestación}
+Inicialmente, los procesos de ingestión (\textit{scraping}) y ETL estaban orquestados de manera rudimentaria utilizando \texttt{cron} en la máquina virtual. Sin embargo, con el inicio del análisis de datos y la exploración preliminar de modelos de \textit{Machine Learning}, se hizo evidente la necesidad de una coordinación más sofisticada entre diversos procesos. Estos incluían el entrenamiento de modelos, la aplicación de dichos modelos a los datos para su utilización por parte del usuario final, y la ejecución de \textit{backups} de las bases de datos, entre otros.
 
-Inicialmente, los procesos de ingestión/scrapping y ETL estaban orquestados de manera rudimentaria utilizando 'cron' en la máquina virtual. Sin embargo, con el inicio del análisis de datos y la exploración preliminar de modelos de Machine Learning, se hizo evidente la necesidad de una coordinación más sofisticada entre diversos procesos. Estos incluían el entrenamiento de modelos, la aplicación de dichos modelos a los datos para su utilización por parte del usuario final, y la ejecución de backups de las bases de datos, entre otros.
+Este reconocimiento de necesidades más complejas y específicas llevó a la implementación de un sistema de orquestación más avanzado y apto, en este caso, Apache Airflow. Este no solo ofrece una interfaz gráfica web intuitiva y fácil de usar, sino que también proporciona una plataforma robusta que facilita la definición, configuración y programación de flujos de trabajo complejos y dependientes. Con la adopción de Airflow, se logró una mejora significativa en la gestión y coordinación de los distintos procesos involucrados, lo que a su vez ha contribuido a un funcionamiento más eficiente y fiable del sistema en su conjunto. Además, se brinda flexibilidad para escalar y expandir el sistema en el futuro, facilitando así la incorporación y orquestación de nuevos procesos y servicios conforme evolucionan las necesidades y objetivos del proyecto.
 
-Este reconocimiento de necesidades más complejas y específicas llevó a la implementación de un sistema de orquestación más avanzado y apto, en este caso, Apache Airflow. Airflow no solo ofrece una interfaz gráfica intuitiva y fácil de usar, sino que también proporciona una plataforma robusta que facilita la definición, configuración y programación de flujos de trabajo complejos y dependientes. Con la adopción de Apache Airflow, se logró una mejora significativa en la gestión y coordinación de los distintos procesos involucrados, lo que a su vez ha contribuido a un funcionamiento más eficiente y fiable del sistema en su conjunto. Además, Apache Airflow brinda flexibilidad para escalar y expandir el sistema en el futuro, facilitando así la incorporación y orquestación de nuevos procesos y servicios conforme evolucionan las necesidades y objetivos del proyecto.
+\clearpage
+\section{Implementación de modelos de Aprendizaje Automático en el flujo de datos. División de los modelos}\label{sec:divison_modelos}
+
+La integración de modelos de Aprendizaje Automático en el flujo de datos del proyecto representó una etapa crítica, que comenzó con una fase exploratoria exhaustiva de los datos. Utilizando Jupyter Notebooks~\cite{jupyter}, se realizó un análisis preliminar para comprender las características y la distribución de los datos inmobiliarios. Este análisis permitió identificar patrones, tendencias que podrían influir en el rendimiento de los modelos predictivos.
+
+En esta fase exploratoria, se experimentó con diversos algoritmos de Aprendizaje Automático, incluyendo regresión lineal, \textit{Random Forest}... Una de las decisiones estratégicas más importantes fue la separación de los modelos según el territorio. Se observó que tener un único modelo para todos los inmuebles empeoraba notablemente el rendimiento, respecto a tener distintos modelos entrenados con los datos de un territorio (posteriormente reorganizados en provincias, explicado en Sección \ref{sec:provincias}).
+
+Además, dentro de cada territorio, se diferenció entre inmuebles con un valor de 350\,000€ o más (``caros'') y aquellos con un valor inferior (a partir de ahora, ``baratos''), creando así, dos modelos por territorio. Esta estrategia de segmentación resultó en un notable incremento en el rendimiento de los modelos, ya que predecían de forma más precisa, algo bastante lógico ya que cada territorio, región o ciudad puede tener un mercado inmobiliario muy diferente y además como afectaban las características de inmuebles ``caros'' a su precio en el mercado, era muy distinto a como afectaban a los inmuebles ``baratos''. Los inmuebles ``baratos'' solían tener un precio regido por características más lineales y predecibles, como tamaño, número de habitaciones, planta, si tiene terraza... en cambio los ``caros'' eran muy variables y dependientes de la zona, algo que cobra sentido ya que el ``lujo'' puede ser un mercado ciertamente subjetivo.
+
+Sin embargo, trasladar los modelos de una fase exploratoria a un entorno de producción presentó diversos desafíos. Uno de los principales obstáculos fue la automatización del proceso de entrenamiento y la integración de los modelos en el flujo de datos existente, de manera que las predicciones pudieran generarse y actualizarse de forma continua. La infraestructura de datos tuvo que ser cuidadosamente diseñada para soportar la recopilación, limpieza y preparación de datos en tiempo real, asegurando que los modelos siempre tuvieran acceso a los datos más recientes y relevantes.
+
+Otro aspecto crucial fue la gestión del rendimiento y los recursos. Dado el volumen y la complejidad de los datos, así como la necesidad de actualizar los modelos regularmente, se estableció un ciclo de entrenamiento de  30 días. Este intervalo se eligió para equilibrar la necesidad de mantener los modelos actualizados con las tendencias actuales del mercado, sin imponer una carga excesiva en los recursos computacionales disponibles, ya que el propio entrenamiento se hacía en la única máquina virtual del proyecto. De forma aproximada, el entrenamiento llevaba aproximadamente una hora.
+
+\clearpage
+\section{Implementación de contenedores de software}\label{sec:implementacion_docker}
+
+Desde el inicio, el proyecto tuvo servicios modularizados y diferenciados. Además estos servicios estuvieron desplegados y en funcionamiento en una máquina Ubuntu. Por ejemplo, en un inicio la base de datos MongoDB y Apache Airflow estaban instalados directamente en el sistema operativo de dicha máquina. Al igual que el servicio de \textit{scraping} o el de ETL con Python/Pandas estaban instalados en entornos virtuales de Python montados directamente en el sistema operativo de la máquina. 
+
+A medida que el número de servicios crecía y la interacción entre estos se hacía más compleja, se complicaba el paso del entorno desarrollo a la máquina de producción. Para solventar este desafío se optó por crear contenedores de software para todos los servicios, utilizando Docker~\cite{merkel2014docker}. 
+
+Para algunos servicios como los de MongoDB y Apache Airflow, directamente se utilizó una imagen oficial, teniendo que hacer pocos cambios sobre ellos. En el caso de MongoDB, los datos de la base de datos se montan en un volumen. Los volúmenes son unidades de espacio en disco que se pueden montar en distintos contenedores y quedan almacenados de forma permanente~\cite{merkel2014docker}. Lo que se hizo fue hacer un volcado de los datos de MongoDB en este volumen, restaurando así la base de datos hasta la fecha en una base de datos MongoDB funcionando ya, plenamente en un contenedor.
+
+Para otros servicios como el de scraping (Ver Sección \ref{sec:scrapy_section}), ETL (Ver Sección \ref{sec:etl_section}) o el de Aprendizaje Automático (Ver Sección \ref{sec:ml_section}) se utilizó como base una imagen \texttt{Python:3.11-slim} sobre la que se instalaban librerías adicionales según las que necesitara el servicio. 
+
+Para el servicio de SQLite (Ver Sección \ref{sec:etl_section}), al tratarse de un único archivo \texttt{.db} se almacenaba en un volumen que se compartía con los distintos contenedores que necesitaban acceso a dicha base de datos.
+
+Posteriormente, para el servicio web, se desplegó un contenedor para el \textit{frontend} (Ver Sección \ref{sec:frontend_section}), otro para el \textit{backend} (Ver Sección \ref{sec:backend_section}) y otro para el servidor Nginx de \textit{proxy-reverso}~\cite{nginx}.
+
+Finalmente, se crearon unos volúmenes adicionales para el almacenamiento permanente de los \textit{logs} de los distintos servicios y uno para almacenar los modelos de Aprendizaje Automático.
+
+\clearpage
+\section{Rediseño de módulo de \textit{scraping} debido a cambios en la web pisos.com}\label{sec:cambio_web}
+
+El rediseño del módulo de \textit{scraping} debido a los cambios en la página web de \url{pisos.com} fue un hito crítico en el desarrollo del proyecto. Este cambio supuso un desafío significativo, ya que supuso un parón total en la recogida de los datos y por tanto en todo el flujo de datos. La página individual para un inmueble, donde se especifican todos los detalles, experimentó una actualización que afectó directamente a la estrategia de extracción de datos previamente implementada. Esto ocurrió en torno al 17-18 de enero de 2024, y se detectó el 19 de enero.
+
+Inicialmente, el módulo de \textit{scraping} estaba diseñado para interactuar con una estructura web específica, extrayendo información como la ubicación, el precio, las características del inmueble, entre otros detalles, todo ello a partir de la estructura html de la página. Para arreglar el problema, simplemente se adaptó el código del \textit{scraper}. Sin embargo, con el código actualizado, el \textit{scraper} se observó que aleatoriamente era capaz de recoger los datos y otras veces no.
+
+Después de un análisis detallado y diversas pruebas, se identificó la causa raíz del problema: la presencia de un balanceador de cargas o algún mecanismo similar en el servidor de \url{pisos.com}. Este sistema alternaba aleatoriamente entre servir la versión antigua y la nueva del sitio web a los usuarios, incluido el \textit{scraper}. Como resultado, el módulo de \textit{scraping} debía ser capaz de reconocer qué versión de la página estaba procesando para aplicar el conjunto correcto de reglas de extracción de datos.
+
+Para superar este desafío, se implementó una solución dinámica en el módulo de \textit{scraping}. Primero, el \textit{scraper} fue equipado con un mecanismo de detección que identificaba la versión de la página web con la que estaba interactuando. Dependiendo de esta identificación, el \textit{scraper} seleccionaba dinámicamente el conjunto de reglas de \textit{scraping} adecuado para esa versión específica de la página. Esta estrategia permitió una adaptabilidad esencial, asegurando una recolección de datos consistente y fiable.
+
+La implementación de esta solución no solo restableció la eficacia del proceso de \textit{scraping} sino que también destacó la importancia de la flexibilidad y la adaptabilidad en los sistemas de extracción de datos. Este aprendizaje fue crucial para el proyecto, ya que subrayó la necesidad de diseñar sistemas capaces de ajustarse a cambios inesperados en las fuentes de datos, garantizando así la continuidad y la fiabilidad del análisis inmobiliario a largo plazo.
+
+Este suceso reafirmó la importancia de una monitorización continua y una rápida capacidad de respuesta ante los cambios en las fuentes de datos externas. Además, demostró que, en el dinámico entorno de la web, los proyectos de análisis de datos deben estar preparados para adaptarse rápidamente a nuevas circunstancias para mantener la integridad y la relevancia de su análisis.
+
+En este caso concreto, el día 21 de enero de 2024 se restableció el flujo de datos. Además el módulo de \textit{scraping} se diseñó para tener flexibilidad en como de frecuente se ejecutaba, no suponiendo ningún problema que no hubiese funcionado durante unos días, ya que los inmuebles actualizados durante esos días en \url{pisos.com}, se extrajeron posteriormente.
+
+\clearpage
+\section{Reorganización de los datos en provincias y capitales}\label{sec:provincias}
+
+La reorganización de los datos en provincias representó una etapa crucial en el proceso de mejora y refinamiento del proyecto de análisis de datos inmobiliarios. Esta decisión fue motivada por la necesidad de estandarizar y optimizar la estructura de datos para facilitar el análisis y la aplicación de modelos de Aprendizaje Automático de manera más efectiva. La estructura inicial de recogida de datos presentaba una mezcla heterogénea de ciudades, provincias e islas, lo que complicaba el análisis comparativo y la precisión de los modelos predictivos. Además en el proceso de ETL se incorporó la creación de un valor booleano según si el inmueble pertenecía a la capital de provincia o no.
+
+\subsection{Redefinición de la Estructura de datos}
+
+El primer paso en este proceso de reorganización fue la redefinición de la estructura de datos para agrupar la información inmobiliaria por provincias. Esta tarea implicó un  trabajo de clasificación y asignación de cada inmueble a su provincia correspondiente, eliminando las inconsistencias previas donde elementos como Bilbao (ciudad) y Gijón (ciudad) se mezclaban con provincias e islas sin una distinción clara. La adopción de este enfoque provincial permitió un análisis más coherente y comparativo entre diferentes áreas geográficas, facilitando la identificación de tendencias y patrones específicos por provincia.
+
+\subsection{Actualización de las Colecciones en MongoDB}
+
+Para implementar esta nueva estructura de datos, fue necesario realizar una actualización exhaustiva de las colecciones en MongoDB. Este proceso implicó la reorganización de los registros existentes y la actualización de los esquemas de datos para reflejar la agrupación por provincias. Además, se desarrollaron scripts específicos para automatizar la migración de datos a la nueva estructura, asegurando la integridad de los mismos durante el proceso de transición.
+
+\clearpage
+\subsection{Modificación de los Puntos de Entrada para el \textit{Scraper}}
+
+La estrategia de \textit{scraping} también se vio afectada por esta reorganización. Los puntos de entrada para el \textit{scraper} fueron modificados para alinearse con la nueva estructura de provincias. Esto implicó la actualización de las URL objetivo y la adaptación de las reglas de \textit{scraping} para capturar datos de manera más eficiente y organizada según la provincia.
+
+\subsection{Ajuste en el Proceso de ETL y agregación}
+
+El proceso de Extracción, Transformación y Carga (ETL) también se adaptó para soportar la nueva estructura de datos. Los flujos de trabajo de ETL se reconfiguraron para procesar y organizar los datos inmobiliarios recogidos en función de su provincia correspondiente. 
+
+De forma relevante para el producto final, ahora el proceso de ETL utilizaba la ubicación del inmueble (en texto) para ver si correspondía con la Capital de Provincia o no.
+
+Además el proceso de Agregación de datos ahora también agrupaba según la provincia y según si el inmueble pertenecía a la Capital de Provincia o no.
+
+\subsection{Entrenamiento de Modelos de Aprendizaje Automático y Detección de Capitales}
+
+La reorganización de los datos en provincias trajo consigo la oportunidad de mejorar los modelos de Aprendizaje Automático. Los modelos fueron entrenados específicamente con datos organizados por provincias, lo que permitió una mayor consistencia, al no mezclar ciudades, provincias e islas. 
+
+Además, se incorporó el valor booleano de si un inmueble pertenecía a la capital de la provincia o no, un factor relevante en la valoración inmobiliaria. Este enfoque diferenciado mejoró significativamente la capacidad del sistema para predecir precios de manera más precisa, considerando la influencia que tiene la ubicación en la capital o no en el valor de un inmueble.
+

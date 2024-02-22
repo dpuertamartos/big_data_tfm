@@ -1,4 +1,8 @@
-# big_data_tfm
+# Flujo de Datos para Descubrimiento de Oportunidades Inmobiliarias
+
+## Memoria completa del proyecto
+
+Se puede encontrar en el archivo  `./Latex/TFM_DavidPuertaMartos.pdf` de este directorio
 
 ## Architecture 
 

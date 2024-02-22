@@ -1,4 +1,50 @@
 \capitulo{7}{Conclusiones y Líneas de trabajo futuras}
 
-Todo proyecto debe incluir las conclusiones que se derivan de su desarrollo. Éstas pueden ser de diferente índole, dependiendo de la tipología del proyecto, pero normalmente van a estar presentes un conjunto de conclusiones relacionadas con los resultados del proyecto y un conjunto de conclusiones técnicas. 
-Además, resulta muy útil realizar un informe crítico indicando cómo se puede mejorar el proyecto, o cómo se puede continuar trabajando en la línea del proyecto realizado. 
+
+Este proyecto ha demostrado la viabilidad y el potencial de aplicar procesos ETL y técnicas de Aprendizaje Automático para guiar la toma de decisiones en inversiones inmobiliarias. A través de un enfoque sistemático y la utilización de tecnologías de código abierto, se ha logrado desarrollar una solución que facilita el análisis de las tendencias del mercado inmobiliario y además ofrece una guía de predicción del valor de las propiedades inmobiliarias en forma de una web interactiva y accesible para cualquier persona.
+
+\subsection*{Hallazgos Clave:}
+
+Los principales hallazgos del proyecto se pueden resumir en los siguientes puntos:
+
+\begin{itemize}
+  \item La simple extracción, transformación y agregación de los datos, permite crear visualizaciones que aportan conclusiones interesantes sobre el mercado inmobiliario.
+  \item La implementación de modelos de Aprendizaje Automático específicos para diferentes rangos de precios y provincias ha permitido obtener predicciones más precisas y adaptadas a las particularidades del mercado inmobiliario español.
+  \item La utilización de Docker y Oracle Cloud ha proporcionado una infraestructura robusta, escalable y eficiente, esencial para el manejo de los numerosos servicios que intervienen en todo el flujo de datos.
+  \item Aunque los modelos presentan errores significativos en ciertos casos, es posible aplicar un método de filtrado efectivo mediante el uso de un criterio simple: descartar aquellos inmuebles a los cuales el algoritmo asigna un valor aproximadamente un 33-40\% superior al precio de venta. Esta sobrevaloración generalmente se debe a la falta de información en el anuncio, errores en los datos proporcionados, o a características del inmueble (como aspectos negativos visibles en fotos o desventajas de la ubicación) que el modelo no logra interpretar adecuadamente.
+
+\end{itemize}
+
+\subsection*{Limitaciones y Desafíos:}
+
+A continuación se muestran las principales limitaciones encontradas hasta la fecha:
+
+\begin{itemize}
+  \item La recopilación de datos encontró obstáculos significativos debido a las limitaciones de acceso y las medidas anti-\textit{scraping} implementadas por algunos portales inmobiliarios. 
+  \item El constante cambio del portal inmobiliario de origen obliga a continuamente adaptar la solución software de \textit{scraping} a dichos cambios. 
+  \item La escalabilidad del proyecto se ve limitada por la capacidad de la infraestructura actual: Una sola máquina virtual.
+  \item Los modelos utilizados son totalmente incapaces de interaccionar elementos muy importantes para categorizar el valor: Las fotografías y la descripción. En ellas se pueden ver muchas sutilezas y datos que los seres humanos utilizamos para dar valor a un inmueble.
+\end{itemize}
+
+\clearpage
+\subsection*{Líneas de Trabajo Futuras:}
+
+Las principales líneas de trabajo futuras que se consideran interesantes son las siguientes:
+
+\begin{enumerate}
+  \item \textbf{Expansión de la Fuente de datos:} Explorar nuevos portales inmobiliarios y negociar accesos a APIs para enriquecer el conjunto de datos, mejorar la precisión de los modelos predictivos y eliminar las limitaciones provenientes del uso de \textit{scraping}.
+  \item \textbf{Optimización de Modelos:} Actualmente no se ajustan los hiperparámetros de los modelos, simplemente se prueban distintos algoritmos con los parámetros base y se escoge el que menor error relativo ofrece. Un enfoque inmediato es dedicar una máquina exclusivamente al entrenamiento de los modelos, lo que permitirá dedicar muchas más horas de computación a ajustar los parámetros, sin afectar al resto de servicios. 
+  \item \textbf{Mejora de la Infraestructura:} Esta mejora abriría un gran abanico de posibilidades:
+
+   Permitiría un \textbf{procesamiento de datos más frecuente} y ``casi en tiempo real''. Se podría hacer una actualización del flujo de datos cada hora, dando una sensación casi en tiempo real para el usuario, para ello sería esencial tener un servidor dedicado exclusivamente a ETL.
+
+   Se podría expandir notoriamente la \textbf{capacidad de usuarios concurrentes} usando la web: Se dedicaría un servidor exclusivamente a la web y otro exclusivamente a la base de datos relacional, que debería migrarse a un sistema más apto para producción que SQLite como por ejemplo Postgres o MySQL.
+  
+  \item \textbf{Aumentar la interacción del usuario con los modelos:} Una expansión interesante de las capacidades del producto final, es permitir a los usuarios interactuar directamente con los modelos. Los usuarios podrían introducir las características que desean para su ``inmueble'' y el modelo les devolvería el valor medio de mercado esperado para un inmueble de esas características, esto sería útil tanto para saber por cuanto vender un inmueble de forma ajustada con el mercado, como para saber por cuanto podrían esperar comprar en el mercado un inmueble de las características señaladas.
+
+  \item \textbf{Expandir el uso de Inteligencia Artificial:} Integrar tecnologías avanzadas de Inteligencia Artificial a los modelos de regresión actuales podría enriquecer significativamente el análisis. La implementación de algoritmos capaces de analizar fotografías para detectar características relevantes, identificar posibles errores en los anuncios, y mejorar la clasificación de inmuebles mediante el procesamiento del lenguaje natural (por ejemplo, analizando las descripciones de los anuncios) podría incrementar notablemente la precisión y profundidad del análisis de propiedades. Por ejemplo, en el artículo de Niu et al.~\cite{niu2019}, se utiliza un enfoque combinado de identificación de inmuebles repetidos (provenientes de distintos portales), selección de características a usar para entrenar en los modelos y evaluación simultánea con distintos modelos. Esta aproximación supone un interesante punto de partida para la mejora del algoritmo de evaluación de inmuebles del actual proyecto.
+
+
+\end{enumerate}
+
+

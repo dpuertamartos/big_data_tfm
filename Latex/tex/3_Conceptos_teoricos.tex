@@ -1,55 +1,26 @@
 \capitulo{3}{Conceptos teóricos}
 
-En aquellos proyectos que necesiten para su comprensión y desarrollo de unos conceptos teóricos de una determinada materia o de un determinado dominio de conocimiento, debe existir un apartado que sintetice dichos conceptos.
+En este capítulo se explicarán algunos conceptos teóricos que merece la pena poner en contexto para entender mejor el proyecto y la presente memoria.
 
-Algunos conceptos teóricos de \LaTeX \footnote{Créditos a los proyectos de Álvaro López Cantero: Configurador de Presupuestos y Roberto Izquierdo Amo: PLQuiz}.
+\section{\textit{Scraping}}
 
-\section{Scrapping}
+El \textit{scraping} es una técnica utilizada para extraer información de páginas web de manera automática. El proceso implica hacer solicitudes HTTP a los sitios de interés, recibir las páginas web como respuesta y luego analizar estas páginas para extraer los datos deseados~\cite{khder2021}. 
 
-Las secciones se incluyen con el comando section.
+Este proceso, debe realizarse de manera ética y responsable, evitando sobrecargar los servidores del sitio web con solicitudes y respetando los términos de servicio y las leyes de propiedad intelectual y privacidad. Las técnicas de \textit{scraping} son poderosas pero deben utilizarse con precaución y respeto por las fuentes de datos y los derechos de los demás.
 
-\section{ETL}
-
-Las secciones se incluyen con el comando section.
-
-\section{Aprendizaje automático de datos inmobiliarios}
-
-Las secciones se incluyen con el comando section.
-
-\subsection{Subsecciones}
-
-Además de secciones tenemos subsecciones.
-
-\subsubsection{Subsubsecciones}
-
-Y subsecciones. 
+En el contexto de este trabajo, será la principal y única forma de obtención de datos, por lo que representa un pilar fundamental en el flujo. Esto se debe a que el portal \url{www.pisos.com} no presenta una API funcional que nos permita extraer información, siendo el \textit{scraping} la única herramienta a nuestra disposición.
 
 
-\section{Referencias}
 
-Las referencias se incluyen en el texto usando cite \cite{wiki:latex}. Para citar webs, artículos o libros \cite{koza92}.
+\section{Bases de datos no relacionales y relacionales}
 
+Existen dos categorías principales de sistemas de gestión de bases de datos: no relacionales y relacionales. La elección depende de los requisitos y objetivos específicos del proyecto. 
 
-\section{Imágenes}
+Las relacionales son ideales para datos estructurados y relaciones complejas, las NoSQL ofrecen mayor flexibilidad y escalabilidad, siendo más adecuadas para manejar grandes volúmenes de información no estructurada o semi-estructurada~\cite{leavitt2010}. Es vital entender las necesidades del proyecto y las características de cada tipo de sistema para tomar una decisión informada. 
 
-Se pueden incluir imágenes con los comandos standard de \LaTeX, pero esta plantilla dispone de comandos propios como por ejemplo el siguiente:
-\capitulo{3}{Conceptos teóricos}
+\subsection{Bases de datos relacionales}
 
-\section{Scrapping}
-
-El scrapping es una técnica utilizada para extraer información de páginas web de manera automática. El proceso implica hacer solicitudes HTTP a los sitios de interés, recibir las páginas web como respuesta y luego analizar estas páginas para extraer los datos deseados.
-
-Para realizar el scrapping, es posible utilizar diversas herramientas y lenguajes de programación. Las bibliotecas y frameworks diseñados para este propósito facilitan la navegación por el DOM (Modelo de Objeto del Documento) de una página web, permitiendo seleccionar y extraer los datos de interés de manera más eficiente. Es crucial tener en cuenta las políticas y restricciones de cada sitio web respecto al scrapping, ya que no todos los sitios permiten esta práctica.
-
-Además, el scrapping debe realizarse de manera ética y responsable, evitando sobrecargar los servidores del sitio web con solicitudes y respetando los términos de servicio y las leyes de propiedad intelectual y privacidad. Las técnicas de scrapping son poderosas pero deben utilizarse con precaución y respeto por las fuentes de datos y los derechos de los demás.
-
-\section{Bases de Datos No Relacionales y Relacionales}
-
-Las bases de datos juegan un papel crucial en la gestión y manipulación de datos. Existen dos categorías principales de sistemas de gestión de bases de datos: No Relacionales y Relacionales.
-
-\subsection{Bases de Datos Relacionales}
-
-Las bases de datos relacionales, están estructuradas de manera que es posible identificar y acceder a los datos en relación con otro dato dentro de la base de datos. Estos sistemas siguen el modelo relacional propuesto por E.F. Codd.
+Las bases de datos relacionales están estructuradas de manera que es posible identificar y acceder a los datos en relación con otro dato dentro de la base de datos. Estos sistemas siguen el modelo relacional propuesto por Codd~\cite{codd1970}.
 
 \subsubsection{Características}
 \begin{itemize}
@@ -62,32 +33,29 @@ Las bases de datos relacionales, están estructuradas de manera que es posible i
 \subsubsection{Ejemplos}
 Algunos ejemplos son MySQL, PostgreSQL, Microsoft SQL Server, SQLite, Oracle Database.
 
-\subsection{Bases de Datos No Relacionales (NoSQL)}
+\subsection{Bases de datos no relacionales (NoSQL)}
 
-Las bases de datos No Relacionales, o NoSQL, están diseñadas para permitir operaciones de lectura y escritura de datos más flexibles y escalables que las bases de datos relacionales.
+Las bases de datos no relacionales, o NoSQL, están diseñadas para permitir operaciones de lectura y escritura de datos más flexibles y escalables que las bases de datos relacionales~\cite{garba2020}.
 
 \subsubsection{Características}
 \begin{itemize}
 \item \textbf{Esquema Dinámico:} No requieren un esquema predefinido, lo que permite insertar datos de manera más flexible.
 \item \textbf{Escalabilidad Horizontal:} Pueden manejar grandes volúmenes de datos y tráfico a través de sistemas distribuidos.
-\item \textbf{Modelos de Datos Variados:} Soportan diversos modelos de datos, incluyendo documentos, clave-valor, columnares y grafos.
+\item \textbf{Modelos de datos Variados:} Soportan diversos modelos de datos, incluyendo documentos, clave-valor, columnares y grafos.
 \end{itemize}
 
 \subsubsection{Tipos}
 \begin{itemize}
-\item \textbf{Documentales:} Almacenan los datos en documentos, comúnmente en formato JSON. Ejemplo: MongoDB.
+\item \textbf{Documentales:} Almacenan los datos en documentos, comúnmente en formato JSON. Ejemplo: MongoDB~\cite{mongodb}.
 \item \textbf{Clave-Valor:} Los datos se almacenan como pares de clave-valor. Ejemplo: Redis.
 \item \textbf{Columnares:} Organizan los datos por columnas en lugar de filas. Ejemplo: Cassandra.
 \item \textbf{Grafos:} Diseñadas para representar relaciones complejas entre los datos. Ejemplo: Neo4j.
 \end{itemize}
 
-\subsection{Comparación y Elección}
-
-La elección entre bases de datos relacionales y no relacionales depende de los requisitos y objetivos específicos del proyecto. Mientras que las relacionales son ideales para datos estructurados y relaciones complejas, las bases de datos NoSQL ofrecen mayor flexibilidad y escalabilidad, siendo más adecuadas para manejar grandes volúmenes de datos no estructurados o semi-estructurados. Es vital entender las necesidades del proyecto y las características de cada tipo de base de datos para tomar una decisión informada.
-
+\clearpage
 \section{ETL}
 
-ETL es un acrónimo que representa el proceso de Extracción, Transformación y Carga (Extract, Transform, Load en inglés). Este procedimiento es fundamental en el ámbito de la gestión de datos y las bases de datos, especialmente cuando se trata de la manipulación y análisis de grandes volúmenes de información.
+ETL es un acrónimo que representa el proceso de Extracción, Transformación y Carga (Extract, Transform, Load en inglés). Este procedimiento es fundamental en el ámbito de la gestión de datos y las bases de datos, especialmente cuando se trata de la manipulación y análisis de grandes volúmenes de información~\cite{aqlan2018}.
 
 \subsection{Extracción}
 
@@ -99,45 +67,85 @@ Una vez extraídos, los datos pasan por la fase de Transformación. Durante este
 
 \subsection{Carga}
 
-La última fase, Carga, implica transferir y depositar los datos transformados en un sistema de destino, que puede ser una base de datos, un data warehouse o cualquier otro tipo de repositorio de datos. Este paso es crucial para que los datos estén disponibles y accesibles para análisis y consultas posteriores por parte de los usuarios o sistemas que los necesiten.
+La última fase, Carga, implica transferir y depositar los datos transformados en un sistema de destino, que puede ser una base de datos, un \textit{data warehouse}~\cite{dw1992} o cualquier otro tipo de repositorio de datos. Este paso es crucial para que los datos estén disponibles y accesibles para análisis y consultas posteriores por parte de los usuarios o sistemas que los necesiten.
 
-En conjunto, el proceso ETL facilita la gestión y manipulación de datos, permitiendo que los usuarios y organizaciones accedan a información limpia, consistente y valiosa para la toma de decisiones y la generación de insights. Este proceso es fundamental en proyectos de inteligencia de negocios, análisis de datos y ciencia de datos, entre otros campos relacionados con la gestión y análisis de información.
+En conjunto, el proceso ETL facilita la gestión y manipulación de datos, permitiendo que los usuarios y organizaciones accedan a información limpia, consistente y valiosa para la toma de decisiones y la generación de \textit{insights}. Este proceso es fundamental en proyectos de inteligencia de negocios, análisis de datos y ciencia de datos, entre otros campos relacionados con la gestión y análisis de información~\cite{aqlan2018}.
+
+\section{Agregación de datos}
+
+La agregación de datos es un proceso fundamental en el tratamiento de grandes volúmenes de información. Este proceso implica combinar datos de múltiples fuentes y resumirlos en un formato más manejable y útil para el análisis~\cite{cai2019}. En el contexto de este proyecto, la agregación de datos es crucial para sintetizar la información inmobiliaria extraída y transformada, facilitando su análisis posterior mediante la web y evitando que el \textit{backend} de la web tenga que computar estas agregaciones en cada petición.
 
 \section{Aprendizaje Automático}
 
-El Aprendizaje Automático (AA), o Machine Learning (ML) en inglés, es un subcampo de la Inteligencia Artificial (IA) que se centra en construir sistemas que aprenden de los datos. A través del análisis y reconocimiento de patrones complejos en los datos, estos sistemas pueden mejorar su rendimiento y toma de decisiones con el tiempo sin ser explícitamente programados para hacerlo.
+El Aprendizaje Automático (AA), o \textit{Machine Learning} (ML) en inglés, es un subcampo de la Inteligencia Artificial (IA) que se centra en construir sistemas que aprenden de los datos. A través del análisis y reconocimiento de patrones complejos en los datos, estos sistemas pueden mejorar su rendimiento y toma de decisiones con el tiempo sin ser explícitamente programados para hacerlo~\cite{mahesh2020}.
 
 \subsection{Tipos de Aprendizaje Automático}
 
-Hay varios tipos de aprendizaje automático, cada uno con sus propias aplicaciones y uso de datos.
+Hay varios tipos de Aprendizaje Automático, cada uno con sus propias aplicaciones y uso de datos.
 
 \subsubsection{Aprendizaje Supervisado}
-El aprendizaje supervisado se realiza utilizando un conjunto de datos etiquetado. En este enfoque, el algoritmo hace predicciones o clasificaciones basadas en la entrada y se ajusta con el feedback proporcionado por las etiquetas correctas.
+El aprendizaje supervisado se realiza utilizando un conjunto de datos etiquetado. Una etiqueta es, esencialmente, una respuesta o resultado conocido que se asocia con un dato específico. Por ejemplo el precio, que intentamos predecir de un inmueble, sería su etiqueta. En este enfoque, el algoritmo hace predicciones o clasificaciones basadas en la entrada y se ajusta con el \textit{feedback} proporcionado por las etiquetas~\cite{mahesh2020}. 
+
+Es importante diferenciar entre dos tipos principales de tareas en el aprendizaje supervisado: clasificación y regresión. Mientras que la clasificación se enfoca en asignar categorías discretas a los ejemplos, la regresión se centra en predecir una cantidad continua, como es el caso del precio de un inmueble mencionado anteriormente. En este proyecto, nos centramos en la regresión, ya que ajustamos un modelo para predecir un valor continúo (precio) basándonos en variables de entrada.
 
 \subsubsection{Aprendizaje No Supervisado}
-El aprendizaje no supervisado trabaja con conjuntos de datos que no están etiquetados. Estos algoritmos identifican patrones y relaciones inherentes en los datos, como la segmentación de clientes en grupos con preferencias similares.
+El aprendizaje no supervisado trabaja con conjuntos de datos que no están etiquetados. Estos algoritmos identifican patrones y relaciones inherentes en los datos, como la segmentación de clientes en grupos con preferencias similares~\cite{mahesh2020}. 
 
-\subsubsection{Aprendizaje Por Reforzamiento}
-En el aprendizaje por refuerzo, los algoritmos aprenden interactuando con su entorno y recibiendo feedback en forma de recompensas o penalizaciones.
+\subsubsection{Aprendizaje Por Refuerzo}
+En el aprendizaje por refuerzo, los algoritmos aprenden interactuando con su entorno y recibiendo \textit{feedback} en forma de recompensas o penalizaciones~\cite{mahesh2020}. 
 
 \subsection{Proceso de Aprendizaje}
 
-\subsubsection{Preparación de Datos}
+A continuación se esquematizará un proceso de aprendizaje/entrenamiento~\cite{raschka2019}, aunque cabe remarcar que esto puede variar:
+
+\subsubsection{Análisis y Preparación de datos}
 Antes del entrenamiento, los datos deben ser preprocesados y divididos en conjuntos de entrenamiento y prueba. Esto facilita la evaluación del rendimiento del modelo.
+
+\bigskip
 
 \subsubsection{Entrenamiento del Modelo}
 El modelo se entrena utilizando el conjunto de datos de entrenamiento, ajustando sus parámetros para minimizar el error en sus predicciones.
 
-\subsubsection{Evaluación y Validación}
-Una vez entrenado, el modelo se evalúa utilizando el conjunto de datos de prueba para estimar su rendimiento y precisión en datos no vistos.
+\bigskip
 
-\subsubsection{Implementación y Monitoreo}
-Los modelos de aprendizaje automático deben ser implementados y monitoreados continuamente para asegurar que sigan siendo efectivos y relevantes con el paso del tiempo y los cambios en los datos.
+\subsubsection{Evaluación y Validación}
+Una vez entrenado, el modelo se evalúa utilizando el conjunto de datos de prueba para estimar su rendimiento y precisión en datos no vistos previamente.
+
+\bigskip
+
+\subsubsection{Implementación y Monitorización}
+Los modelos de Aprendizaje Automático deben ser implementados y monitoreados continuamente para asegurar que sigan siendo efectivos y relevantes con el paso del tiempo y los cambios en los datos.
+
+\bigskip
 
 \subsection{Algoritmos y Herramientas}
 
-Existen numerosos algoritmos de aprendizaje automático, desde regresión lineal y logística hasta redes neuronales y algoritmos de ensamble. Herramientas como TensorFlow, PyTorch y Scikit-Learn permiten implementar y trabajar con diversos algoritmos de AA.
+Existen numerosos algoritmos de Aprendizaje Automático, desde regresión lineal y logística hasta redes neuronales y algoritmos multiclasificadores (de \textit{ensamble}). Herramientas como TensorFlow, PyTorch y Scikit-Learn~\cite{raschka2019} permiten implementar y trabajar con diversos algoritmos de AA. 
 
 \subsection{Aplicaciones del Aprendizaje Automático}
 
-El aprendizaje automático se utiliza en una amplia gama de aplicaciones, incluido el reconocimiento de voz e imagen, recomendación de productos, predicción de ventas, diagnóstico médico, y análisis financiero, entre otros. Su versatilidad lo convierte en una herramienta valiosa en muchos campos y industrias.
+El Aprendizaje Automático se utiliza en una amplia gama de aplicaciones, incluido el reconocimiento de voz e imagen, recomendación de productos, predicción de ventas, diagnóstico médico y análisis financiero, entre otros. Su versatilidad lo convierte en una herramienta valiosa en muchos campos e industrias. Respecto al análisis de mercados, como puede ser la bolsa o el mercado inmobiliario, aunque sin duda ha habido intentos, se ha logrado menos éxito en la aplicación de estos modelos, en gran parte por la complejidad e impredecibilidad de dichos mercados~\cite{shinde2018}. 
+
+\section{Contenedores de software}
+
+Los contenedores de software se han convertido en una herramienta esencial en el desarrollo y despliegue de aplicaciones. Estos contenedores proporcionan un entorno ligero y portátil para ejecutar aplicaciones, garantizando que funcionen de manera uniforme y eficiente en diferentes entornos de computación~\cite{syed2015}. Cabe señalar Docker~\cite{mouat2015}, como la herramienta más extendida de contenedores de software, que además coincide con la utilizada en este proyecto.
+
+Principalmente vamos a tratar tres conceptos básicos: Imágenes, Contendedores y Volúmenes~\cite{mouat2015}. 
+
+\subsection{Imagen} Es un paquete ligero, ejecutable e independiente que incluye todo lo necesario para ejecutar una pieza de software, incluyendo el código, el tiempo de ejecución, las herramientas del sistema, las librerías y las configuraciones.
+
+\subsection{Contenedor} Es una unidad de software que se puede ejecutar y que supone una instancia de una imagen. Encapsula el código y todas sus dependencias para que la aplicación se ejecute de manera rápida y confiable desde un entorno de computación a otro.
+
+\subsection{Volumen} Un volumen, en el contexto de los contenedores de software, es un mecanismo para persistir y administrar los datos generados y utilizados por los contenedores. A diferencia de los contenedores, que son efímeros por naturaleza, los volúmenes están diseñados para ser duraderos y existir independientemente del ciclo de vida de los contenedores individuales. Esto los hace esenciales para aplicaciones y servicios que necesitan almacenar datos de manera persistente o compartir datos entre varios contenedores.
+
+\section{Orquestación}
+
+En el ámbito de proyectos de datos, especialmente en tareas de ingestión de datos, ETL y análisis, la orquestación juega un papel crucial. Implica coordinar y automatizar una serie de procesos y tareas interdependientes para garantizar que los flujos de trabajo de datos sean eficientes, escalables y fiables. Un ejemplo popular de herramienta de Orquestación es Apache Airflow~\cite{airflow}, utilizada en este proyecto, pero además existen otras muchas como Dagster~\cite {dagster}, Luigi de Spotify~\cite{Luigi}, o AWS Step Functions (AWS: (\textit{Amazon Web Services})~\cite{aws_step_functions}.
+
+\subsection{Características Principales de la Orquestación}
+\begin{itemize}
+    \item \textbf{Planificación y Secuenciación de Tareas:} Define el orden y las dependencias entre las diferentes tareas de ingestión de datos, transformación y análisis.
+    \item \textbf{Gestión de Dependencias y Errores:} Maneja las dependencias entre tareas y asegura una gestión adecuada de errores y reintentos.
+    \item \textbf{Escalabilidad y Eficiencia:} Optimiza los recursos y escala los procesos según las necesidades de carga de trabajo.
+\end{itemize}
+

@@ -1,16 +1,35 @@
 \capitulo{2}{Objetivos del proyecto}
-En este proyecto se pretende llevar a cabo lo siguiente:
+Este proyecto tiene como objetivo principal desarrollar una solución de ingeniería de datos e inteligencia de negocio para descubrimiento de oportunidades inmobiliarias, para ello se establecen las siguientes metas:
 
-1. Desarrollo de un scrapper para la sección de compra de inmuebles de www.pisos.com
+\begin{enumerate}
 
-2. Almacenamiento de los datos ingestados en una base de datos no relacional
+\item Desarrollo de un \textit{\textit{scraper}} para la sección de compra de inmuebles de \url{www.pisos.com} :
 
-3. Transformación de los datos para su posterior uso
+Este objetivo implica el desarrollo de un software que acceda periódicamente a la sección de compra-venta de inmuebles del portal inmobiliario y recopile información actualizada de dichos inmuebles a la venta. Se pretende acceder a datos de todas las provincias de España en orden de publicación (más reciente a menos).
 
-4. Carga de los datos en una base de datos relacional
+\item Almacenamiento de los datos obtenidos por el \textit{scraper} en una base de datos no relacional:
 
-5. Uso de los datos para entrenar modelos de aprendizaje automático que permitan su análisis
+El software de \textit{scraping}, tras la recopilación de datos de cada inmueble los cargará en diversas colecciones (una por provincia) de una base de datos no relacional. Se guardarán para cada inmueble la mayor cantidad posible de atributos.
 
-6. Hacer accesibles los modelos y los datos analizados al usuario final
+\item Transformación y agregación de los datos para su posterior uso:
 
-7. Orquestar el proceso de manera que los datos se ingesten, transformen y analicen de manera prolongada en el tiempo
+Se pretende desarrollar un flujo de datos que extraiga los datos de la base de datos no relacional, los transforme, limpie y además los agregue según distintas dimensiones: territoriales, temporales y según si el anuncio sigue activo.
+
+\clearpage
+\item Carga de los datos transformados en una base de datos relacional:
+
+Los datos transformados y agregados se cargarán en formato tabular en una base de datos relacional que admita consultas SQL.
+
+\item Entrenamiento de modelos de Aprendizaje Automático utilizando los datos almacenados. Enriquecimiento de los datos de la base de datos relacional mediante el uso de dichos modelos:
+
+Un objetivo principal es utilizar los datos transformados y limpiados para entrenar modelos de Aprendizaje Automático que permitan asignar una puntuación a cada inmueble que permita aproximar cómo de interesante resulta ese inmueble.
+
+\item Desarrollo de una web donde se puedan acceder y visualizar los datos transformados, agregados y enriquecidos:
+
+Se pretende mostrar los datos recopilados por el flujo en una interfaz web, en esta web también se mostraran las puntuaciones aportadas por los modelos de Aprendizaje Automático. Además permitirá la visualización de los datos agregados.
+
+\item Orquestar el proceso de manera que los datos se extraigan, carguen, transformen y analicen de manera prolongada en el tiempo:
+
+Se pretende que el flujo de datos se orqueste de manera que funcione de forma automatizada y continúa durante todo el proyecto, ofreciendo datos actualizados a diario.
+
+\end{enumerate}

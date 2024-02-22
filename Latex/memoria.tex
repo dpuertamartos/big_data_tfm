@@ -8,6 +8,23 @@
 \usepackage{lmodern} % Scalable font
 \usepackage{microtype}
 \usepackage{placeins}
+\usepackage{multicol}
+\usepackage{booktabs} % Para mejorar la apariencia de las tablas
+\usepackage{longtable}
+\usepackage{adjustbox}
+\usepackage{dirtree}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[hyphens]{url}
+
+\lstset{
+    basicstyle=\ttfamily,
+    breaklines=true,
+    escapeinside={(*@}{@*)},
+    xleftmargin=0pt,
+    xrightmargin=0pt,
+    showstringspaces=false % Opcional: no muestra espacios especiales en cadenas
+}
 
 \RequirePackage{booktabs}
 \RequirePackage[table]{xcolor}
@@ -330,7 +347,7 @@
   % Título proyecto y escudo informática ----------------
   \colorbox{cpardoBox}{%
     \begin{minipage}{.9\textwidth}
-      \vspace{.5cm}\Large
+      \vspace{.2cm}\Large
       \begin{center}
       \textbf{TFM del Máster Inteligencia de Negocio y Big Data en Entornos Seguros}\vspace{.6cm}\\
       \textbf{\LARGE\@title{}}
@@ -344,11 +361,11 @@
   % Datos de alumno, curso y tutores ------------------
   \begin{center}%
   {%
-    \noindent\MEDIUM
+    \noindent\large
     Presentado por \@author{}\\
     en Universidad de Burgos a \\ \@date{}\\
     Tutor: \@tutor{}\\
-    Tutor 2: \@tutorb{}\\
+    Co-tutor: \@tutorb{}\\
   }%
   \end{center}%
   \null
@@ -359,9 +376,9 @@
 \newcommand{\nombre}{Nombre del alumno} %%% cambio de comando
 
 % Datos de portada
-\title{ETL y aprendizaje automático sobre inversiones inmobiliarias}
+\title{Flujo de Datos para Descubrimiento de Oportunidades Inmobiliarias}
 \author{David Puerta Martos}
-\tutor{Álvar Arnaiz-González}
+\tutor{Álvar Arnaiz González}
 \tutorb{José Antonio Barbero Aparicio}
 \date{\today}
 
@@ -370,85 +387,21 @@
 \maketitle
 
 
-\newpage\null\thispagestyle{empty}\newpage
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\thispagestyle{empty}
-
-
-\noindent
-\begin{center}%
-	{\noindent\Huge Universidades de Burgos, León y Valladolid}\vspace{.5cm}%
-
-\begin{center}%
-	\includegraphics[height=3cm]{img/escudoUBU} \hspace{1cm}
-	\includegraphics[height=3cm]{img/escudoUVA} \hspace{1cm}
-	\includegraphics[height=3cm]{img/escudoULE} \vspace{1cm}%
-\end{center}%
-
-	{\noindent\Large \textbf{Máster universitario en Inteligencia de Negocio y Big~Data en Entornos Seguros}}\vspace{.5cm}%
-\end{center}%
-
-
-
-\noindent D. nombre tutor, profesor del departamento de nombre departamento, área de nombre área.
-
-\noindent Expone:
-
-\noindent Que el alumno D. \nombre, con DNI dni, ha realizado el Trabajo final de Máster en Inteligencia de Negocio y Big Data en Entornos Seguros
-          titulado título de TFM.
-
-\noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
-
-\begin{center} %\large
-En Burgos, {\large \today}
-\end{center}
-
-\vfill\vfill\vfill
-
-% Author and supervisor
-\begin{minipage}{0.45\textwidth}
-\begin{flushleft} %\large
-Vº. Bº. del Tutor:\\[2cm]
-D. nombre tutor
-\end{flushleft}
-\end{minipage}
-\hfill
-\begin{minipage}{0.45\textwidth}
-\begin{flushleft} %\large
-Vº. Bº. del co-tutor:\\[2cm]
-D. nombre co-tutor
-\end{flushleft}
-\end{minipage}
-\hfill
-
-\vfill
-
-% para casos con solo un tutor comentar lo anterior
-% y descomentar lo siguiente
-%Vº. Bº. del Tutor:\\[2cm]
-%D. nombre tutor
-
-
-\newpage\null\thispagestyle{empty}\newpage
-
-
-
-
 \frontmatter
 
 % Abstract en castellano
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-En este proyecto se abordará de principio a fin un proceso de extracción, transformación y carga de datos de carácter inmobiliario. Además, se pretende llevar a cabo el análisis de estos datos mediante el uso de técnicas de aprendizaje automático. Finalmente, se pretende generar una interfaz web amigable que permita filtrar y buscar los inmuebles disponibles en tiempo real. La extracción, transformación, carga, re-entrenado de modelos y análisis de los datos con los modelos se orquesta para lograr su continuidad en el tiempo, con la idea de ofrecer datos actualizados continuamente.
+En este proyecto se ha desarrollado un proceso de extracción, transformación y carga de datos inmobiliarios, obtenidos desde uno de los portales más destacados de España, \href{https://www.pisos.com}{pisos.com}. Este proceso se complementa con el análisis de los datos mediante técnicas de Aprendizaje Automático, con el objetivo de descubrir potenciales oportunidades de compra de inmuebles. 
 
-El origen de estos datos es uno de los portales inmobiliarios más grandes de España, \url{www.pisos.com}. La motivación de este proyecto sería ofrecer a un potencial comprador un análisis automatizado de todos los inmuebles disponibles para la compra. El análisis de oportunidades inmobiliarias es un problema complejo y vigente, por lo tanto hay un nicho de negocio real para automatizar y simplificar el procedimiento.
+Como resultado, se ha creado una interfaz web accesible en \href{https://www.buscahogar.es}{www.buscahogar.es}, que permite a los usuarios filtrar, buscar y ordenar inmuebles disponibles según el valor asignado por los modelos, además de otras características, ofreciendo así una herramienta poderosa para potenciales compradores. También, se ofrece la posibilidad de visualizar datos agregados de todo el mercado inmobiliario, filtrados y segmentados según distintos intereses, con objetivo de mejorar la toma de decisiones.
+
+Finalmente, el proyecto orquesta los procesos de extracción, transformación, carga, entrenamiento de modelos y análisis de datos, con el fin de mantener la información actualizada a diario y relevante para los usuarios. 
 \end{abstract}
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-scrapping, python, mongodb, ETL, SQL, airflow, aprendizaje automático, regresión, scikit learn, react, node.js
+scraping, python, mongodb, ETL, SQL, airflow, docker, aprendizaje automático, scikit learn, react, node.js
 \end{abstract}
 
 \clearpage
@@ -456,9 +409,12 @@ scrapping, python, mongodb, ETL, SQL, airflow, aprendizaje automático, regresi�
 % Abstract en inglés
 \renewcommand*\abstractname{Abstract}
 \begin{abstract}
-This project will address, from start to finish, a process of extraction, transformation, and loading of real estate data. Moreover, there is an intention to conduct an analysis of this data using machine learning techniques. Finally, the project aims to generate a user-friendly web interface that allows filtering and searching for available properties in real-time. The extraction, transformation, loading, re-training of models, and data analysis with the models are orchestrated to ensure their continuity over time, with the idea of continuously offering updated data.
+In this project, a process of extraction, transformation, and loading of real estate data has been developed, sourced from one of Spain's most prominent portals, \href{https://www.pisos.com}{pisos.com}. This process is complemented by data analysis using Machine Learning techniques, with the aim of uncovering potential real estate buying opportunities.
 
-The origin of this data is one of the largest real estate portals in Spain, \url{www.pisos.com}. The motivation for this project is to provide potential buyers with an automated analysis of all properties available for purchase. Analyzing real estate opportunities is a complex and current problem; therefore, there is a real business niche to automate and simplify this procedure.
+As a result, a web interface accessible at \href{https://www.buscahogar.es}{www.buscahogar.es} has been created. Our portal allows users to filter, search, and sort available properties based on the value assigned by the models, among other characteristics, thus offering a powerful tool for potential buyers. Additionally, it provides the possibility to visualize aggregated data from the entire real estate market, filtered and segmented according to different interests, with the goal of improving decision-making.
+
+Finally, the project orchestrates the processes of extraction, transformation, loading, model training, and data analysis, with the aim of keeping the information updated daily and relevant for users.
+
 \end{abstract}
 
 \renewcommand*\abstractname{Keywords}
@@ -482,9 +438,9 @@ scrapping, python, mongodb, ETL, SQL, airflow, machine learning, regression, sci
 
 \mainmatter
 
-\part*{Memoria}
-\addcontentsline{toc}{part}{Memoria}
 
+\addcontentsline{toc}{part}{Memoria}
+\part*{Memoria}
 
 \include{./tex/1_Introduccion}
 \include{./tex/2_Objetivos_del_proyecto}
@@ -505,14 +461,12 @@ scrapping, python, mongodb, ETL, SQL, airflow, machine learning, regression, sci
 \part*{Apéndices}
 
 \include{./tex/A_Plan_proyecto}
-\include{./tex/B_Requisitos}
-\include{./tex/C_Diseno}
-\include{./tex/D_Manual_programador}
-\include{./tex/E_Manual_usuario}
+\include{./tex/B_Diseno}
+\include{./tex/C_Manual_programador}
+\include{./tex/D_Manual_usuario}
 
 
 \bibliographystyle{plain}
 \bibliography{bibliografia}
 
 \end{document}
-

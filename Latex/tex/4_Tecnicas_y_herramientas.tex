@@ -1,41 +1,41 @@
 \capitulo{4}{Técnicas y herramientas}
 
-Esta parte de la memoria tiene como objetivo presentar las técnicas metodológicas y las herramientas de desarrollo que se han utilizado para llevar a cabo el proyecto. Si se han estudiado diferentes alternativas de metodologías, herramientas, bibliotecas se puede hacer un resumen de los aspectos más destacados de cada alternativa, incluyendo comparativas entre las distintas opciones y una justificación de las elecciones realizadas. 
-No se pretende que este apartado se convierta en un capítulo de un libro dedicado a cada una de las alternativas, sino comentar los aspectos más destacados de cada opción, con un repaso somero a los fundamentos esenciales y referencias bibliográficas para que el lector pueda ampliar su conocimiento sobre el tema.
+En este capítulo se detallarán las técnicas y herramientas utilizadas para el desarrollo e implementación del proyecto, se justificará su elección y como se adecuan a la escala de tiempo y recursos disponibles para el proyecto.
 
-\section{Tecnología de scrapping: Scrappy}
+\section{Tecnología de \textit{scraping}: Scrapy}\label{sec:scrapy_section}
 
 
-En el ámbito del web scraping existen múltiples herramientas y bibliotecas que facilitan la extracción de datos de sitios web para su posterior análisis o almacenamiento. La Tabla \ref{tabla:tecnologiasComparadas} compara algunas de las tecnologías de web scraping más conocidas, evaluándolas en base a varios criterios como el rendimiento, facilidad de uso, y flexibilidad.
+En el ámbito del web \textit{scraping} existen múltiples herramientas y librerías que facilitan la extracción de datos de sitios web para su posterior análisis o almacenamiento. La Tabla    \ref{tabla:tecnologiasComparadas} compara algunas de las tecnologías de web \textit{scraping} más conocidas, evaluándolas en base a varios criterios como el rendimiento, facilidad de uso y flexibilidad.
 
-Para el proyecto actual, que tiene como objetivo extraer información relevante sobre la compraventa de inmuebles en pisos.com, se ha seleccionado Scrapy como la tecnología de scraping a utilizar. A continuación, se describen las razones de esta elección:
+Para el proyecto actual, que tiene como objetivo extraer información relevante sobre la compraventa de inmuebles en \url{pisos.com}, se ha seleccionado Scrapy~\cite{scrapy} como la tecnología de \textit{scraping} a utilizar. A continuación, se describen las razones de esta elección:
 
 \begin{description}
-	\item[Rendimiento] Scrapy es conocido por su alta velocidad y eficiencia, permitiendo la extracción de grandes cantidades de datos en un tiempo reducido. Esto es especialmente útil para nuestro proyecto, donde la actualización frecuente de los anuncios y las ofertas es una constante.
-	\item[Facilidad de Uso] Aunque Scrapy tiene una curva de aprendizaje inicial más pronunciada en comparación con, por ejemplo, Beautiful Soup, ofrece una gran cantidad de funcionalidades "out-of-the-box" que aceleran el proceso de desarrollo una vez se comprende su funcionamiento básico.
+	\item[Rendimiento y Concurrencia:] Scrapy es conocido por su alta velocidad y eficiencia, permitiendo la extracción de grandes cantidades de datos en un tiempo reducido. Esto es especialmente útil para nuestro proyecto, donde la actualización frecuente de los anuncios y las ofertas es una constante. Uno de los factores a destacar es su capacidad de concurrencia al utilizar la librería Twisted~\cite{twisted}. El desarrollo de Scrapy basado en dicha librería permite hacer peticiones de forma asíncrona, habilitando gran cantidad de peticiones concurrentes que no se bloquean entre sí~\cite{scrapy_architecture}.
+	\item[Facilidad de Uso:] Aunque Scrapy tiene una curva de aprendizaje inicial más pronunciada en comparación con, por ejemplo, Beautiful Soup~\cite{beautiful_soup}, ofrece una gran cantidad de funcionalidades \textit{out-of-the-box} que aceleran el proceso de desarrollo una vez se comprende su funcionamiento básico.
     \item[Flexibilidad:] Scrapy es altamente configurable y extensible, lo cual permite adaptar el scraper a necesidades específicas. Esto resulta particularmente útil cuando se trata de sitios web con estructuras más complejas o cuando se requieren funcionalidades avanzadas como el manejo de sesiones, cookies o cabeceras HTTP.
     \item[Madurez y Comunidad:] Scrapy es una tecnología madura con una comunidad activa, lo que asegura un buen soporte y una amplia disponibilidad de documentación y recursos de aprendizaje.
-    \item[Preferencia del autor para aprender la herramienta:] Algunas de las herramientas como Beautiful Soup y Selenium ya habían sido usadas por el autor, por lo tanto uno de los motivos para decidir por Scrapy fue el hecho de aprender una nueva herramienta ampliamente usada en la comunidad.
+    \item[Preferencia del autor para aprender la herramienta:] Algunas de las herramientas como Beautiful Soup~\cite{beautiful_soup} y Selenium~\cite{selenium} ya habían sido usadas por el autor, por lo tanto uno de los motivos para decidir por Scrapy fue el hecho de aprender una nueva herramienta ampliamente usada en la comunidad.
 \end{description}
 
-Por todas estas razones, Scrapy se presenta como la opción más robusta y versátil para el web scraping de \url{www.pisos.com}, proporcionando las herramientas necesarias para llevar a cabo un proyecto exitoso.
+Por estos motivos, Scrapy se presenta como la opción más robusta y versátil para el web \textit{scraping} de \url{www.pisos.com}, proporcionando las herramientas necesarias para llevar a cabo un proyecto exitoso.
 
 
 
-\tablaSmall{Comparación de Tecnologías de Web Scraping}{l c c c c}{tecnologiasComparadas}
-{ \multicolumn{1}{l}{Tecnologías} & Rendimiento & Facilidad de Uso & Flexibilidad & Proyecto \\}{
-Scrapy & \textbf{XX} & X & \textbf{XX} & \textbf{XX}\\
+\tablaSmall{Comparación de Tecnologías de Web \textit{scraping}}{lcccc}{tecnologiasComparadas}
+{ \multicolumn{1}{l}{Tecnologías} & Rendimiento & Facilidad & Flexibilidad & Escogida \\}{
+Scrapy & \textbf{XX} & X & \textbf{XX} & \textbf{X}\\
 Beautiful Soup & X & \textbf{XX} & X & \\
 Selenium & X & X & X & \\
 Requests & X & \textbf{XX} & X & \\
 Mechanize & X & X & X & \\
 }
 
-\section{Base de datos primaria: MongoDB}
+\clearpage
+\section{Base de datos primaria: MongoDB}\label{sec:mongodb_section}
 
-Los datos recopilados a través de scrapping deben almacenarse de forma permanente para su posterior uso. Esto requiere inevitablemente usar una base de datos.
+Los datos recopilados a través de \textit{scraping} deben almacenarse de forma permanente para su posterior uso. Esto requiere inevitablemente usar una base de datos.
 
-Una de las primeras decisiones fue usar una base de datos no relacional, por la flexibilidad que podía aportar al tratarse de datos de scrapping. Es frecuente que estos datos no tengan una estructura muy definida o que varíen considerablemente en formato, campos disponibles o tipos de datos. En tales casos, las bases de datos relacionales pueden resultar restrictivas, ya que exigen un esquema fijo y predefinido que todos los registros deben seguir. Por el contrario, MongoDB permite una estructura más flexible, lo que hace que sea más adecuada para manejar datos heterogéneos.
+Una de las primeras decisiones fue usar una base de datos no relacional, por la flexibilidad que podía aportar al tratarse de datos de \textit{scraping}. Es frecuente que estos datos no tengan una estructura muy definida o que varíen considerablemente en formato, campos disponibles o tipos de datos. En tales casos, las bases de datos relacionales pueden resultar restrictivas, ya que exigen un esquema fijo y predefinido que todos los registros deben seguir. Por el contrario, MongoDB~\cite{mongodb}, al tratarse de una base de datos NoSQL documental~\cite{chauhan2019}, permite una estructura más flexible, lo que hace que sea más adecuada para manejar datos heterogéneos.
 
 Dentro de las bases de datos NoSQL, otra decisión rápida fue la de elegir una que fuera Open Source y con licencia gratuita. Esto no solo ayuda a mantener bajos los costos del proyecto, sino que también abre la puerta a una amplia comunidad de desarrolladores y una gran cantidad de recursos y documentación en línea. De las bases de datos que cumplían con estos requisitos, MongoDB destacó por varias razones:
 
@@ -44,86 +44,257 @@ Dentro de las bases de datos NoSQL, otra decisión rápida fue la de elegir una 
 
 \item \textbf{Experiencia Previa}: Contar con experiencia previa en MongoDB reduce significativamente la curva de aprendizaje, permitiendo un desarrollo más rápido y eficiente del proyecto.
 
-\item \textbf{Escalabilidad}: MongoDB ofrece una excelente escalabilidad horizontal, lo que permite manejar grandes volúmenes de datos y tráfico sin degradar el rendimiento. Esto es especialmente útil para proyectos de scrapping que pueden empezar pequeños pero crecer rápidamente.
+\item \textbf{Escalabilidad}: MongoDB ofrece una excelente escalabilidad horizontal, lo que permite manejar grandes volúmenes de datos y tráfico sin degradar el rendimiento. Esto es especialmente útil para proyectos de \textit{scraping} que comienzan con un tamaño pequeño pero crecen rápidamente.
 
 \item \textbf{Consultas Flexibles}: MongoDB ofrece un sistema de consultas flexible y potente que permite realizar búsquedas complejas, algo que es especialmente útil cuando se trata de analizar y utilizar los datos recopilados.
 
-\item \textbf{Integración con otras Tecnologías}: MongoDB se integra fácilmente con numerosas plataformas y lenguajes de programación, lo que la convierte en una opción versátil para cualquier stack tecnológico. La integración son scrapy, la libreria de python para web scrapping utilizada fue trivial gracias a la libreria pymongo, la libreria de mongodb para python.
+\item \textbf{Integración con otras Tecnologías}: MongoDB se integra fácilmente con numerosas plataformas y lenguajes de programación, lo que la convierte en una opción versátil para cualquier \textit{stack} tecnológico. La integración con Scrapy, la librería de Python para web \textit{scraping} utilizada fue trivial gracias a la librería Pymongo, la librería de mongodb para Python.
 \end{itemize}
 
-Por todas estas razones, MongoDB se convirtió en la opción más atractiva para este proyecto, ofreciendo la combinación ideal de flexibilidad, escalabilidad y soporte comunitario.
+Por estas razones, MongoDB se convirtió en la opción más atractiva para este proyecto, ofreciendo la combinación ideal de flexibilidad, escalabilidad y soporte comunitario.
 
-\section{Base de datos secundaria: SQLite}
+\section{Herramientas de ETL: Pandas}\label{sec:etl_section}
 
-Los datos originados de la base de datos primaria y transformados mediante el proceso ETL (Extracción, Transformación y Carga) son nuevamente almacenados en una base de datos. Para este paso del flujo de datos, se optó por una base de datos relacional como SQLite por diversas razones:
+Para el proceso de Extracción, Transformación y Carga (ETL) de los datos, se decidió utilizar Python con la ayuda de la librería Pandas~\cite{pandas}. A continuación, se describen las razones que llevaron a esta elección:
 
 \begin{itemize}
-\item \textbf{Búsquedas y Ordenaciones Rápidas}: Las bases de datos relacionales son particularmente eficientes en la realización de consultas que involucran ordenamientos y joins, lo que resulta útil para las interfaces web donde se necesita acceder a los datos de forma rápida y eficiente.
+\item \textbf{Volumen de datos}: Uno de los principales factores fue el tamaño moderado del conjunto de datos con el que se está trabajando. Con aproximadamente 500 MB de datos recopilados cada 2-3 meses, se ha considerado que dicho volumen no justifica el uso de una herramienta diseñada para el procesamiento de datos masivos, como Apache Spark.
 
-\item \textbf{Estructura Clara}: Este tipo de base de datos proporciona un esquema bien definido, lo cual facilita el análisis de datos y las operaciones de machine learning, al no requerir transformaciones adicionales para su uso.
+\item \textbf{Eficiencia y Velocidad}: Con Pandas y Python, la transformación de toda la base de datos se puede realizar en cuestión de segundos. Esto significa que no hay una necesidad inmediata de una infraestructura más compleja y potente. Usar Spark en este contexto sería una forma de sobreingeniería que añadiría complejidad innecesaria al proyecto.
+
+\item \textbf{Recursos de Máquina}: Spark exige una asignación de recursos considerablemente mayor que Pandas~\cite{spark_resources}, especialmente si se configura en un modo distribuido con múltiples nodos reales. Estos recursos podrían ser más eficientemente dedicados a otras tecnologías o aspectos del proyecto en la única máquina virtual que tenemos disponible.
+
+\item \textbf{Costo y Licencia}: Al ser una librería de código abierto, Pandas no incurre en costos adicionales, lo cual es beneficioso desde el punto de vista económico del proyecto.
+\end{itemize}
+
+Por todas estas razones, se optó por utilizar Python con Pandas para las operaciones de ETL en este proyecto. Esta elección se alinea con los requisitos y limitaciones del proyecto, ofreciendo una solución eficiente y efectiva, sin incurrir en la complejidad y los costos adicionales que implicaría la implementación de una herramienta como Spark.
+
+\section{Base de datos secundaria: SQLite}\label{sec:sql_section}
+
+Los datos originados de la base de datos primaria y transformados mediante el proceso ETL (Extracción, Transformación y Carga) son nuevamente almacenados en una base de datos. Para este paso del flujo de datos, se optó por una base de datos relacional como SQLite~\cite{sqlite} por diversas razones:
+
+\begin{itemize}
+\item \textbf{Búsquedas y Ordenaciones Rápidas}: Las bases de datos relacionales son particularmente eficientes en la realización de consultas que involucran ordenamientos y \textit{joins}~\cite{garba2020}, lo que resulta útil para las interfaces web donde se necesita acceder a los datos de forma rápida y eficiente.
+
+\item \textbf{Estructura Clara}: Este tipo de base de datos proporciona un esquema bien definido, lo cual facilita el análisis de datos y las operaciones de Aprendizaje Automático, que generalmente aceptan sin transformaciones adicionales los datos tabulares.
 
 \item \textbf{Economía de Recursos}: Dado que el volumen de datos a manejar es relativamente pequeño (inferior a 500 MB cada 2-3 meses de recolección), una base de datos ligera y eficiente como SQLite es más que suficiente para satisfacer las necesidades del proyecto.
 
-\item \textbf{Integración con Python}: SQLite permite una integración directa con Python, lo que simplifica significativamente el flujo de trabajo y evita la necesidad de implementar y mantener un servidor de base de datos separado.
+\item \textbf{Integración con Python}: SQLite permite una integración nativa, sin librerías adicionales y extremadamente sencilla con Python, lo que simplifica significativamente el flujo de trabajo y evita la necesidad de implementar y mantener un servidor de base de datos separado, la base de datos con tecnología SQLite se almacena simplemente como un archivo ``.db''.
 
 \item \textbf{Facilidad de Migración}: En caso de que el proyecto escale y requiera una solución más robusta, la migración a una base de datos relacional más potente, como PostgreSQL o MySQL, sería un proceso relativamente sencillo. Esto es debido a que el esquema y las consultas SQL podrían reutilizarse con pocos ajustes.
 \end{itemize}
 
-Por lo tanto, SQLite se convierte en una excelente opción para este escenario específico. Ofrece la ventaja de ser ligero y eficiente en el uso de recursos, mientras proporciona todas las funcionalidades necesarias para realizar análisis de datos y machine learning de forma eficaz. Además, su fácil integración con Python y la flexibilidad para una futura migración hacen de SQLite una elección pragmática y efectiva para este proyecto.
+Por lo tanto, SQLite se convierte en una excelente opción para este escenario específico. Ofrece la ventaja de ser ligero y eficiente en el uso de recursos, mientras proporciona todas las funcionalidades necesarias para realizar análisis de datos y Aprendizaje Automático de forma eficaz. Además, su fácil integración con Python y la flexibilidad para una futura migración hacen de SQLite una elección pragmática y efectiva para este proyecto. El hecho de que la base de datos entera se almacene en un único archivo \texttt{.db} ha facilitado enormemente el esfuerzo iterativo de desarrollo. 
 
-\section{Herramientas de ETL: Pandas}
+Cabe señalar que, si este proyecto se fuese a desplegar en un entorno más ambicioso, la migración a alguna tecnología de base de datos relacional como Postgres o MySQL es extremadamente recomendable.
 
-Para el proceso de Extracción, Transformación y Carga (ETL) de los datos, se decidió utilizar Python con la ayuda de la librería Pandas. A continuación, se describen las razones que llevaron a esta elección:
+\clearpage
+\section{Orquestador: Apache Airflow}\label{sec:airflow_section}
 
-\begin{itemize}
-\item \textbf{Volumen de Datos}: Uno de los principales factores fue el tamaño moderado del conjunto de datos con el que se está trabajando. Con aproximadamente 500 MB de datos recopilados cada 2-3 meses, el volumen no justifica el uso de una herramienta diseñada para el procesamiento de datos masivos, como Spark.
-
-\item \textbf{Eficiencia y Velocidad}: Con Pandas y Python, la transformación de toda la base de datos se puede realizar en cuestión de segundos. Esto significa que no hay una necesidad inmediata de una infraestructura más compleja y potente. Usar Spark en este contexto sería una forma de sobreingeniería que añadiría complejidad innecesaria al proyecto.
-
-\item \textbf{Recursos de Máquina}: Spark exige una asignación de recursos considerablemente mayor que Pandas, especialmente si se configura en un modo distribuido. Estos recursos podrían ser más eficientemente dedicados a otras tecnologías o aspectos del proyecto.
-
-\item \textbf{Facilidad y flexibilidad}: Pandas ofrece una API intuitiva y fácil de usar, lo que acelera el desarrollo y facilita el mantenimiento. Además, la comunidad de Pandas es amplia, con una gran cantidad de documentación y tutoriales disponibles. Pandas es extremadamente flexible y permite una amplia gama de operaciones de manipulación de datos, desde simples filtrados y ordenaciones hasta operaciones de agrupación y pivoteo más complejas.
-
-\item \textbf{Costo y Licencia}: Al ser una biblioteca de código abierto, Pandas no incurre en costos adicionales, lo cual es beneficioso desde el punto de vista económico del proyecto.
-\end{itemize}
-
-Por todas estas razones, se optó por utilizar Python con Pandas para las operaciones de ETL en este proyecto. Esta elección se alinea con los requisitos y limitaciones del proyecto, ofreciendo una solución que es tanto eficiente como efectiva, sin incurrir en la complejidad y los costos adicionales que implicaría la implementación de una herramienta como Spark.
-
-\section{Orquestador: Apache Airflow}
-
-Originalmente, la ingestión y transformación de datos se manejaban con una simple programación cron. Sin embargo, con la evolución del proyecto y la incorporación de nuevos flujos de trabajo, como el entrenamiento periódico de modelos de machine learning y la aplicación de dichos modelos a nuevos datos, se hizo evidente la necesidad de un sistema de orquestación más robusto y flexible. Por ello, se optó por utilizar Apache Airflow por las siguientes razones:
+Originalmente, la ingestión y transformación de datos se manejaban con una simple programación \texttt{cron}, característica de sistemas Unix. Sin embargo, con la evolución del proyecto y la incorporación de nuevos flujos de trabajo, como el entrenamiento periódico de modelos de Aprendizaje Automático y la aplicación de dichos modelos a nuevos datos, se hizo evidente la necesidad de un sistema de orquestación más robusto y flexible. Se optó por utilizar Apache Airflow~\cite{airflow} por las siguientes razones:
 
 \begin{itemize}
 \item \textbf{Gestión de Dependencias}: Apache Airflow permite definir de manera clara y estructurada las dependencias entre las diferentes tareas del flujo de trabajo. Esto resulta especialmente útil cuando los flujos de trabajo se vuelven más complejos y dependen de múltiples etapas y condiciones para su ejecución exitosa.
 
-\item \textbf{Interfaz de Usuario}: Apache Airflow viene con una interfaz de usuario intuitiva que facilita el monitoreo del estado de los flujos de trabajo, la revisión de logs y la identificación de cuellos de botella o fallos en el sistema.
+\item \textbf{Interfaz de Usuario}: Apache Airflow viene con una interfaz de usuario intuitiva que facilita el monitorización del estado de los flujos de trabajo, la revisión de logs y la identificación de cuellos de botella o fallos en el sistema. Ver Figura \ref{fig:airflow_interfaz}.
 
-\item \textbf{Programación Flexible}: A diferencia de cron, que tiene limitaciones en cuanto a la programación de tareas, Airflow permite una gran flexibilidad en la definición de horarios y desencadenantes para la ejecución de tareas.
+\item \textbf{Programación Flexible}: A diferencia de \texttt{cron}, que tiene limitaciones en cuanto a la programación de tareas, Airflow permite una gran flexibilidad en la definición de horarios y desencadenantes para la ejecución de tareas.
 
 \item \textbf{Integración con Otras Herramientas}: Airflow se integra fácilmente con una amplia variedad de tecnologías y plataformas, desde bases de datos hasta servicios de almacenamiento en la nube, lo que facilita la implementación de flujos de trabajo complejos.
 
 \item \textbf{Gestión de Errores y Reintentos}: Con Airflow, es posible configurar políticas de reintentos y alertas, lo que mejora la robustez del sistema al manejar fallos y excepciones de manera más efectiva.
 
-\item \textbf{Código Como Configuración}: Airflow permite definir flujos de trabajo como código, lo que facilita la versión, el mantenimiento y la colaboración en el desarrollo de flujos de trabajo.
+\item \textbf{Código Como Configuración}: Airflow permite definir flujos de trabajo como código en las denominadas DAGs o \textit{Directed Acyclic Graphs}~\cite{dags}. Esto facilita la versión, el mantenimiento y la colaboración en el desarrollo.
 
-\item \textbf{Comunidad y Soporte}: Apache Airflow cuenta con una comunidad de desarrolladores activa y una gran cantidad de documentación en línea, lo que facilita el proceso de adaptación y resolución de problemas.
+\item \textbf{Comunidad y Soporte}: Apache Airflow cuenta con una comunidad de desarrolladores activa y una gran cantidad de documentación en línea~\cite{airflow}, lo que facilita el proceso de adaptación y resolución de problemas.
 \end{itemize}
 
-Por lo aquí expuesto, Apache Airflow fue elegido como la solución de orquestación más adecuada para este proyecto. Su flexibilidad, escalabilidad y robustez hacen que sea una herramienta altamente eficaz para coordinar múltiples tareas, algo que cron simplemente no podría manejar de manera tan efectiva.
+Por lo aquí expuesto, Apache Airflow fue elegido como la solución de orquestación más adecuada para este proyecto. Su flexibilidad, escalabilidad y robustez hacen que sea una herramienta altamente eficaz para coordinar múltiples tareas, algo que \texttt{cron} simplemente no podría manejar de manera tan efectiva.
+
+\section{Machine Learning: \texttt{Scikit-learn}}\label{sec:ml_section}
+
+Para las tareas de Aprendizaje Automático en este proyecto, se ha seleccionado \texttt{Scikit-learn}~\cite{scikit-learn}, una librería de Aprendizaje Automático de código abierto para el lenguaje de programación Python. 
+
+\subsection{Características y Razones para la elección:  }
+
+A continuación, se describen las razones de esta elección y las características destacadas de la librería:
+
+\begin{itemize}
+    \item \textbf{Amplia Gama de Algoritmos}: Ofrece una extensa colección de algoritmos de Aprendizaje Automático para tareas de clasificación, regresión, clustering y reducción de dimensionalidad, lo cual es esencial para experimentar con diferentes enfoques y técnicas en el análisis de datos inmobiliarios.
+
+    \item \textbf{Facilidad de Uso y Flexibilidad}: La API de \texttt{Scikit-learn} es coherente y fácil de usar, lo que permite una rápida implementación y experimentación con modelos de Aprendizaje Automático. Su diseño intuitivo y la integración con otras librerías de Python, como NumPy y Pandas, facilitan el trabajo con conjuntos de datos y la transformación de datos.
+
+    \item \textbf{Documentación y Comunidad}: Cuenta con una amplia documentación y tutoriales, así como una comunidad activa, lo que facilita el aprendizaje y la resolución de problemas durante el desarrollo del proyecto.
+
+    \item \textbf{Rendimiento y Eficiencia}: A pesar de ser una librería de alto nivel, está optimizada para un alto rendimiento, lo que es crucial para el procesamiento eficiente de conjuntos de datos de tamaño moderado.
+
+    \item \textbf{Interoperabilidad con Herramientas de ETL y Orquestación}: Se integra perfectamente con las herramientas de ETL como Pandas y el orquestador Apache Airflow, lo que permite una gestión eficaz del flujo de trabajo de datos desde la extracción y transformación hasta el análisis y modelado de Aprendizaje Automático.
+
+    \item \textbf{Soporte para Evaluación y Validación de Modelos}: La librería incluye herramientas para la validación cruzada y la evaluación de modelos, lo cual es fundamental para garantizar la precisión y robustez de los modelos de Aprendizaje Automático desarrollados.
+\end{itemize}
+
+\subsection{Aplicaciones de \texttt{Scikit-learn} en el Proyecto}
+
+La librería se utilizó para abordar diversas tareas clave en el proyecto:
+
+\begin{enumerate}
+\item \textbf{Predicción de Precios de Inmuebles}: Para la inferencia del precio de los inmuebles, se emplearon diversos algoritmos de Aprendizaje Automático, incluyendo RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, ExtraTreesRegressor, DecisionTreeRegressor, LinearRegression, Ridge Regression, Lasso Regression, Elastic Net, SVR (Support Vector Regression) y KNeighborsRegressor, todos ellos disponibles en \texttt{Scikit-learn}. 
+
+Estos algoritmos se entrenan para predecir el valor de los inmuebles según características como ubicación, tamaño, número de habitaciones, entre otras. Para cada provincia, se utilizan todos los algoritmos mencionados y se selecciona aquel que presentaba el menor valor de RMSE (\textit{Root Mean Squared Error}). El RMSE es una medida de precisión que indica la magnitud promedio de los errores en las predicciones~\cite{chai2014}; un RMSE menor implica un modelo de predicción más preciso y fiable para la estimación de precios de inmuebles. 
+
+Como detalle a mencionar, para cada provincia se entrenan dos modelos, uno para los inmuebles con precio inferior a 350\,000€ y otro para los inmuebles con precio superior a 350\,000€. Esta división se realizó porque se observó que el RMSE relativo (Considerado como el RMSE dividido por la media de precios del conjunto de datos) era inferior tanto en los modelos con precio inferior y superior a 350\,000€ comparado con modelos que consideraran todo el rango de precio agrupado. La explicación se amplia en la Sección \ref{sec:divison_modelos}.
+
+\clearpage
+\item \textbf{Asignación de una puntuación al precio real del inmueble}: Una vez entrenados los modelos de Aprendizaje Automático para cada provincia y rango de precios. Se utilizaban dichos modelos para inferir y asignar un precio al inmueble según sus características. Este precio ``justo'' asignado se comparaba con su precio real. Con esta comparación se le asignó una puntuación al inmueble, si su precio real estaba por debajo del predicho, la puntuación era positiva y si su precio real estaba por encima del predicho, la puntuación era negativa.
+
+\end{enumerate}
+
+La fórmula utilizada para asignar la puntuación fue la siguiente:
+
+\begin{equation}
+\text{Puntuación} = \frac{\text{Precio Asignado por Modelo} - \text{Precio Real}}{\text{Precio Real}}
+\end{equation}
 
 
-\section{Machine learning: scikit learn}
+A continuación se muestran dos ejemplos, aplicando la fórmula. Un ejemplo de inmueble considerado ``no interesante'' para inversión:
 
-Las secciones se incluyen con el comando section.
+\begin{equation}
+\text{Puntuación (-0.5)} = \frac{\text{Precio Asignado (100000€)} - \text{Precio Real (200000€)}}{\text{Precio Real (200000€)}}
+\end{equation}
 
-\section{Aplicación web: Frontend - React}
+Un ejemplo de inmueble considerado ``interesante'' para inversión:
 
-Las secciones se incluyen con el comando section.
+\begin{equation}
+\text{Puntuación (0.3)} = \frac{\text{Precio Asignado (260000€)} - \text{Precio Real (200000€)}}{\text{Precio Real (200000€)}}
+\end{equation}
 
-\section{Aplicación web: Backend - Node.js, express}
+\clearpage
+\section{Aplicación Web: \textit{Frontend} - React}\label{sec:frontend_section}
 
-Las secciones se incluyen con el comando section.
+La interfaz de usuario de la aplicación web, que sirve como el punto de interacción principal para los usuarios, ha sido desarrollada utilizando React. Se trata de una librería de JavaScript para construir interfaces de usuario, conocida por su eficiencia, flexibilidad y el rico ecosistema de componentes y herramientas que ofrece~\cite{react}. 
 
-\section{Despliegue - Oracle cloud}
+\subsection{Razones para Elegir React}
 
-Las secciones se incluyen con el comando section.
+A continuación, se detallan los aspectos clave de la elección de la librería y su implementación en el proyecto:
+
+\begin{itemize}
+    \item \textbf{Componentes Reutilizables:} Se basa en un enfoque de componentes reutilizables~\cite{react_components}, lo que facilita el desarrollo y mantenimiento de la interfaz de usuario. Esto permite una construcción modular del \textit{frontend}, donde cada componente puede ser desarrollado y probado de manera independiente.
+
+    \item \textbf{Estado y Gestión de datos:} Proporciona un sistema robusto para el manejo del estado de la aplicación, lo que resulta crucial para una aplicación web que necesita responder dinámicamente a los cambios en los datos y a las interacciones del usuario, por ejemplo resulta ideal para crear un cuadro de mandos con visualizaciones.
+
+    \item \textbf{Rendimiento:} Gracias al Virtual DOM de React, la actualización de la interfaz de usuario es eficiente y rápida, lo cual es esencial para proporcionar una experiencia de usuario fluida, especialmente en aplicaciones web que manejan una gran cantidad de datos en tiempo real.
+
+\end{itemize}
+
+\subsection{Implementación en el Proyecto}
+
+La aplicación web desarrollada con React juega un papel crucial en la visualización y el acceso a los datos recopilados y procesados en el proyecto:
+
+\begin{enumerate}
+    \item \textbf{Visualización de datos:} Se implementaron componentes para mostrar datos inmobiliarios de manera interactiva, incluyendo listas de propiedades, mapas y gráficos estadísticos.
+
+    \item \textbf{Interactividad y Filtrado de datos:} La aplicación permite a los usuarios filtrar y buscar propiedades basándose en varios criterios, como ubicación, precio y características de la propiedad, lo que mejora significativamente la experiencia del usuario.
+
+    \item \textbf{Integración con \textit{Backend}:} React se ha integrado de manera efectiva con el \textit{backend} del proyecto, asegurando que los datos se actualicen y se muestren en tiempo real.
+
+    \item \textbf{Responsividad - \textit{Responsive}:} Se intentó prestar atención a la responsividad del diseño, asegurando que la aplicación web funcione sin problemas en una variedad de dispositivos y tamaños de pantalla.
+\end{enumerate}
+
+\clearpage
+\section{Aplicación Web: \textit{Backend} - Node.js, Express}\label{sec:backend_section}
+
+El \textit{backend} de la aplicación web, encargado de manejar la lógica de negocio, la interacción con la base de datos y la comunicación con el \textit{frontend}, ha sido desarrollado utilizando Node.js~\cite{nodejs} junto con la librería Express~\cite{express}.
+
+\subsection{Razones para Elegir Node.js y Express}
+
+Esta combinación se ha elegido por su eficiencia, escalabilidad y la facilidad con la que se puede construir aplicaciones web robustas y de alto rendimiento. Node.js, basado en el motor V8 de JavaScript, permite desarrollar servidores de aplicaciones ligeros y eficientes, mientras que Express aporta una capa de abstracción para manejar rutas, solicitudes y respuestas HTTP de una manera más conveniente. A continuación, se listan algunas características adicionales que se consideran importantes para la elección:
+
+\begin{itemize}
+    \item \textbf{Desarrollo Unificado en JavaScript:} Utilizar Node.js permite un desarrollo cohesivo entre el \textit{frontend} y el \textit{backend}, ya que ambos pueden ser escritos en JavaScript. Esto facilita la integración y reduce la curva de aprendizaje para los desarrolladores familiarizados con este lenguaje.
+
+    \item \textbf{Rendimiento y Escalabilidad:} Node.js es conocido por su alto rendimiento en aplicaciones basadas en eventos y operaciones no bloqueantes. Esto es ideal para manejar múltiples solicitudes simultáneas, lo cual es común en aplicaciones web modernas.
+
+    \item \textbf{Ecosistema Rico:} Esta combinación tiene un ecosistema muy amplio, con una gran cantidad de módulos y librerías disponibles a través del gestor de paquetes npm, lo que facilita la implementación de funcionalidades adicionales y la integración con otras herramientas y servicios.
+
+    \item \textbf{Flexibilidad y Minimalismo de Express:} Express, siendo una librería minimalista, otorga una gran flexibilidad en la construcción del servidor, permitiendo que la aplicación sea estructurada de acuerdo a las necesidades específicas del proyecto.
+\end{itemize}
+
+\subsection{Implementación en el Proyecto}
+
+En el contexto de este proyecto, el \textit{backend} desarrollado con Node.js y Express desempeña varias funciones clave:
+
+\begin{enumerate}
+    \item \textbf{API RESTful:} Se ha implementado una API RESTful para facilitar la comunicación entre el \textit{frontend} y el \textit{backend}, permitiendo realizar operaciones de CRUD (Crear, Leer, Actualizar y Eliminar) en los datos inmobiliarios almacenados en la base de datos SQLite. Aunque a día de hoy todas las peticiones implementadas son de lectura de la base de datos, en el futuro esto puede ser ampliar.
+
+    \item \textbf{Integración con la Base de datos:} El \textit{backend} gestiona todas las interacciones con la base de datos SQLite, especial mención a las consultas, que a día de hoy son la mayor parte de las interacciones.
+
+
+    \item \textbf{Procesamiento de datos:} Además de servir datos al \textit{frontend}, el \textit{backend} también lleva a cabo procesamientos complejos, como filtrados y búsquedas avanzadas, necesarios para las visualizaciones  en la aplicación web.
+\end{enumerate}
+
+\clearpage
+\section{Contenedores de Software - Docker}
+
+En este proyecto, se ha optado por utilizar Docker~\cite{merkel2014docker}, una plataforma de contenedores de software, para asegurar la consistencia del entorno de desarrollo y producción, así como para facilitar la implementación y escalabilidad del sistema. Docker proporciona una forma de empaquetar y distribuir aplicaciones en contenedores ligeros y portátiles, lo que asegura que la aplicación funcione de manera uniforme y eficiente en cualquier entorno.
+
+\subsection{Características Principales de Docker}
+
+Docker se ha convertido en una herramienta esencial en el desarrollo de aplicaciones modernas debido a sus siguientes características~\cite{mouat2015}:
+
+\begin{itemize}
+    \item \textbf{Independencia de Entorno:} Los contenedores Docker encapsulan todo lo necesario para ejecutar una aplicación, incluyendo el código, las librerías, las dependencias del sistema y los archivos de configuración. Esto elimina el problema de ``funciona en mi máquina'' al asegurar la coherencia entre los entornos de desarrollo, prueba y producción.
+
+    \item \textbf{Eficiencia en Recursos:} A diferencia de las máquinas virtuales, los contenedores Docker comparten el núcleo del sistema operativo del host y no requieren un sistema operativo completo para cada contenedor, lo que los hace más ligeros y rápidos.
+
+    \item \textbf{Portabilidad:} Los contenedores pueden ejecutarse en cualquier máquina que tenga Docker instalado, independientemente del sistema operativo y de la infraestructura subyacente, lo que facilita la migración y el despliegue en diferentes entornos.
+
+    \item \textbf{Escalabilidad y Aislamiento:} Docker facilita la escalabilidad y el balanceo de carga de las aplicaciones. Cada contenedor funciona de forma aislada, lo que mejora la seguridad y permite escalar o replicar contenedores de manera individual.
+\end{itemize}
+
+\subsection{Uso de Docker en el Proyecto}
+
+En el marco de este proyecto, Docker ha sido utilizado para varios propósitos clave:
+
+\begin{enumerate}
+    \item \textbf{Desarrollo Consistente:} Se utilizan contenedores Docker para mantener un entorno de desarrollo consistente con el entorno de producción. Esto reduce los problemas de incompatibilidades.
+    
+    \item \textbf{Despliegue y Distribución:} Docker simplifica el proceso de despliegue al empaquetar la aplicación y sus dependencias en un contenedor, que puede ser fácilmente distribuido y ejecutado en diferentes sistemas y plataformas. Todos los servicios de este proyecto están desplegados a través de contenedores Docker, y orquestados utilizando Docker Compose~\cite{dockercompose}.
+\end{enumerate}
+
+\clearpage
+\section{Despliegue - Oracle Cloud - \textit{Compute Instance}}
+
+El despliegue efectivo de la aplicación web y sus componentes asociados, como las bases de datos, el proceso de \textit{scraping}, ETL y \textit{Machine Learning}, se ha realizado en una \textit{\textit{Compute Instance}} de Oracle Cloud~\cite{oraclecompute}. Oracle Cloud Infrastructure (OCI) ofrece servicios de computación en la nube de alto rendimiento y escalables, que son ideales para alojar todo tipo de aplicaciones. La elección de Oracle Cloud para el despliegue se basa en que ofrecen una máquina de altas prestaciones de forma gratuita. Además, la integración con contenedores Docker desplegados en una \textit{Compute Instance} facilita un proceso de despliegue y operación eficiente y automatizado.
+
+\subsection{Características Clave de Oracle Cloud y \textit{Compute Instance}}
+
+La infraestructura de Oracle Cloud y su servicio \textit{Compute Instance} ofrecen varias ventajas y características importantes, aunque muchas de ellas son comunes a otras compañías que ofrecen servicios cloud, merece la pena mencionarlas:
+
+\begin{itemize}
+    \item \textbf{Alto Rendimiento y Disponibilidad:} Las \textit{Compute Instance}s de Oracle Cloud están diseñadas para ofrecer un alto rendimiento y una alta disponibilidad, lo que es esencial para mantener la aplicación web accesible y eficiente en todo momento.
+
+    \item \textbf{Precio gratuito:} Oracle Cloud proporciona una máquina de 4 núcleos y 24GB de RAM con 200GB de disco duro de forma gratuita.
+
+    \item \textbf{Seguridad Mejorada:} Con herramientas avanzadas de seguridad y una infraestructura robusta, Oracle Cloud garantiza la protección de los datos y las aplicaciones alojadas.
+
+    \item \textbf{Gestión Simplificada:} La interfaz de usuario y las herramientas de gestión de OCI simplifican la configuración, el monitorización y la administración de las \textit{Compute Instance}s.
+\end{itemize}
+
+\clearpage
+\subsection{Implementación del Proyecto en Oracle Cloud}
+
+El despliegue del proyecto en Oracle Cloud incluyó los siguientes pasos y consideraciones:
+
+\begin{enumerate}
+    \item \textbf{Configuración de la \textit{Compute Instance}:} Se estableció una instancia en Oracle Cloud con sistema operativo Ubuntu 20.04.
+
+    \item \textbf{Despliegue de Contenedores Docker:} Todos los componentes de la aplicación, incluyendo el servidor \textit{backend} y la base de datos, se empaquetaron en contenedores Docker y se desplegaron en la \textit{Compute Instance}. Esto asegura una integración y funcionamiento fluidos de todos los componentes del sistema.
+
+    \item \textbf{Configuración de Red y Seguridad:} Se realizaron ajustes en la configuración de la red y la seguridad para proteger la instancia y garantizar un acceso controlado a la aplicación y a sus servicios.
+\end{enumerate}
+
+\subsection{Beneficios del Despliegue en Oracle Cloud}
+
+El uso de Oracle Cloud para el despliegue del proyecto ha aportado beneficios significativos, tales como una mayor eficiencia en la gestión de recursos, una mejora en la disponibilidad ya que se requiere la ejecución de procesos varias veces al día. Se ha conseguido sincronizar todos los procesos para un buen rendimiento de la aplicación, con flexibilidad para adaptarse a las cambiantes necesidades del proyecto a medida que se avanzaba en el desarrollo. Además, en un futuro sería trivial migrar los servicios de la \textit{\textit{Compute Instance}} de Oracle Cloud a cualquier servidor, sea alojado en la nube o no, gracias al uso de contenedores de software (Docker).
+
