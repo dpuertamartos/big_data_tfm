@@ -55,7 +55,7 @@ const Contact = () => {
                         <Divider sx={{ mb: 2 }} />
                         <Typography variant="h6" gutterBottom color="text.primary" sx={{ fontWeight: 'bold' }}>Sobre la página web</Typography>
                         <Typography variant="body1" sx={{ mb: 2, textAlign: 'justify' }}>
-                        Esta web está desarrollada como vía de interacción y visualización para con el flujo de datos creado desde el portal inmobiliario pisos.com. 
+                        Esta web está desarrollada como vía de interacción y visualización con el flujo de datos creado desde el portal inmobiliario pisos.com. 
                         <br />
                         <br />
                         Los datos de inmuebles se han enriquecido mediante Machine Learning para asignarles una puntuación.  
@@ -72,7 +72,7 @@ const Contact = () => {
                         Mi nombre es David Puerta Martos.
                         <br />
                         <br />
-                        Tras un período trabajando en investigación (CSIC), comencé a trabajar como ingenierio de datos.
+                        Tras un período trabajando en investigación (CSIC), comencé a trabajar como Ingeniero de Datos.
                         </Typography>
                     </Paper>
                 </Grid>
